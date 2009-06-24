@@ -19,7 +19,7 @@ In python:
 
 
 INSTALLATION:
-* Python-tesseract requires python2.5 or later.
+* Python-tesseract requires python 2.5 or later.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
   the package "python-imaging".
 * Install tesseract-ocr from http://code.google.com/p/tesseract-ocr/ . You must
