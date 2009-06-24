@@ -98,9 +98,10 @@ def tempnam():
         sys.stderr = stderr
 
 class TesseractError(Exception):
-    def __init__(status, message):
+    def __init__(self, status, message):
         self.status = status
         self.message = message
+        self.args = (status, message)
 
 def image_to_string(image, lang=None):
     '''
