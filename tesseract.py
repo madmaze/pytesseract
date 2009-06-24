@@ -2,24 +2,32 @@
 '''
 Python-tesseract is a python wrapper to google tesseract-ocr
 ( http://code.google.com/p/tesseract-ocr/ ). Python-tesseract is also useful as
-a supplemental script to tesseract, as it can read all image types supported by
-PIL, including jpeg, png, gif, bmp, tiff, and others. Tesseract by default only
-supports tiff and bmp.
+a invocation script to tesseract, as it can read all image types supported by
+the Python imaging library, including jpeg, png, gif, bmp, tiff, and others.
+Tesseract by default only supports tiff and bmp. Additionally, if used as a
+script, Python-tesseract will print the recognized text in stead of writing it
+to a file.
 
 
 INSTALLATION:
-You will need to install tesseract as well as the Python Imaging Library (PIL).
-Under Debian/Ubuntu, this is the package "python-imaging".
-Python-tesseract requires python2.5 or later.
+* Python-tesseract requires python2.5 or later.
+* You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
+  the package "python-imaging".
+* Install tesseract-ocr from http://code.google.com/p/tesseract-ocr/ . You must
+  be able to invoke the tesseract command as "tesseract". If this isn't the
+  case, for example because tesseract isn't in your PATH, you will have to
+  change the "tesseract_cmd" variable at the top of 'tesseract.py'.
 
 
 USAGE:
 From the shell:
- $ ./tesseract.py image.jpeg         # prints the recognized text in the image
+ $ ./tesseract.py image.jpeg                # prints recognized text in image
+ $ ./tesseract.py -l fra french_image.jpeg  # recognizes french text
 In python:
  > from tesseract import image_to_string
  > import Image
  > print image_to_string(Image('image.jpeg'))
+ > print image_to_string(Image('french_image.jpeg'), lang='fra')
 
 
 COPYRIGHT:
@@ -28,14 +36,15 @@ Copyright (c) Samuel Hoffstaetter, 2009
 
 '''
 
+# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
+tesseract_cmd = 'tesseract'
+
 from __future__ import with_statement
 import Image
 import StringIO
 import subprocess
 import sys
 import os
-
-tesseract_cmd = 'tesseract'
 
 __all__ = ['image_to_string']
 
