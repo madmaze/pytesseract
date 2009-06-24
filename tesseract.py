@@ -149,7 +149,7 @@ if __name__ == '__main__':
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
-        print image_to_string(image)
+        print image_to_string(image, lang=lang)
     else:
         sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
