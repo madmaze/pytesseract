@@ -1,10 +1,9 @@
-Python-tesseract is a python wrapper to google tesseract-ocr
-( http://code.google.com/p/tesseract-ocr/ ). Python-tesseract is also useful as
-an invocation script to tesseract, as it can read all image types supported by
-the Python imaging library, including jpeg, png, gif, bmp, tiff, and others.
-Tesseract by default only supports tiff and bmp. Additionally, if used as a
-script, Python-tesseract will print the recognized text in stead of writing it
-to a file.
+Python-tesseract is a python wrapper for google tesseract-ocr ( http://code.google.com/p/tesseract-ocr/ ).
+Python-tesseract is also useful as an invocation script to tesseract, as it can
+read all image types supported by the Python imaging library, including jpeg,
+png, gif, bmp, tiff, and others.  Tesseract by default only supports tiff and
+bmp. Additionally, if used as a script, Python-tesseract will print the
+recognized text in stead of writing it to a file.
 
 
 USAGE:
