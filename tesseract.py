@@ -15,13 +15,13 @@ planned for future releases.
 
 USAGE:
 From the shell:
- $ ./tesseract.py image.jpeg                # prints recognized text in image
- $ ./tesseract.py -l fra french_image.jpeg  # recognizes french text
+ $ ./tesseract.py test.png                  # prints recognized text in image
+ $ ./tesseract.py -l fra test-european.jpg  # recognizes french text
 In python:
- > from tesseract import image_to_string
  > import Image
- > print image_to_string(Image('image.jpeg'))
- > print image_to_string(Image('french_image.jpeg'), lang='fra')
+ > from tesseract import image_to_string
+ > print image_to_string(Image.open('test.png'))
+ > print image_to_string(Image.open('test-european.jpg'), lang='fra')
 
 
 INSTALLATION:
@@ -38,7 +38,6 @@ COPYRIGHT:
 Python-tesseract is released under the GPL v3.
 Copyright (c) Samuel Hoffstaetter, 2009
 http://wiki.github.com/hoffstaetter/python-tesseract
-
 
 '''
 
@@ -130,10 +129,24 @@ def image_to_string(image, lang=None):
         cleanup(output_file_name)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        sys.stderr.write('Usage: python tesseract.py input_file\n')
-        exit(1)
-    else:
-        image = Image.open(sys.argv[1])
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+        try:
+            image = Image.open(filename)
+        except IOError:
+            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+            exit(1)
         print image_to_string(image)
+    elif len(sys.argv) == 4 and sys.argv[1] == '-l':
+        lang = sys.argv[2]
+        filename = sys.argv[3]
+        try:
+            image = Image.open(filename)
+        except IOError:
+            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+            exit(1)
+        print image_to_string(image)
+    else:
+        sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
+        exit(2)
 

@@ -13,13 +13,13 @@ planned for future releases.
 
 USAGE:
 From the shell:
- $ ./tesseract.py image.jpeg                # prints recognized text in image
- $ ./tesseract.py -l fra french_image.jpeg  # recognizes french text
+ $ ./tesseract.py test.png                  # prints recognized text in image
+ $ ./tesseract.py -l fra test-european.jpg  # recognizes french text
 In python:
- > from tesseract import image_to_string
  > import Image
- > print image_to_string(Image('image.jpeg'))
- > print image_to_string(Image('french_image.jpeg'), lang='fra')
+ > from tesseract import image_to_string
+ > print image_to_string(Image.open('test.png'))
+ > print image_to_string(Image.open('test-european.jpg'), lang='fra')
 
 
 INSTALLATION:
