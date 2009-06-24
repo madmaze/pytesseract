@@ -83,8 +83,11 @@ def get_errors(error_string):
     '''
 
     lines = error_string.splitlines()
-    error_lines = (line for line in lines if line.find('Error') >= 0)
-    return '\n'.join(error_lines)
+    error_lines = tuple(line for line in lines if line.find('Error') >= 0)
+    if len(error_lines) > 0:
+        return '\n'.join(error_lines)
+    else:
+        return error_string.strip()
 
 def tempnam():
     ''' returns a temporary file-name '''
