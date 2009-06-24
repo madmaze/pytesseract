@@ -45,7 +45,6 @@ http://wiki.github.com/hoffstaetter/python-tesseract
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
-from __future__ import with_statement
 import Image
 import StringIO
 import subprocess
@@ -121,8 +120,11 @@ def image_to_string(image, lang=None):
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        with file(output_file_name) as f:
+        f = file(output_file_name)
+        try:
             return f.read().strip()
+        finally:
+            f.close()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
