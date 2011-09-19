@@ -63,12 +63,12 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False):
 
     command = [tesseract_cmd, input_filename, output_filename_base]
     
-    if boxes:
-        command += ['batch.nochop', 'makebox']
-    
     if lang is not None:
         command += ['-l', lang]
 
+    if boxes:
+        command += ['batch.nochop', 'makebox']
+    
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
     return (proc.wait(), proc.stderr.read())
@@ -120,7 +120,10 @@ def image_to_string(image, lang=None, boxes=False):
 
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
-    output_file_name = '%s.txt' % output_file_name_base
+    if not boxes:
+        output_file_name = '%s.txt' % output_file_name_base
+    else:
+        output_file_name = '%s.box' % output_file_name_base
     try:
         image.save(input_file_name)
         status, error_string = run_tesseract(input_file_name,
