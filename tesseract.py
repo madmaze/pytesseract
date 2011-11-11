@@ -52,7 +52,9 @@ import os
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False):
+
+def run_tesseract(input_filename, output_filename_base, lang=None,
+                  boxes=False):
     '''
     runs the command:
         `TESSERACT_CMD` `input_filename` `output_filename_base`
@@ -68,10 +70,11 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False):
 
     if boxes:
         command += ['batch.nochop', 'makebox']
-    
+
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
     return (proc.wait(), proc.stderr.read())
+
 
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
@@ -79,6 +82,7 @@ def cleanup(filename):
         os.remove(filename)
     except OSError:
         pass
+
 
 def get_errors(error_string):
     '''
@@ -93,6 +97,7 @@ def get_errors(error_string):
     else:
         return error_string.strip()
 
+
 def tempnam():
     ''' returns a temporary file-name '''
 
@@ -104,11 +109,13 @@ def tempnam():
     finally:
         sys.stderr = stderr
 
+
 class TesseractError(Exception):
     def __init__(self, status, message):
         self.status = status
         self.message = message
         self.args = (status, message)
+
 
 def image_to_string(image, lang=None, boxes=False):
     '''
@@ -142,6 +149,7 @@ def image_to_string(image, lang=None, boxes=False):
         cleanup(input_file_name)
         cleanup(output_file_name)
 
+
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         filename = sys.argv[1]
@@ -161,6 +169,7 @@ if __name__ == '__main__':
             exit(1)
         print image_to_string(image, lang=lang)
     else:
-        sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
+        sys.stderr.write(
+            'Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
 
