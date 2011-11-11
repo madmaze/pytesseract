@@ -127,6 +127,65 @@ class TesseractError(Exception):
         self.args = (status, message)
 
 
+class TesseractBox(object):
+    """
+    Tesseract Box: Tesserax boxes are rectangles around each individual character
+    recognized in the image.
+    """
+    def __init__(self, char, position, page):
+        """
+        Instantiate a tesseract box
+
+        Arguments:
+            char --- character found in this box
+            position --- the position of the box on the image. Given as a
+                tuple of tuple:
+                ((width_pt_x, height_pt_x), (width_pt_y, height_pt_y))
+            page --- page number, as specified in the box file (usually 0)
+        """
+        self.char = char
+        self.position = position
+        self.page = page
+
+    def __str__(self):
+        return "%s %d %d %d %d %d" % (
+            self.char,
+            self.position[0][0],
+            self.position[0][1],
+            self.position[1][0],
+            self.position[1][1],
+            self.page
+        )
+
+
+def read_boxes(file_descriptor):
+    """
+    Extract of set of TesseractBox from the lines of 'file_descriptor'
+    """
+    boxes = [] # note that the order of the boxes may matter to the caller
+    for line in file_descriptor.readlines():
+        line = line.strip()
+        if line == "":
+            continue
+        elements = line.split(" ")
+        if len(elements) < 6:
+            continue
+        position = ((int(elements[1]), int(elements[2])),
+                    (int(elements[3]), int(elements[4])))
+        box = TesseractBox(unicode(elements[0]), position, int(elements[5]))
+        boxes.append(box)
+    return boxes
+
+
+def write_box_file(file_descriptor, boxes):
+    """
+    Write boxes in a box file. Output is in a the same format than tesseract's
+    one.
+    """
+    for box in boxes:
+        file_descriptor.write(str(box) + "\n")
+
+
 def image_to_string(image, lang=None, boxes=False):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
@@ -147,18 +206,20 @@ def image_to_string(image, lang=None, boxes=False):
         output_file_name = '%s.box' % output_file_name_base
     try:
         image.save(input_file_name)
-        status, error_string = run_tesseract(input_file_name,
-                                             output_file_name_base,
-                                             lang=lang,
-                                             boxes=boxes)
+        (status, errors) = run_tesseract(input_file_name,
+                                         output_file_name_base,
+                                         lang=lang,
+                                         boxes=boxes)
         if status:
-            errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        f = file(output_file_name)
+        file_desc = open(output_file_name)
         try:
-            return f.read().strip()
+            if not boxes:
+                return file_desc.read().strip()
+            else:
+                return read_boxes(file_desc)
         finally:
-            f.close()
+            file_desc.close()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
