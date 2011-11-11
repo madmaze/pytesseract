@@ -31,7 +31,7 @@ INSTALLATION:
 * Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
-  have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
+  have to change the "TESSERACT_CMD" variable at the top of 'tesseract.py'.
 
 
 COPYRIGHT:
@@ -42,7 +42,7 @@ http://wiki.github.com/hoffstaetter/python-tesseract
 '''
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-tesseract_cmd = 'tesseract'
+TESSERACT_CMD = 'tesseract'
 
 import Image
 import StringIO
@@ -55,14 +55,14 @@ __all__ = ['image_to_string']
 def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False):
     '''
     runs the command:
-        `tesseract_cmd` `input_filename` `output_filename_base`
-    
+        `TESSERACT_CMD` `input_filename` `output_filename_base`
+
     returns the exit status of tesseract, as well as tesseract's stderr output
 
     '''
 
-    command = [tesseract_cmd, input_filename, output_filename_base]
-    
+    command = [TESSERACT_CMD, input_filename, output_filename_base]
+
     if lang is not None:
         command += ['-l', lang]
 
