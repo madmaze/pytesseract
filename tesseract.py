@@ -73,7 +73,7 @@ def run_tesseract(input_filename, output_filename_base, lang=None,
 
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
-    # XXX(Jflesch): In some cases, tesseract may print more on stderr than
+    # Beware that in some cases, tesseract may print more on stderr than
     # allowed by the buffer of subprocess.Popen.stderr. So we must read stderr
     # asap or Tesseract will remain stuck when trying to write again on stderr.
     # In the end, we just have to make sure that proc.stderr.read() is called
