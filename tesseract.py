@@ -225,13 +225,17 @@ def image_to_string(image, lang=None, boxes=False):
         cleanup(output_file_name)
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Main method: allow quick testing of the API
+    """
     if len(sys.argv) == 2:
         filename = sys.argv[1]
         try:
             image = Image.open(filename)
         except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+            sys.stderr.write('ERROR: Could not open file "%s"\n'
+                             % filename)
             exit(1)
         print image_to_string(image)
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
@@ -240,10 +244,14 @@ if __name__ == '__main__':
         try:
             image = Image.open(filename)
         except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+            sys.stderr.write('ERROR: Could not open file "%s"\n'
+                             % filename)
             exit(1)
         print image_to_string(image, lang=lang)
     else:
         sys.stderr.write(
             'Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
+
+if __name__ == '__main__':
+    main()
