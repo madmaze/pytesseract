@@ -117,6 +117,9 @@ def tempnam():
 
 
 class TesseractError(Exception):
+    """
+    Exception raised when tesseract fails.
+    """
     def __init__(self, status, message):
         Exception.__init__(self, message)
         self.status = status
@@ -127,8 +130,12 @@ class TesseractError(Exception):
 def image_to_string(image, lang=None, boxes=False):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Resseract's result is
+    and then the tesseract command is run on the image. Tesseract's result is
     read, and the temporary files are erased.
+
+    Returns:
+        if boxes == False (default): the text as read from the image
+        if boxes == True: an array of TesseractBox
 
     '''
 
