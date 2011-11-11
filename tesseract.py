@@ -129,8 +129,8 @@ class TesseractError(Exception):
 
 class TesseractBox(object):
     """
-    Tesseract Box: Tesserax boxes are rectangles around each individual character
-    recognized in the image.
+    Tesseract Box: Tesserax boxes are rectangles around each individual
+    character recognized in the image.
     """
     def __init__(self, char, position, page):
         """
@@ -162,7 +162,7 @@ def read_boxes(file_descriptor):
     """
     Extract of set of TesseractBox from the lines of 'file_descriptor'
     """
-    boxes = [] # note that the order of the boxes may matter to the caller
+    boxes = []  # note that the order of the boxes may matter to the caller
     for line in file_descriptor.readlines():
         line = line.strip()
         if line == "":
@@ -247,4 +247,3 @@ if __name__ == '__main__':
         sys.stderr.write(
             'Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
-
