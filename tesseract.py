@@ -147,6 +147,10 @@ if __name__ == '__main__':
         filename = sys.argv[1]
         try:
             image = Image.open(filename)
+            if len(image.split()) == 4:
+                # Quick Fix for r, g, b, a images
+                r, g, b, a = image.split()
+                image = Image.merge("RGB", (r, g, b))
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
