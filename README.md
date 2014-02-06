@@ -12,15 +12,16 @@ bounding box data is planned for future releases.
 
 
 USAGE:
+```
 From the shell:
  $ ./pytesseract.py test.png                  # prints recognized text in image
  $ ./pytesseract.py -l fra test-european.jpg  # recognizes french text
 In python:
  > import Image
- > from tesseract import image_to_string
+ > from pytesseract import image_to_string
  > print image_to_string(Image.open('test.png'))
  > print image_to_string(Image.open('test-european.jpg'), lang='fra')
-
+```
 
 INSTALLATION:
 * Python-tesseract requires python 2.5 or later.
