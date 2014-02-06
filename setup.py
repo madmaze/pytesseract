@@ -17,6 +17,6 @@ setup(
     keywords = "python-tesseract OCR Python",
     url = "https://github.com/madmaze/python-tesseract",
     packages=['pytesseract'],
-    long_description=read('README'),
+    long_description=read('README.md'),
     package_data = {'pytesseract': ['*.png','*.jpg']}
 )
