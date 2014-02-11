@@ -23,6 +23,15 @@ In python:
  > print image_to_string(Image.open('test-european.jpg'), lang='fra')
 ```
 
+Specifying a config file:
+
+```
+ > import Image
+ > from pytesseract import image_to_string
+ > print image_to_string(Image.open('test.png'), config="digits")
+
+```
+
 INSTALLATION:
 * Python-tesseract requires python 2.5 or later.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
