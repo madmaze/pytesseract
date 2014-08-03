@@ -13,14 +13,10 @@ bounding box data is planned for future releases.
 
 USAGE:
 ```
-From the shell:
- $ ./pytesseract.py test.png                  # prints recognized text in image
- $ ./pytesseract.py -l fra test-european.jpg  # recognizes french text
-In python:
  > import Image
- > from pytesseract import image_to_string
- > print image_to_string(Image.open('test.png'))
- > print image_to_string(Image.open('test-european.jpg'), lang='fra')
+ > import pytesseract
+ > print pytesseract.image_to_string(Image.open('test.png'))
+ > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
 ```
 
 INSTALLATION:

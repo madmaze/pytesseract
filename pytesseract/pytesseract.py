@@ -14,14 +14,11 @@ bounding box data is planned for future releases.
 
 
 USAGE:
-From the shell:
- $ ./tesseract.py test.png                  # prints recognized text in image
- $ ./tesseract.py -l fra test-european.jpg  # recognizes french text
 In python:
  > import Image
- > from tesseract import image_to_string
- > print image_to_string(Image.open('test.png'))
- > print image_to_string(Image.open('test-european.jpg'), lang='fra')
+ > import pytesseract
+ > print pytesseract.image_to_string(Image.open('test.png'))
+ > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
 
 
 INSTALLATION:
@@ -60,7 +57,6 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False):
     returns the exit status of tesseract, as well as tesseract's stderr output
 
     '''
-
     command = [tesseract_cmd, input_filename, output_filename_base]
     
     if lang is not None:
