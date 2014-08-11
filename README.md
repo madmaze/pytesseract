@@ -19,6 +19,15 @@ USAGE:
  > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
 ```
 
+Specifying a config file:
+
+```
+ > import Image
+ > from pytesseract import image_to_string
+ > print image_to_string(Image.open('test.png'), config="digits")
+
+```
+
 INSTALLATION:
 * Python-tesseract requires python 2.5 or later.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
@@ -32,7 +41,7 @@ INSTALLATION:
 LICENSE:
 Python-tesseract is released under the GPL v3.
 
-CONTRIBUTERS:
+CONTRIBUTORS:
 - Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
