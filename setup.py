@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name = "pytesseract",
-    version = "0.1.3",
+    version = "0.1.4",
     author = "Samuel Hoffstaetter",
     author_email="",
     maintainer = "Matthias Lee",
@@ -13,5 +13,6 @@ setup(
     keywords = "python-tesseract OCR Python",
     url = "https://github.com/madmaze/python-tesseract",
     packages=['pytesseract'],
+    package_dir={'pytesseract': 'src'},
     package_data = {'pytesseract': ['*.png','*.jpg']}
 )
