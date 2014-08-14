@@ -5,7 +5,7 @@ Python-tesseract is a wrapper for google's Tesseract-OCR
 ( http://code.google.com/p/tesseract-ocr/ ).  It is also useful as a
 stand-alone invocation script to tesseract, as it can read all image types
 supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
-and others, wheras tesseract-ocr by default only supports tiff and bmp.
+and others, whereas tesseract-ocr by default only supports tiff and bmp.
 Additionally, if used as a script, Python-tesseract will print the recognized
 text in stead of writing it to a file. Support for confidence estimates and
 bounding box data is planned for future releases.
@@ -20,6 +20,8 @@ USAGE:
 ```
 
 INSTALLATION:
+
+Prerequisites:
 * Python-tesseract requires python 2.5 or later.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
   the package "python-imaging".
@@ -27,7 +29,18 @@ INSTALLATION:
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
+  
+Installing via pip:   
+See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)   
+```
+$> sudo pip install pytesseract   
+```
 
+Installing from source:   
+```
+$> git clone git@github.com:madmaze/pytesseract.git   
+$> sudo python setup.py install  
+```
 
 LICENSE:
 Python-tesseract is released under the GPL v3.
