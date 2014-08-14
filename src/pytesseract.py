@@ -140,6 +140,12 @@ def image_to_string(image, lang=None, boxes=False, config=None):
 
     '''
 
+    if len(image.split()) == 4:
+        # In case we have 4 channels, lets discard the Alpha.
+        # Kind of a hack, should fix in the future some time.
+        r, g, b, a = image.split()
+        image = Image.merge("RGB", (r, g, b))
+    
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
     if not boxes:
@@ -171,7 +177,8 @@ if __name__ == '__main__':
         try:
             image = Image.open(filename)
             if len(image.split()) == 4:
-                # Quick Fix for r, g, b, a images
+                # In case we have 4 channels, lets discard the Alpha.
+                # Kind of a hack, should fix in the future some time.
                 r, g, b, a = image.split()
                 image = Image.merge("RGB", (r, g, b))
         except IOError:
