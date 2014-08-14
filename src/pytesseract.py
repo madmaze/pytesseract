@@ -14,14 +14,16 @@ bounding box data is planned for future releases.
 
 
 USAGE:
-In python:
+```
  > import Image
  > import pytesseract
  > print pytesseract.image_to_string(Image.open('test.png'))
  > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
-
+```
 
 INSTALLATION:
+
+Prerequisites:
 * Python-tesseract requires python 2.5 or later.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
   the package "python-imaging".
@@ -29,12 +31,23 @@ INSTALLATION:
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
+  
+Installing via pip:   
+See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)     
+$> sudo pip install pytesseract   
+
+Installing from source:   
+$> git clone git@github.com:madmaze/pytesseract.git   
+$> sudo python setup.py install    
 
 
-COPYRIGHT:
+LICENSE:
 Python-tesseract is released under the GPL v3.
-Copyright (c) Samuel Hoffstaetter, 2009
-http://wiki.github.com/hoffstaetter/python-tesseract
+
+CONTRIBUTERS:
+- Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
+- [Juarez Bochi](https://github.com/jbochi)
+- [Matthias Lee](https://github.com/madmaze)
 
 '''
 
