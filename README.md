@@ -13,7 +13,7 @@ bounding box data is planned for future releases.
 
 USAGE:
 ```
- > import Image
+ > from PIL import Image
  > import pytesseract
  > print pytesseract.image_to_string(Image.open('test.png'))
  > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
@@ -22,9 +22,8 @@ USAGE:
 INSTALLATION:
 
 Prerequisites:
-* Python-tesseract requires python 2.5 or later.
-* You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
-  the package "python-imaging".
+* Python-tesseract requires python 3.2 or later.
+* You will need Pillow, the fork of Python Imaging Library (PIL).
 * Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
@@ -49,4 +48,5 @@ CONTRIBUTERS:
 - Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
+- [ibrabeicker](https://github.com/ibrabeicker)
 

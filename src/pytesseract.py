@@ -15,7 +15,7 @@ bounding box data is planned for future releases.
 
 USAGE:
 ```
- > import Image
+ > from PIL import Image
  > import pytesseract
  > print pytesseract.image_to_string(Image.open('test.png'))
  > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
@@ -24,30 +24,18 @@ USAGE:
 INSTALLATION:
 
 Prerequisites:
-* Python-tesseract requires python 2.5 or later.
-* You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
-  the package "python-imaging".
+* Python-tesseract requires python 3.2 or later.
+* You will need Pillow, the fork of Python Imaging Library (PIL).
 * Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
-  
-Installing via pip:   
-See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)     
-$> sudo pip install pytesseract   
-
-Installing from source:   
-$> git clone git@github.com:madmaze/pytesseract.git   
-$> sudo python setup.py install    
 
 
-LICENSE:
+COPYRIGHT:
 Python-tesseract is released under the GPL v3.
-
-CONTRIBUTERS:
-- Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
-- [Juarez Bochi](https://github.com/jbochi)
-- [Matthias Lee](https://github.com/madmaze)
+Copyright (c) Samuel Hoffstaetter, 2009
+http://wiki.github.com/hoffstaetter/python-tesseract
 
 '''
 
@@ -58,10 +46,11 @@ try:
     import Image
 except ImportError:
     from PIL import Image
-import StringIO
+import io
 import subprocess
 import sys
 import os
+import tempfile
 
 __all__ = ['image_to_string']
 
@@ -114,8 +103,8 @@ def tempnam():
     # prevent os.tmpname from printing an error...
     stderr = sys.stderr
     try:
-        sys.stderr = StringIO.StringIO()
-        return os.tempnam(None, 'tess_')
+        sys.stderr = io.StringIO()
+        return tempfile.NamedTemporaryFile(suffix='tess_').name
     finally:
         sys.stderr = stderr
 
@@ -140,12 +129,6 @@ def image_to_string(image, lang=None, boxes=False, config=None):
 
     '''
 
-    if len(image.split()) == 4:
-        # In case we have 4 channels, lets discard the Alpha.
-        # Kind of a hack, should fix in the future some time.
-        r, g, b, a = image.split()
-        image = Image.merge("RGB", (r, g, b))
-    
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
     if not boxes:
@@ -162,11 +145,8 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        f = file(output_file_name)
-        try:
+        with open(output_file_name, 'r') as f:
             return f.read().strip()
-        finally:
-            f.close()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
@@ -176,15 +156,10 @@ if __name__ == '__main__':
         filename = sys.argv[1]
         try:
             image = Image.open(filename)
-            if len(image.split()) == 4:
-                # In case we have 4 channels, lets discard the Alpha.
-                # Kind of a hack, should fix in the future some time.
-                r, g, b, a = image.split()
-                image = Image.merge("RGB", (r, g, b))
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
-        print image_to_string(image)
+        print(image_to_string(image))
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
         lang = sys.argv[2]
         filename = sys.argv[3]
@@ -193,8 +168,9 @@ if __name__ == '__main__':
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
-        print image_to_string(image, lang=lang)
+        print(image_to_string(image, lang=lang))
     else:
         sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
+
 
