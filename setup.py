@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from distutils.core import setup
 
 setup(
     name = "pytesseract",
@@ -14,5 +14,9 @@ setup(
     url = "https://github.com/madmaze/python-tesseract",
     packages=['pytesseract'],
     package_dir={'pytesseract': 'src'},
-    package_data = {'pytesseract': ['*.png','*.jpg']}
+    package_data = {'pytesseract': ['*.png','*.jpg']},
+    classifiers = [
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+    ]
 )
