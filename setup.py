@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name = "pytesseract",
-    version = "0.1.5",
+    version = "0.2",
     author = "Samuel Hoffstaetter",
     author_email="",
     maintainer = "Matthias Lee",
@@ -15,5 +15,10 @@ setup(
     packages=['pytesseract'],
     package_dir={'pytesseract': 'src'},
     package_data = {'pytesseract': ['*.png','*.jpg']},
-    entry_points = {'console_scripts': ['pytesseract = pytesseract.pytesseract:main']}
+    entry_points = {'console_scripts': ['pytesseract = pytesseract.pytesseract:main']},
+    classifiers = [
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+    ]
 )
