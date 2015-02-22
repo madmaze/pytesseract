@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''
+"""
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
 
@@ -49,21 +49,25 @@ CONTRIBUTERS:
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
 
-'''
+"""
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
 try:
-    import Image
-except ImportError:
     from PIL import Image
-import StringIO
+except ImportError:
+    import Image
+try:
+    import io
+except ImportError:
+    import StringIO as io
 import subprocess
 import sys
 import os
 
 __all__ = ['image_to_string']
+
 
 def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
     '''
@@ -88,12 +92,14 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
             stderr=subprocess.PIPE)
     return (proc.wait(), proc.stderr.read())
 
+
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
     try:
         os.remove(filename)
     except OSError:
         pass
+
 
 def get_errors(error_string):
     '''
@@ -108,16 +114,18 @@ def get_errors(error_string):
     else:
         return error_string.strip()
 
+
 def tempnam():
     ''' returns a temporary file-name '''
 
     # prevent os.tmpname from printing an error...
     stderr = sys.stderr
     try:
-        sys.stderr = StringIO.StringIO()
+        sys.stderr = io.StringIO()
         return os.tempnam(None, 'tess_')
     finally:
         sys.stderr = stderr
+
 
 class TesseractError(Exception):
     def __init__(self, status, message):
@@ -125,8 +133,9 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
+
 def image_to_string(image, lang=None, boxes=False, config=None):
-    '''
+    """
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
     read, and the temporary files are erased.
@@ -138,7 +147,7 @@ def image_to_string(image, lang=None, boxes=False, config=None):
     if config is set, the config gets appended to the command.
         ex: config="-psm 6"
 
-    '''
+    """
 
     if len(image.split()) == 4:
         # In case we have 4 channels, lets discard the Alpha.
@@ -184,7 +193,7 @@ if __name__ == '__main__':
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
-        print image_to_string(image)
+        print(image_to_string(image))
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
         lang = sys.argv[2]
         filename = sys.argv[3]
@@ -193,7 +202,7 @@ if __name__ == '__main__':
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
             exit(1)
-        print image_to_string(image, lang=lang)
+        print(image_to_string(image, lang=lang))
     else:
         sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
