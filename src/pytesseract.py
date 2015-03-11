@@ -62,6 +62,7 @@ import StringIO
 import subprocess
 import sys
 import os
+import shlex
 
 __all__ = ['image_to_string']
 
@@ -82,7 +83,7 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
         command += ['batch.nochop', 'makebox']
         
     if config:
-        command += [config]
+        command += shlex.split(config)
     
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
