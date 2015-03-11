@@ -171,7 +171,7 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         cleanup(input_file_name)
         cleanup(output_file_name)
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) == 2:
         filename = sys.argv[1]
         try:
@@ -198,3 +198,5 @@ if __name__ == '__main__':
         sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
 
+if __name__ == '__main__':
+    main()

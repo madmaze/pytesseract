@@ -14,5 +14,6 @@ setup(
     url = "https://github.com/madmaze/python-tesseract",
     packages=['pytesseract'],
     package_dir={'pytesseract': 'src'},
-    package_data = {'pytesseract': ['*.png','*.jpg']}
+    package_data = {'pytesseract': ['*.png','*.jpg']},
+    entry_points = {'console_scripts': ['pytesseract = pytesseract.pytesseract:main']}
 )
