@@ -3,7 +3,7 @@ from setuptools import setup
 
 
 longDesc = ""
-if os.path.exits("README.md"):
+if os.path.exists("README.md"):
 	longDesc = open("README.md").read().strip()
 
 setup(
