@@ -21,7 +21,8 @@ USAGE:
  >     from PIL import Image
  > import pytesseract
  > print(pytesseract.image_to_string(Image.open('test.png')))
- > print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
+ > print(pytesseract.image_to_string(Image.open('test-european.jpg'),
+    lang='fra'))
 ```
 
 INSTALLATION:
@@ -35,21 +36,21 @@ Prerequisites:
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
   Under Debian/Ubuntu you can use the package "tesseract-ocr".
-  
-Installing via pip:   
-See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)     
-$> sudo pip install pytesseract   
 
-Installing from source:   
-$> git clone git@github.com:madmaze/pytesseract.git   
-$> sudo python setup.py install    
+Installing via pip:
+See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)
+$> sudo pip install pytesseract
+
+Installing from source:
+$> git clone git@github.com:madmaze/pytesseract.git
+$> sudo python setup.py install
 
 
 LICENSE:
 Python-tesseract is released under the GPL v3.
 
 CONTRIBUTERS:
-- Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
+- Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter)
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
 - [Lars Kistner](https://github.com/Sr4l)
@@ -71,28 +72,35 @@ import shlex
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
+
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
+                  config=None, pagesegmode=None):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
-    
+
     returns the exit status of tesseract, as well as tesseract's stderr output
 
     '''
+    print(pagesegmode)
     command = [tesseract_cmd, input_filename, output_filename_base]
-    
+
     if lang is not None:
         command += ['-l', lang]
 
     if boxes:
         command += ['batch.nochop', 'makebox']
-        
-    if config:
+
+    if config is not None:
         command += shlex.split(config)
-    
-    proc = subprocess.Popen(command,
-            stderr=subprocess.PIPE)
-    return (proc.wait(), proc.stderr.read())
+
+    if pagesegmode is not None:
+        command += ['-psm', str(pagesegmode)]
+
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    return (proc.wait(), proc.stdout.read())
+
 
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
@@ -100,6 +108,7 @@ def cleanup(filename):
         os.remove(filename)
     except OSError:
         pass
+
 
 def get_errors(error_string):
     '''
@@ -114,10 +123,12 @@ def get_errors(error_string):
     else:
         return error_string.strip()
 
+
 def tempnam():
     ''' returns a temporary file-name '''
     tmpfile = tempfile.NamedTemporaryFile(prefix="tess_")
     return tmpfile.name
+
 
 class TesseractError(Exception):
     def __init__(self, status, message):
@@ -125,14 +136,15 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
-def image_to_string(image, lang=None, boxes=False, config=None):
+
+def image_to_string(image, lang=None, boxes=False, config=None, psm=None):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
     read, and the temporary files are erased.
-    
+
     also supports boxes and config.
-    
+
     if boxes=True
         "batch.nochop makebox" gets added to the tesseract call
     if config is set, the config gets appended to the command.
@@ -145,7 +157,7 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         # Kind of a hack, should fix in the future some time.
         r, g, b, a = image.split()
         image = Image.merge("RGB", (r, g, b))
-    
+
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
     if not boxes:
@@ -158,7 +170,8 @@ def image_to_string(image, lang=None, boxes=False, config=None):
                                              output_file_name_base,
                                              lang=lang,
                                              boxes=boxes,
-                                             config=config)
+                                             config=config,
+                                             pagesegmode=psm)
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
@@ -170,6 +183,50 @@ def image_to_string(image, lang=None, boxes=False, config=None):
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
+
+
+def get_image_orientation(image, boxes=False):
+    '''
+    Runs tesseract on the specified image. This will give the orientation
+    of an image back.
+    '''
+
+    if len(image.split()) == 4:
+        # In case we have 4 channels, lets discard the Alpha.
+        # Kind of a hack, should fix in the future some time.
+        r, g, b, a = image.split()
+        image = Image.merge("RGB", (r, g, b))
+
+    input_file_name = '%s.bmp' % tempnam()
+    output_file_name_base = tempnam()
+    if not boxes:
+        output_file_name = '%s.txt' % output_file_name_base
+    else:
+        output_file_name = '%s.box' % output_file_name_base
+    try:
+        image.save(input_file_name)
+        status, result = run_tesseract(input_file_name,
+                                       output_file_name_base,
+                                       pagesegmode=0)
+
+        if status:
+            errors = get_errors(result)
+            raise TesseractError(status, errors)
+
+        data = result.decode("utf-8")
+        result = data.splitlines(True)[1:]
+
+        return_dict = {}
+        for line in result:
+            split_line = line.split(':')
+            split_line[0] = split_line[0].replace(' ', '_')
+            split_line[1] = split_line[1].replace('\n', '')
+            return_dict[split_line[0].lower()] = split_line[1].lower()
+        return return_dict
+    finally:
+        cleanup(input_file_name)
+        cleanup(output_file_name)
+
 
 def main():
     if len(sys.argv) == 2:
@@ -195,7 +252,8 @@ def main():
             exit(1)
         print(image_to_string(image, lang=lang))
     else:
-        sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
+        sys.stderr.write("Usage: python tesseract.py "
+                         "[-l language] input_file\n")
         exit(2)
 
 if __name__ == '__main__':
