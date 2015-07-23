@@ -15,22 +15,26 @@ bounding box data is planned for future releases.
 
 USAGE:
 ```
- > import Image
+ > try:
+ >     import Image
+ > except ImportError:
+ >     from PIL import Image
  > import pytesseract
- > print pytesseract.image_to_string(Image.open('test.png'))
- > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
+ > print(pytesseract.image_to_string(Image.open('test.png')))
+ > print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
 ```
 
 INSTALLATION:
 
 Prerequisites:
-* Python-tesseract requires python 2.5 or later.
+* Python-tesseract requires python 2.5 or later or python 3.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
-  the package "python-imaging".
+  the package "python-imaging" or "python3-imaging" for python3.
 * Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
+  Under Debian/Ubuntu you can use the package "tesseract-ocr".
   
 Installing via pip:   
 See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)     
@@ -48,6 +52,7 @@ CONTRIBUTERS:
 - Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
+- [Lars Kistner](https://github.com/Sr4l)
 
 """
 
@@ -58,13 +63,11 @@ try:
     from PIL import Image
 except ImportError:
     import Image
-try:
-    import io
-except ImportError:
-    import StringIO as io
 import subprocess
 import sys
+import tempfile
 import os
+import shlex
 
 __all__ = ['image_to_string']
 
@@ -86,7 +89,7 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
         command += ['batch.nochop', 'makebox']
         
     if config:
-        command += [config]
+        command += shlex.split(config)
     
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
@@ -117,14 +120,8 @@ def get_errors(error_string):
 
 def tempnam():
     ''' returns a temporary file-name '''
-
-    # prevent os.tmpname from printing an error...
-    stderr = sys.stderr
-    try:
-        sys.stderr = io.StringIO()
-        return os.tempnam(None, 'tess_')
-    finally:
-        sys.stderr = stderr
+    tmpfile = tempfile.NamedTemporaryFile(prefix="tess_")
+    return tmpfile.name
 
 
 class TesseractError(Exception):
@@ -171,7 +168,7 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        f = file(output_file_name)
+        f = open(output_file_name)
         try:
             return f.read().strip()
         finally:
@@ -180,7 +177,7 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         cleanup(input_file_name)
         cleanup(output_file_name)
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) == 2:
         filename = sys.argv[1]
         try:
@@ -207,3 +204,5 @@ if __name__ == '__main__':
         sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
         exit(2)
 
+if __name__ == '__main__':
+    main()

@@ -20,20 +20,21 @@ USAGE:
  > except ImportError:
  >     import Image
  > import pytesseract
- > print pytesseract.image_to_string(Image.open('test.png'))
- > print pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra')
+ > print(pytesseract.image_to_string(Image.open('test.png')))
+ > print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
 ```
 
 INSTALLATION:
 
 Prerequisites:
-* Python-tesseract requires python 2.5 or later.
+* Python-tesseract requires python 2.5 or later or python 3.
 * You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
   the package "python-imaging" for Python 2. Use pip3 install Pillow for Python 3.
 * Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
   You must be able to invoke the tesseract command as "tesseract". If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
+  Under Debian/Ubuntu you can use the package "tesseract-ocr".
   
 Installing via pip:   
 See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)   
@@ -54,4 +55,5 @@ CONTRIBUTERS:
 - Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter) 
 - [Juarez Bochi](https://github.com/jbochi)
 - [Matthias Lee](https://github.com/madmaze)
+- [Lars Kistner](https://github.com/Sr4l)
 
