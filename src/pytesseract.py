@@ -92,7 +92,10 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
     
     proc = subprocess.Popen(command,
             stderr=subprocess.PIPE)
-    return (proc.wait(), proc.stderr.read())
+    status = proc.wait()
+    error_string = proc.stderr.read()
+    proc.stderr.close()
+    return (status, error_string)
 
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
