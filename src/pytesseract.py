@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 '''
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
@@ -68,10 +69,14 @@ import sys
 import tempfile
 import os
 import shlex
+import re
+import collections
+from lxml import etree
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
+                  word_boxes=False, config=None):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -86,6 +91,8 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
 
     if boxes:
         command += ['batch.nochop', 'makebox']
+    if word_boxes:
+        command += ['hocr']
         
     if config:
         command += shlex.split(config)
@@ -125,7 +132,8 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
-def image_to_string(image, lang=None, boxes=False, config=None):
+def image_to_string(image, lang=None, boxes=False, word_boxes=False,
+                    config=None):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
@@ -148,28 +156,103 @@ def image_to_string(image, lang=None, boxes=False, config=None):
     
     input_file_name = '%s.bmp' % tempnam()
     output_file_name_base = tempnam()
-    if not boxes:
-        output_file_name = '%s.txt' % output_file_name_base
-    else:
+    if boxes:
         output_file_name = '%s.box' % output_file_name_base
+    elif word_boxes:
+        output_file_name = '%s.hocr' % output_file_name_base
+    else:
+        output_file_name = '%s.txt' % output_file_name_base
     try:
         image.save(input_file_name)
         status, error_string = run_tesseract(input_file_name,
                                              output_file_name_base,
                                              lang=lang,
                                              boxes=boxes,
+                                             word_boxes=word_boxes,
                                              config=config)
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
         f = open(output_file_name)
         try:
-            return f.read().strip()
+            content = f.read().strip()
+            if word_boxes:
+                parser = etree.XMLParser(target=OcrXmlTarget())
+                return etree.XML(content, parser)
+            else:
+                return content
         finally:
             f.close()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
+
+
+WordBox = collections.namedtuple("WordBox", "word coords wconf")
+class OcrXmlTarget(object):
+    TITLE_RGX = re.compile(r"bbox (\d+) (\d+) (\d+) (\d+); x_wconf (\d+)")
+
+    def __init__(self):
+        self.lines = []
+        self.current_line = None
+        self.current_word = None
+        self.current_word_info = None
+        self.line_open = self.word_open = False
+
+    def start(self, tag, attrib):
+        if tag == '{http://www.w3.org/1999/xhtml}span':
+            attrib = dict(attrib)
+            cls = attrib['class']
+            title = attrib.get('title', '')
+            if cls == 'ocr_line':
+                self.current_line = []
+                self.line_open = True
+            elif cls == 'ocrx_word':
+                match = self.TITLE_RGX.match(title)
+                if match:
+                    self.current_word_info = tuple(map(int, match.groups()))
+                self.current_word = ''
+                self.word_open = True
+
+    def end(self, tag):
+        if tag == '{http://www.w3.org/1999/xhtml}span':
+            if self.word_open:
+                self.word_open = False
+                self.current_line.append(
+                    WordBox(self.current_word,
+                            self.current_word_info[0:4],
+                            self.current_word_info[4]))
+                self.current_word_info = None
+                self.current_word = None
+            elif self.line_open:
+                self.line_open = False
+                self.lines.append(self.current_line)
+                self.current_line = None
+
+    def data(self, data):
+        if self.word_open:
+            self.current_word += data
+
+    def comment(self, text):
+        pass
+
+    def close(self):
+        lines = self.lines
+        self.lines = []
+        return lines
+
+
+def test_word_boxes():
+    res = image_to_string(Image.open('src/test-european.jpg'),
+                          lang='deu', word_boxes=True)
+    text = ' '.join([word_box.word for line in res for word_box in line])
+    assert (u'The (quick) [brown] {fox} jumps! Over the S43,456.78 <lazy> #90'
+            u' dog & duck/goose, as 12.5% of E-mail from aspammer@website.com'
+            u' is spam. Der „schnelle” braune Fuchs springt über den faulen'
+            u' Hund.' in text)
+    assert res[0][0].coords == (105, 66, 178, 97)
+
+
 
 def main():
     if len(sys.argv) == 2:
