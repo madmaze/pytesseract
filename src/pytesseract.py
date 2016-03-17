@@ -162,9 +162,9 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        f = open(output_file_name)
+        f = open(output_file_name, 'rb')
         try:
-            return f.read().strip()
+            return f.read().decode('utf-8').strip()
         finally:
             f.close()
     finally:
