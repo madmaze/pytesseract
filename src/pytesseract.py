@@ -195,7 +195,7 @@ def main():
             exit(1)
         print(image_to_string(image, lang=lang))
     else:
-        sys.stderr.write('Usage: python tesseract.py [-l language] input_file\n')
+        sys.stderr.write('Usage: python pytesseract.py [-l language] input_file\n')
         exit(2)
 
 if __name__ == '__main__':
