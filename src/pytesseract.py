@@ -57,7 +57,7 @@ CONTRIBUTERS:
 '''
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-tesseract_cmd = 'tesseract'
+tesseract_cmd_default = 'tesseract'
 
 try:
     import Image
@@ -71,7 +71,7 @@ import shlex
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None, tesseract_cmd=tesseract_cmd_default):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -125,7 +125,7 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
-def image_to_string(image, lang=None, boxes=False, config=None):
+def image_to_string(image, lang=None, boxes=False, config=None, tesseract_cmd=tesseract_cmd_default):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
@@ -158,7 +158,9 @@ def image_to_string(image, lang=None, boxes=False, config=None):
                                              output_file_name_base,
                                              lang=lang,
                                              boxes=boxes,
-                                             config=config)
+                                             config=config,
+                                             tesseract_cmd=tesseract_cmd
+                                             )
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
