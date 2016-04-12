@@ -59,6 +59,7 @@ CONTRIBUTERS:
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd_default = 'tesseract'
 
+
 try:
     import Image
 except ImportError:
@@ -71,7 +72,7 @@ import shlex
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None, tesseract_cmd=tesseract_cmd_default):
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None, quiet=True, tesseract_cmd=tesseract_cmd_default):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -91,8 +92,14 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
         command += shlex.split(config)
     
     proc = subprocess.Popen(command,
-            stderr=subprocess.PIPE)
-    return (proc.wait(), proc.stderr.read())
+            stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    status = proc.wait()
+    err_str = proc.stderr.read()
+    if not quiet:
+        out_str = proc.stdout.read()
+        print out_str
+        print >> sys.stderr, err_str
+    return status, err_str
 
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
@@ -125,7 +132,7 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
-def image_to_string(image, lang=None, boxes=False, config=None, tesseract_cmd=tesseract_cmd_default):
+def image_to_string(image, lang=None, boxes=False, config=None, quiet=True, tesseract_cmd=tesseract_cmd_default):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
@@ -159,7 +166,8 @@ def image_to_string(image, lang=None, boxes=False, config=None, tesseract_cmd=te
                                              lang=lang,
                                              boxes=boxes,
                                              config=config,
-                                             tesseract_cmd=tesseract_cmd
+                                             tesseract_cmd=tesseract_cmd,
+                                             quiet=quiet
                                              )
         if status:
             errors = get_errors(error_string)
