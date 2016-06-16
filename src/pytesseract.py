@@ -132,7 +132,7 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
-def image_to_string(image, lang=None, boxes=False, config=None):
+def image_to_string(image, lang=None, boxes=False, config=None, hide_window=False):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Resseract's result is
@@ -165,7 +165,8 @@ def image_to_string(image, lang=None, boxes=False, config=None):
                                              output_file_name_base,
                                              lang=lang,
                                              boxes=boxes,
-                                             config=config)
+                                             config=config,
+                                             hide_window=hide_window)
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
