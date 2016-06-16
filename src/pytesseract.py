@@ -71,7 +71,11 @@ import shlex
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
+si = subprocess.STARTUPINFO()
+si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None, hide_window=False):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -90,8 +94,11 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
     if config:
         command += shlex.split(config)
     
-    proc = subprocess.Popen(command,
-            stderr=subprocess.PIPE)
+    kw = dict(stderr=subprocess.PIPE)
+    if hide_window:
+        kw.update(startupinfo=si)
+
+    proc = subprocess.Popen(command, **kw)
     return (proc.wait(), proc.stderr.read())
 
 def cleanup(filename):
