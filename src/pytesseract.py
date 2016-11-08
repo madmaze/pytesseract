@@ -128,7 +128,7 @@ class TesseractError(Exception):
 def image_to_string(image, lang=None, boxes=False, config=None):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Resseract's result is
+    and then the tesseract command is run on the image. Tesseract's result is
     read, and the temporary files are erased.
     
     also supports boxes and config.
