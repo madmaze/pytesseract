@@ -8,7 +8,7 @@ if os.path.exists("README.rst"):
 
 setup(
     name = "pytesseract",
-    version = "0.1.6",
+    version = "0.1.7",
     author = "Samuel Hoffstaetter",
     author_email="pytesseract@madmaze.net",
     maintainer = "Matthias Lee",
