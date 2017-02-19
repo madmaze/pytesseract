@@ -2,9 +2,11 @@ import os
 from setuptools import setup
 
 
+README_PATH = 'README.rst'
 longDesc = ""
-if os.path.exists("README.rst"):
-	longDesc = open("README.rst").read().strip()
+if os.path.exists(README_PATH):
+    with open(README_PATH) as readme:
+        longDesc = readme.read()
 
 setup(
     name = "pytesseract",
