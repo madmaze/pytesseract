@@ -10,7 +10,7 @@ setup(
     name = "pytesseract",
     version = "0.1.6",
     author = "Samuel Hoffstaetter",
-    author_email="",
+    author_email="pytesseract@madmaze.net",
     maintainer = "Matthias Lee",
     maintainer_email = "pytesseract@madmaze.net",
     description = ("Python-tesseract is a python wrapper for google's Tesseract-OCR"),
