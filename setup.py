@@ -3,8 +3,8 @@ from setuptools import setup
 
 
 longDesc = ""
-if os.path.exists("README.md"):
-	longDesc = open("README.md").read().strip()
+if os.path.exists("README.rst"):
+	longDesc = open("README.rst").read().strip()
 
 setup(
     name = "pytesseract",
