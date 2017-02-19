@@ -43,12 +43,14 @@ Prerequisites:
 
 | Installing via pip:
 | See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_.
+
 .. code-block:: bash
 
     $ (env)> pip install pytesseract
 
 
 | Installing from source:
+
 .. code-block:: bash
 
     $> git clone git@github.com:madmaze/pytesseract.git
