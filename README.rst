@@ -41,8 +41,8 @@ Prerequisites:
   have to change the "tesseract_cmd" variable at the top of *tesseract.py*.
   Under Debian/Ubuntu you can use the package **tesseract-ocr**.
 
-Installing via pip:
-See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_.
+| Installing via pip:
+| See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_.
 ::
 
     $ (env)> pip install pytesseract
