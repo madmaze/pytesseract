@@ -1,77 +1,30 @@
 #!/usr/bin/env python
-'''
-Python-tesseract is an optical character recognition (OCR) tool for python.
-That is, it will recognize and "read" the text embedded in images.
-
-Python-tesseract is a wrapper for google's Tesseract-OCR
-( http://code.google.com/p/tesseract-ocr/ ).  It is also useful as a
-stand-alone invocation script to tesseract, as it can read all image types
-supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
-and others, whereas tesseract-ocr by default only supports tiff and bmp.
-Additionally, if used as a script, Python-tesseract will print the recognized
-text in stead of writing it to a file. Support for confidence estimates and
-bounding box data is planned for future releases.
-
-
-USAGE:
-```
- > try:
- >     import Image
- > except ImportError:
- >     from PIL import Image
- > import pytesseract
- > print(pytesseract.image_to_string(Image.open('test.png')))
- > print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
-```
-
-INSTALLATION:
-
-Prerequisites:
-* Python-tesseract requires python 2.5 or later or python 3.
-* You will need the Python Imaging Library (PIL).  Under Debian/Ubuntu, this is
-  the package "python-imaging" or "python3-imaging" for python3.
-* Install google tesseract-ocr from http://code.google.com/p/tesseract-ocr/ .
-  You must be able to invoke the tesseract command as "tesseract". If this
-  isn't the case, for example because tesseract isn't in your PATH, you will
-  have to change the "tesseract_cmd" variable at the top of 'tesseract.py'.
-  Under Debian/Ubuntu you can use the package "tesseract-ocr".
-
-Installing via pip:
-See the [pytesseract package page](https://pypi.python.org/pypi/pytesseract)
-$> sudo pip install pytesseract
-
-Installing from source:
-$> git clone git@github.com:madmaze/pytesseract.git
-$> sudo python setup.py install
-
-
-LICENSE:
-Python-tesseract is released under the GPL v3.
-
-CONTRIBUTERS:
-- Originally written by [Samuel Hoffstaetter](https://github.com/hoffstaetter)
-- [Juarez Bochi](https://github.com/jbochi)
-- [Matthias Lee](https://github.com/madmaze)
-- [Lars Kistner](https://github.com/Sr4l)
 
 '''
+Python-tesseract. For more information: https://github.com/madmaze/pytesseract
 
-# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-tesseract_cmd = 'tesseract'
+'''
 
 try:
     import Image
 except ImportError:
     from PIL import Image
-import subprocess
-import sys
-import tempfile
+
 import os
+import sys
+import subprocess
+import tempfile
 import shlex
+
+
+# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
+tesseract_cmd = 'tesseract'
 
 __all__ = ['image_to_string']
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, config=None):
+
+def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
+                  config=None):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -90,9 +43,9 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False, 
     if config:
         command += shlex.split(config)
 
-    proc = subprocess.Popen(command,
-            stderr=subprocess.PIPE)
+    proc = subprocess.Popen(command, stderr=subprocess.PIPE)
     return (proc.wait(), proc.stderr.read())
+
 
 def cleanup(filename):
     ''' tries to remove the given filename. Ignores non-existent files '''
@@ -101,12 +54,14 @@ def cleanup(filename):
     except OSError:
         pass
 
+
 def get_errors(error_string):
     '''
     returns all lines in the error_string that start with the string "error"
 
     '''
-    error_string = error_string.decode("utf-8")
+
+    error_string = error_string.decode('utf-8')
     lines = error_string.splitlines()
     error_lines = tuple(line for line in lines if line.find(u'Error') >= 0)
     if len(error_lines) > 0:
@@ -114,10 +69,12 @@ def get_errors(error_string):
     else:
         return error_string.strip()
 
+
 def tempnam():
     ''' returns a temporary file-name '''
     tmpfile = tempfile.NamedTemporaryFile(prefix="tess_")
     return tmpfile.name
+
 
 class TesseractError(Exception):
     def __init__(self, status, message):
@@ -125,19 +82,20 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
+
 def image_to_string(image, lang=None, boxes=False, config=None):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Resseract's result is
+    and then the tesseract command is run on the image. Tesseract's result is
     read, and the temporary files are erased.
 
-    also supports boxes and config.
+    Also supports boxes and config:
 
     if boxes=True
         "batch.nochop makebox" gets added to the tesseract call
+
     if config is set, the config gets appended to the command.
         ex: config="-psm 6"
-
     '''
 
     if len(image.split()) == 4:
@@ -162,14 +120,15 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
-        f = open(output_file_name)
+        f = open(output_file_name, 'rb')
         try:
-            return f.read().strip()
+            return f.read().decode('utf-8').strip()
         finally:
             f.close()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
+
 
 def main():
     if len(sys.argv) == 2:
@@ -195,8 +154,9 @@ def main():
             exit(1)
         print(image_to_string(image, lang=lang))
     else:
-        sys.stderr.write('Usage: python pytesseract.py [-l language] input_file\n')
+        sys.stderr.write('Usage: python pytesseract.py [-l lang] input_file\n')
         exit(2)
+
 
 if __name__ == '__main__':
     main()
