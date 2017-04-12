@@ -23,6 +23,7 @@ setup(
     packages=['pytesseract'],
     package_dir={'pytesseract': 'src'},
     package_data = {'pytesseract': ['*.png','*.jpg']},
+    install_requires = ['Pillow'],
     entry_points = {'console_scripts': ['pytesseract = pytesseract.pytesseract:main']},
     classifiers = [
         'Programming Language :: Python',
