@@ -2,15 +2,17 @@ import os
 from setuptools import setup
 
 
+README_PATH = 'README.rst'
 longDesc = ""
-if os.path.exists("README.md"):
-	longDesc = open("README.md").read().strip()
+if os.path.exists(README_PATH):
+    with open(README_PATH) as readme:
+        longDesc = readme.read()
 
 setup(
     name = "pytesseract",
-    version = "0.1.6",
+    version = "0.1.7",
     author = "Samuel Hoffstaetter",
-    author_email="",
+    author_email="samuel@hoffstaetter.com",
     maintainer = "Matthias Lee",
     maintainer_email = "pytesseract@madmaze.net",
     description = ("Python-tesseract is a python wrapper for google's Tesseract-OCR"),
