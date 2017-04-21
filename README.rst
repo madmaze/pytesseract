@@ -39,7 +39,8 @@ Prerequisites:
   You must be able to invoke the tesseract command as *tesseract*. If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable at the top of *tesseract.py*.
-  Under Debian/Ubuntu you can use the package **tesseract-ocr**.
+  Under Debian/Ubuntu you can use the package **tesseract-ocr**. 
+  For Mac OS users. please install homebrew package **tesseract**.
 
 | Installing via pip:
 | See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_.
