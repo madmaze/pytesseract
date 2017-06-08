@@ -101,10 +101,10 @@ def image_to_string(image, lang=None, boxes=False, config=None):
         ex: config="-psm 6"
     '''
 
-    if len(image.split()) == 4:
+    if len(image.getbands()) == 4:
         # In case we have 4 channels, lets discard the Alpha.
         # Kind of a hack, should fix in the future some time.
-        r, g, b, a = image.split()
+        r, g, b, a = image.getbands()
         image = Image.merge("RGB", (r, g, b))
 
     input_file_name = '%s.bmp' % tempnam()
@@ -138,10 +138,10 @@ def main():
         filename = sys.argv[1]
         try:
             image = Image.open(filename)
-            if len(image.split()) == 4:
+            if len(image.getbands()) == 4:
                 # In case we have 4 channels, lets discard the Alpha.
                 # Kind of a hack, should fix in the future some time.
-                r, g, b, a = image.split()
+                r, g, b, a = image.getbands()
                 image = Image.merge("RGB", (r, g, b))
         except IOError:
             sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
