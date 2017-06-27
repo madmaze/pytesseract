@@ -106,7 +106,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         ex: config="-psm 6"
        
     if nice is different from 0, Tesseract process will run with changed priority.
-        do not works on windows.
+        doesn't work on windows. Nice (unix) adjusts the niceness of the process.
     '''
 
     if len(image.split()) == 4:
