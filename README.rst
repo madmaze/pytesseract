@@ -69,8 +69,8 @@ Prerequisites:
 
 .. code-block:: bash
 
-    $> git clone git@github.com:madmaze/pytesseract.git
-    $ (env)> python setup.py install
+    $> git clone https://github.com/madmaze/pytesseract.git
+    $ (env)> cd pytesseract && pip install .
 
 LICENSE
 -------
