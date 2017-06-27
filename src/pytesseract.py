@@ -32,18 +32,18 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
     returns the exit status of tesseract, as well as tesseract's stderr output
 
     '''
-    command = [tesseract_cmd, input_filename, output_filename_base]
+    command = []
 
     if not sys.platform.startswith('win32') and nice != 0:
-        command.insert(0, "nice")
-        command.insert(1, "-n")
-        command.insert(2, nice)
+        command += ('nice', '-n', str(nice))
+
+    command += (tesseract_cmd, input_filename, output_filename_base)
 
     if lang is not None:
-        command += ['-l', lang]
+        command += ('-l', lang)
 
     if boxes:
-        command += ['batch.nochop', 'makebox']
+        command += ('batch.nochop', 'makebox')
 
     if config:
         command += shlex.split(config)
