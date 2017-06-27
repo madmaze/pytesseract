@@ -24,7 +24,7 @@ __all__ = ['image_to_string']
 
 
 def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
-                  config=None):
+                  config=None, nice=0):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -33,6 +33,11 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
 
     '''
     command = [tesseract_cmd, input_filename, output_filename_base]
+
+    if not sys.platform.startswith('win32') and nice != 0:
+        command.insert(0, "nice")
+        command.insert(1, "-n")
+        command.insert(2, nice)
 
     if lang is not None:
         command += ['-l', lang]
@@ -86,7 +91,7 @@ class TesseractError(Exception):
         self.args = (status, message)
 
 
-def image_to_string(image, lang=None, boxes=False, config=None):
+def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Tesseract's result is
@@ -99,6 +104,9 @@ def image_to_string(image, lang=None, boxes=False, config=None):
 
     if config is set, the config gets appended to the command.
         ex: config="-psm 6"
+       
+    if nice is different from 0, Tesseract process will run with changed priority.
+        do not works on windows.
     '''
 
     if len(image.split()) == 4:
@@ -119,7 +127,8 @@ def image_to_string(image, lang=None, boxes=False, config=None):
                                              output_file_name_base,
                                              lang=lang,
                                              boxes=boxes,
-                                             config=config)
+                                             config=config,
+                                             nice=nice)
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
