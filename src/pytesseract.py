@@ -15,6 +15,7 @@ import sys
 import subprocess
 import tempfile
 import shlex
+import numpy as np
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
@@ -90,6 +91,10 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
+def save(img, img_filename):
+    if type(img) is np.ndarray:
+        img = Image.fromarray(img)
+    img.save(img_filename)
 
 def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     '''
@@ -109,7 +114,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         doesn't work on windows. Nice (unix) adjusts the niceness of the process.
     '''
 
-    if len(image.split()) == 4:
+    if np.array(image).shape[2] == 4:
         # In case we have 4 channels, lets discard the Alpha.
         # Kind of a hack, should fix in the future some time.
         r, g, b, a = image.split()
@@ -122,7 +127,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     else:
         output_file_name = '%s.box' % output_file_name_base
     try:
-        image.save(input_file_name)
+        save(image, input_file_name)
         status, error_string = run_tesseract(input_file_name,
                                              output_file_name_base,
                                              lang=lang,
