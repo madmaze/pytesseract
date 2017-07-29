@@ -16,7 +16,6 @@ import subprocess
 import tempfile
 import shlex
 import numpy as np
-import cv2
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
