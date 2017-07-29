@@ -16,6 +16,7 @@ import subprocess
 import tempfile
 import shlex
 import numpy as np
+import cv2
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
@@ -91,6 +92,10 @@ class TesseractError(Exception):
         self.message = message
         self.args = (status, message)
 
+def save(img, img_filename):
+    if type(img) is np.ndarray:
+        img = Image.fromarray(img)
+    img.save(img_filename)
 
 def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     '''
@@ -123,7 +128,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     else:
         output_file_name = '%s.box' % output_file_name_base
     try:
-        image.save(input_file_name)
+        save(image, input_file_name)
         status, error_string = run_tesseract(input_file_name,
                                              output_file_name_base,
                                              lang=lang,
