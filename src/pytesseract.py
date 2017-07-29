@@ -15,6 +15,7 @@ import sys
 import subprocess
 import tempfile
 import shlex
+import numpy as np
 
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
@@ -109,7 +110,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         doesn't work on windows. Nice (unix) adjusts the niceness of the process.
     '''
 
-    if len(image.split()) == 4:
+    if np.array(image).shape[2] == 4:
         # In case we have 4 channels, lets discard the Alpha.
         # Kind of a hack, should fix in the future some time.
         r, g, b, a = image.split()
