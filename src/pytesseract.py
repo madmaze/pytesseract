@@ -133,7 +133,8 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0,type_outp
                                              lang=lang,
                                              boxes=boxes,
                                              config=config,
-                                             nice=nice)
+                                             nice=nice,
+                                             type_output=type_output)
         if status:
             errors = get_errors(error_string)
             raise TesseractError(status, errors)
