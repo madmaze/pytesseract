@@ -24,7 +24,7 @@ __all__ = ['image_to_string']
 
 
 def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
-                  config=None, nice=0):
+                  config=None, nice=0,type_output=None):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -47,6 +47,9 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
 
     if config:
         command += shlex.split(config)
+
+    if type_output:
+        command += [type_output]
 
     proc = subprocess.Popen(command, stderr=subprocess.PIPE)
     status = proc.wait()
@@ -91,7 +94,7 @@ class TesseractError(Exception):
         self.args = (status, message)
 
 
-def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
+def image_to_string(image, lang=None, boxes=False, config=None, nice=0,type_output=None ):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Tesseract's result is
@@ -121,6 +124,8 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         output_file_name = '%s.txt' % output_file_name_base
     else:
         output_file_name = '%s.box' % output_file_name_base
+    if type_output:
+        output_file_name = '%s.%s' %(output_file_name_base,type_output)
     try:
         image.save(input_file_name)
         status, error_string = run_tesseract(input_file_name,
