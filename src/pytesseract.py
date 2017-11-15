@@ -15,6 +15,7 @@ import sys
 import subprocess
 import tempfile
 import shlex
+from glob import iglob
 
 
 __all__ = ['image_to_string']
@@ -36,12 +37,13 @@ def get_errors(error_string):
     ).strip()
 
 
-def cleanup(filename):
-    ''' Tries to remove file by filename. Ignores non-existent files '''
-    try:
-        os.remove(filename)
-    except OSError:
-        pass
+def cleanup(temp_name):
+    ''' Tries to remove files by filename wildcard path. '''
+    for filename in iglob(temp_name + '*'):
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
 
 
 def run_tesseract(input_filename,
@@ -104,12 +106,12 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         image = Image.merge("RGB", (r, g, b))
 
     temp_name = tempfile.mktemp(prefix='tess_')
-    input_file_name = '{}.bmp'.format(temp_name)
-    output_file_name_base = '{}_out'.format(temp_name)
-    output_file_name = '{}.txt'.format(output_file_name_base)
+    input_file_name = temp_name + '.bmp'
+    output_file_name_base = temp_name + '_out'
+    output_file_name = output_file_name_base + '.txt'
 
     if boxes:
-        output_file_name = '{}.box'.format(output_file_name_base)
+        output_file_name = output_file_name_base + '.box'
 
     try:
         image.save(input_file_name)
@@ -126,8 +128,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         with open(output_file_name, 'rb') as output_file:
             return output_file.read().decode('utf-8').strip()
     finally:
-        cleanup(input_file_name)
-        cleanup(output_file_name)
+        cleanup(temp_name)
 
 
 def main():
