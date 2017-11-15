@@ -67,11 +67,11 @@ def run_tesseract(input_filename,
     if lang is not None:
         command += ('-l', lang)
 
-    if boxes:
-        command += ('batch.nochop', 'makebox')
-
     if config:
         command += shlex.split(config)
+
+    if boxes:
+        command += ('batch.nochop', 'makebox')
 
     proc = subprocess.Popen(command, stderr=subprocess.PIPE)
     status_code, error_string = proc.wait(), proc.stderr.read()
@@ -106,11 +106,10 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = '{}.bmp'.format(temp_name)
     output_file_name_base = '{}_out'.format(temp_name)
+    output_file_name = '{}.txt'.format(output_file_name_base)
 
-    if not boxes:
-        output_file_name = '%s.txt' % output_file_name_base
-    else:
-        output_file_name = '%s.box' % output_file_name_base
+    if boxes:
+        output_file_name = '{}.box'.format(output_file_name_base)
 
     try:
         image.save(input_file_name)
