@@ -17,14 +17,39 @@ import tempfile
 import shlex
 
 
+__all__ = ['image_to_string']
+
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
-__all__ = ['image_to_string']
+
+class TesseractError(Exception):
+    def __init__(self, status, message):
+        self.status = status
+        self.message = message
+        self.args = (status, message)
 
 
-def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
-                  config=None, nice=0):
+def get_errors(error_string):
+    return u' '.join(
+        line for line in error_string.decode('utf-8').splitlines()
+    ).strip()
+
+
+def cleanup(filename):
+    ''' Tries to remove file by filename. Ignores non-existent files '''
+    try:
+        os.remove(filename)
+    except OSError:
+        pass
+
+
+def run_tesseract(input_filename,
+                  output_filename_base,
+                  lang=None,
+                  boxes=False,
+                  config=None,
+                  nice=0):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -49,46 +74,9 @@ def run_tesseract(input_filename, output_filename_base, lang=None, boxes=False,
         command += shlex.split(config)
 
     proc = subprocess.Popen(command, stderr=subprocess.PIPE)
-    status = proc.wait()
-    error_string = proc.stderr.read()
+    status_code, error_string = proc.wait(), proc.stderr.read()
     proc.stderr.close()
-    return status, error_string
-
-
-def cleanup(filename):
-    ''' tries to remove the given filename. Ignores non-existent files '''
-    try:
-        os.remove(filename)
-    except OSError:
-        pass
-
-
-def get_errors(error_string):
-    '''
-    returns all lines in the error_string that start with the string "error"
-
-    '''
-
-    error_string = error_string.decode('utf-8')
-    lines = error_string.splitlines()
-    error_lines = tuple(line for line in lines if line.find(u'Error') >= 0)
-    if len(error_lines) > 0:
-        return u'\n'.join(error_lines)
-    else:
-        return error_string.strip()
-
-
-def tempnam():
-    ''' returns a temporary file-name '''
-    tmpfile = tempfile.NamedTemporaryFile(prefix="tess_")
-    return tmpfile.name
-
-
-class TesseractError(Exception):
-    def __init__(self, status, message):
-        self.status = status
-        self.message = message
-        self.args = (status, message)
+    return status_code, error_string
 
 
 def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
@@ -115,12 +103,15 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
         r, g, b, a = image.split()
         image = Image.merge("RGB", (r, g, b))
 
-    input_file_name = '%s.bmp' % tempnam()
-    output_file_name_base = tempnam()
+    temp_name = tempfile.mktemp(prefix='tess_')
+    input_file_name = '{}.bmp'.format(temp_name)
+    output_file_name_base = '{}_out'.format(temp_name)
+
     if not boxes:
         output_file_name = '%s.txt' % output_file_name_base
     else:
         output_file_name = '%s.box' % output_file_name_base
+
     try:
         image.save(input_file_name)
         status, error_string = run_tesseract(input_file_name,
@@ -129,14 +120,12 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
                                              boxes=boxes,
                                              config=config,
                                              nice=nice)
+
         if status:
-            errors = get_errors(error_string)
-            raise TesseractError(status, errors)
-        f = open(output_file_name, 'rb')
-        try:
-            return f.read().decode('utf-8').strip()
-        finally:
-            f.close()
+            raise TesseractError(status, get_errors(error_string))
+
+        with open(output_file_name, 'rb') as output_file:
+            return output_file.read().decode('utf-8').strip()
     finally:
         cleanup(input_file_name)
         cleanup(output_file_name)
@@ -144,30 +133,18 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
 
 def main():
     if len(sys.argv) == 2:
-        filename = sys.argv[1]
-        try:
-            image = Image.open(filename)
-            if len(image.split()) == 4:
-                # In case we have 4 channels, lets discard the Alpha.
-                # Kind of a hack, should fix in the future some time.
-                r, g, b, a = image.split()
-                image = Image.merge("RGB", (r, g, b))
-        except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
-            exit(1)
-        print(image_to_string(image))
+        filename, lang = sys.argv[1], None
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
-        lang = sys.argv[2]
-        filename = sys.argv[3]
-        try:
-            image = Image.open(filename)
-        except IOError:
-            sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
-            exit(1)
-        print(image_to_string(image, lang=lang))
+        filename, lang = sys.argv[3], sys.argv[2]
     else:
         sys.stderr.write('Usage: python pytesseract.py [-l lang] input_file\n')
         exit(2)
+
+    try:
+        print(image_to_string(Image.open(filename), lang=lang))
+    except IOError:
+        sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+        exit(1)
 
 
 if __name__ == '__main__':
