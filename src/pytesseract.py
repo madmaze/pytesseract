@@ -101,7 +101,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
 
     if len(image.split()) == 4:
         # In case we have 4 channels, lets discard the Alpha.
-        image.convert('RGB')
+        image = image.convert('RGB')
 
     temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = temp_name + '.bmp'
