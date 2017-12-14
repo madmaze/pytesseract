@@ -94,16 +94,14 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
 
     if config is set, the config gets appended to the command.
         ex: config="-psm 6"
-       
+
     If nice is not set to 0, Tesseract process will run with changed priority.
     Not supported on Windows. Nice adjusts the niceness of unix-like processes.
     '''
 
     if len(image.split()) == 4:
-        # In case we have 4 channels, lets discard the Alpha.
-        # Kind of a hack, should fix in the future some time.
-        r, g, b, a = image.split()
-        image = Image.merge("RGB", (r, g, b))
+        time0 = time.clock()
+        image.convert('RGB')
 
     temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = temp_name + '.bmp'
