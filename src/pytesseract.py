@@ -99,7 +99,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     Not supported on Windows. Nice adjusts the niceness of unix-like processes.
     '''
 
-    if len(image.split()) == 4:
+    if len(image.getbands()) == 4:
         # In case we have 4 channels, lets discard the Alpha.
         image = image.convert('RGB')
 
