@@ -64,13 +64,18 @@ Prerequisites:
 
     $ (env)> pip install pytesseract
 
-
 | Installing from source:
 
 .. code-block:: bash
 
     $> git clone https://github.com/madmaze/pytesseract.git
     $ (env)> cd pytesseract && pip install .
+
+Or if you have git installed:
+
+.. code-block:: bash
+
+    $ (env)> pip install git+https://github.com/madmaze/pytesseract.git
 
 LICENSE
 -------
