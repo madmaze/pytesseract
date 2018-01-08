@@ -13,10 +13,14 @@ except ImportError:
 import os
 import sys
 import subprocess
+from pkgutil import find_loader
 import tempfile
 import shlex
 from glob import iglob
 
+numpy_installed = True if find_loader('numpy') is not None else False
+if numpy_installed:
+    from numpy import ndarray
 
 __all__ = ['image_to_string']
 
@@ -81,6 +85,16 @@ def run_tesseract(input_filename,
     return status_code, error_string
 
 
+def prepare(image):
+    if isinstance(image, Image.Image):
+        return image
+
+    if numpy_installed and isinstance(image, ndarray):
+        return Image.fromarray(image)
+
+    raise TypeError('Unsupported image object')
+
+
 def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
@@ -99,6 +113,7 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
     Not supported on Windows. Nice adjusts the niceness of unix-like processes.
     '''
 
+    image = prepare(image)
     if len(image.getbands()) == 4:
         # In case we have 4 channels, lets discard the Alpha.
         image = image.convert('RGB')
