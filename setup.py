@@ -10,7 +10,7 @@ if os.path.exists(README_PATH):
 
 setup(
     name = "pytesseract",
-    version = "0.1.7",
+    version = "0.1.8",
     author = "Samuel Hoffstaetter",
     author_email="samuel@hoffstaetter.com",
     maintainer = "Matthias Lee",
