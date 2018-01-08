@@ -31,6 +31,17 @@ USAGE
     print(pytesseract.image_to_string(Image.open('test.png')))
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
 
+Support for OpenCV image/NumPy array objects
+
+.. code-block:: python
+
+    import cv2
+
+    img = cv2.imread('/**path_to_image**/digits.png')
+    print(pytesseract.image_to_string(img))
+    # OR explicit beforehand converting
+    print(pytesseract.image_to_string(Image.fromarray(img))
+
 Add the following config, if you have tessdata error like: "Error opening data file..."
 
 .. code-block:: python
