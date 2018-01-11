@@ -55,7 +55,8 @@ def run_tesseract(input_filename,
                   lang=None,
                   boxes=False,
                   config=None,
-                  nice=0):
+                  nice=0,
+                  verbose=0):
     '''
     runs the command:
         `tesseract_cmd` `input_filename` `output_filename_base`
@@ -69,6 +70,9 @@ def run_tesseract(input_filename,
         command += ('nice', '-n', str(nice))
 
     command += (tesseract_cmd, input_filename, output_filename_base)
+
+    if verbose:
+        command.append('tsv')
 
     if lang is not None:
         command += ('-l', lang)
@@ -95,7 +99,7 @@ def prepare(image):
     raise TypeError('Unsupported image object')
 
 
-def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
+def image_to_string(image, lang=None, boxes=False, config=None, nice=0, verbose=0):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
     and then the tesseract command is run on the image. Tesseract's result is
@@ -133,16 +137,24 @@ def image_to_string(image, lang=None, boxes=False, config=None, nice=0):
                                              lang=lang,
                                              boxes=boxes,
                                              config=config,
-                                             nice=nice)
+                                             nice=nice,
+                                             verbose=verbose)
 
         if status:
             raise TesseractError(status, get_errors(error_string))
+
+        if verbose:
+            return read_tsv(output_file_name_base+'.tsv')
 
         with open(output_file_name, 'rb') as output_file:
             return output_file.read().decode('utf-8').strip()
     finally:
         cleanup(temp_name)
 
+def read_tsv(output_file_name):
+    with open(output_file_name, 'rb') as tsv_file:
+        rows = tsv_file.read().decode('utf-8').split('\n')
+        return {'header': rows.pop(0).split('\t'), 'data': [row.split('\t') for row in rows]}
 
 def main():
     if len(sys.argv) == 2:
