@@ -9,9 +9,7 @@ stand-alone invocation script to tesseract, as it can read all image types
 supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
 and others, whereas tesseract-ocr by default only supports tiff and bmp.
 Additionally, if used as a script, Python-tesseract will print the recognized
-text instead of writing it to a file. Support for confidence estimates and
-bounding box data is planned for future releases.
-
+text instead of writing it to a file.
 .. _Google's Tesseract-OCR Engine: https://github.com/tesseract-ocr/tesseract
 
 USAGE
@@ -30,7 +28,13 @@ USAGE
 
     print(pytesseract.image_to_string(Image.open('test.png')))
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
-
+    
+    # Get bounding box estimates
+    print(pytesseract.image_to_boxes(Image.open('test.png')))
+    
+    # Get verbose data including boxes, confidences, line and page numbers
+    print(pytesseract.image_to_data(Image.open('test.png')))
+    
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
