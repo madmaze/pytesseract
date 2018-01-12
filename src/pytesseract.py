@@ -22,11 +22,10 @@ numpy_installed = True if find_loader('numpy') is not None else False
 if numpy_installed:
     from numpy import ndarray
 
-__all__ = ['image_to_string']
+__all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
-
 
 class TesseractError(Exception):
     def __init__(self, status, message):
@@ -50,20 +49,23 @@ def cleanup(temp_name):
             pass
 
 
+def save_image(image, boxes=False):
+    image = prepare(image)
+    if len(image.getbands()) == 4:
+        # In case we have 4 channels, lets discard the Alpha.
+        image = image.convert('RGB')
+
+    temp_name = tempfile.mktemp(prefix='tess_')
+    input_file_name = temp_name + '.bmp'
+    image.save(input_file_name)
+    return temp_name
+
 def run_tesseract(input_filename,
                   output_filename_base,
-                  lang=None,
-                  boxes=False,
+                  extension,
+                  lang,
                   config=None,
-                  nice=0,
-                  verbose=0):
-    '''
-    runs the command:
-        `tesseract_cmd` `input_filename` `output_filename_base`
-
-    returns the exit status of tesseract, as well as tesseract's stderr output
-
-    '''
+                  nice=0):
     command = []
 
     if not sys.platform.startswith('win32') and nice != 0:
@@ -71,23 +73,25 @@ def run_tesseract(input_filename,
 
     command += (tesseract_cmd, input_filename, output_filename_base)
 
-    if verbose:
-        command.append('tsv')
-
     if lang is not None:
         command += ('-l', lang)
 
     if config:
         command += shlex.split(config)
 
-    if boxes:
+    if extension == 'box':
         command += ('batch.nochop', 'makebox')
+    else:
+        command.append(extension)
 
     proc = subprocess.Popen(command, stderr=subprocess.PIPE)
     status_code, error_string = proc.wait(), proc.stderr.read()
     proc.stderr.close()
-    return status_code, error_string
 
+    if status_code:
+        raise TesseractError(status, get_errors(error_string))
+
+    return True
 
 def prepare(image):
     if isinstance(image, Image.Image):
@@ -98,63 +102,54 @@ def prepare(image):
 
     raise TypeError('Unsupported image object')
 
-
-def image_to_string(image, lang=None, boxes=False, config=None, nice=0, verbose=0):
-    '''
-    Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Tesseract's result is
-    read, and the temporary files are erased.
-
-    Also supports boxes and config:
-
-    if boxes=True
-        "batch.nochop makebox" gets added to the tesseract call
-
-    if config is set, the config gets appended to the command.
-        ex: config="-psm 6"
-
-    If nice is not set to 0, Tesseract process will run with changed priority.
-    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
-    '''
-
-    image = prepare(image)
-    if len(image.getbands()) == 4:
-        # In case we have 4 channels, lets discard the Alpha.
-        image = image.convert('RGB')
-
-    temp_name = tempfile.mktemp(prefix='tess_')
-    input_file_name = temp_name + '.bmp'
-    output_file_name_base = temp_name + '_out'
-    output_file_name = output_file_name_base + '.txt'
-
-    if boxes:
-        output_file_name = output_file_name_base + '.box'
-
+def run_and_get_output(image, extension, lang=None, config=None, nice=None):
+    temp_name = ''
     try:
-        image.save(input_file_name)
-        status, error_string = run_tesseract(input_file_name,
-                                             output_file_name_base,
-                                             lang=lang,
-                                             boxes=boxes,
-                                             config=config,
-                                             nice=nice,
-                                             verbose=verbose)
-
-        if status:
-            raise TesseractError(status, get_errors(error_string))
-
-        if verbose:
-            return read_tsv(output_file_name_base+'.tsv')
-
-        with open(output_file_name, 'rb') as output_file:
+        temp_name = save_image(image)
+        input_filename = temp_name+'.bmp'
+        output_filename_base = temp_name+'_out'
+        run_tesseract(input_filename, output_filename_base, extension, lang, config, nice)
+        with open(output_filename_base+'.'+extension, 'rb') as output_file:
             return output_file.read().decode('utf-8').strip()
     finally:
         cleanup(temp_name)
 
-def read_tsv(output_file_name):
-    with open(output_file_name, 'rb') as tsv_file:
-        rows = tsv_file.read().decode('utf-8').split('\n')
-        return {'header': rows.pop(0).split('\t'), 'data': [row.split('\t') for row in rows]}
+def image_to_string(image, lang=None, config=None, nice=0):
+    '''
+    Runs tesseract on the specified image. First, the image is written to disk,
+    and then the tesseract command is run on the image. Tesseract's OCR result is
+    read, and the temporary files are erased.
+    if config is set, the config gets appended to the command.
+        ex: config="-psm 6"
+    If nice is not set to 0, Tesseract process will run with changed priority.
+    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    '''
+    return run_and_get_output(image, 'txt', lang, config, nice)
+
+def image_to_boxes(image, lang=None, config=None, nice=0):
+    '''
+    Runs tesseract on the specified image. First, the image is written to disk,
+    and then the tesseract command is run on the image. Tesseract's box file 
+    creation result is read, and the temporary files are erased.
+    "batch.nochop makebox" gets added to the tesseract call
+    if config is set, the config gets appended to the command.
+        ex: config="-psm 6"
+    If nice is not set to 0, Tesseract process will run with changed priority.
+    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    '''
+    return run_and_get_output(image, 'box', lang, config, nice)
+
+def image_to_data(image, lang=None, config=None, nice=0):
+    '''
+    Runs tesseract on the specified image. First, the image is written to disk,
+    and then the tesseract command is run on the image. Tesseract's tsv file results
+    are read, and the temporary files are erased.
+    if config is set, the config gets appended to the command.
+        ex: config="-psm 6"
+    If nice is not set to 0, Tesseract process will run with changed priority.
+    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    '''
+    return run_and_get_output(image, 'tsv', lang, config, nice)     
 
 def main():
     if len(sys.argv) == 2:
