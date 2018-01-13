@@ -27,6 +27,7 @@ __all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
+
 class TesseractError(Exception):
     def __init__(self, status, message):
         self.status = status
@@ -49,6 +50,16 @@ def cleanup(temp_name):
             pass
 
 
+def prepare(image):
+    if isinstance(image, Image.Image):
+        return image
+
+    if numpy_installed and isinstance(image, ndarray):
+        return Image.fromarray(image)
+
+    raise TypeError('Unsupported image object')
+
+
 def save_image(image, boxes=False):
     image = prepare(image)
     if len(image.getbands()) == 4:
@@ -59,6 +70,7 @@ def save_image(image, boxes=False):
     input_file_name = temp_name + '.bmp'
     image.save(input_file_name)
     return temp_name
+
 
 def run_tesseract(input_filename,
                   output_filename_base,
@@ -90,35 +102,44 @@ def run_tesseract(input_filename,
 
     return True
 
-def prepare(image):
-    if isinstance(image, Image.Image):
-        return image
-
-    if numpy_installed and isinstance(image, ndarray):
-        return Image.fromarray(image)
-
-    raise TypeError('Unsupported image object')
 
 def run_and_get_output(image, extension, lang=None, config='', nice=None):
     temp_name = ''
     try:
         temp_name = save_image(image)
-        input_filename = temp_name+'.bmp'
-        output_filename_base = temp_name+'_out'
-        run_tesseract(input_filename, output_filename_base, extension, lang, config, nice)
+        arguments = {
+            'input_filename': temp_name+'.bmp',
+            'output_filename_base': temp_name+'_out',
+            'extension': extension,
+            'lang': lang,
+            'config': config,
+            'nice': nice
+        }
+
+        run_tesseract(**arguments)
         with open(output_filename_base+'.'+extension, 'rb') as output_file:
             return output_file.read().decode('utf-8').strip()
     finally:
         cleanup(temp_name)
 
+
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
+    result = {}
     rows = [row.split(cell_delimiter) for row in tsv.split('\n')]
+    if not rows:
+        return result
+
     header = rows.pop(0)
-    str_col_idx = str_col_idx if str_col_idx >= 0 else len(header) + str_col_idx
-    return_obj = {}
+    if str_col_idx < 0:
+        str_col_idx += len(header)
+
     for i, head in enumerate(header):
-        return_obj[head] = [int(row[i]) if i != str_col_idx else row[i] for row in rows]
-    return return_obj
+        result[head] = [
+            int(row[i]) if i != str_col_idx else row[i] for row in rows
+        ]
+
+    return result
+
 
 def image_to_string(image, lang=None, config='', nice=0, boxes=False):
     '''
@@ -127,31 +148,37 @@ def image_to_string(image, lang=None, config='', nice=0, boxes=False):
     if boxes:
         # Added for backwards compatibility
         print('\nWarning: Argument \'boxes\' is deprecated and will be removed'
-        ' in future versions. Use function image_to_boxes instead.\n')
+              ' in future versions. Use function image_to_boxes instead.\n')
         return image_to_boxes(image, lang, config, nice)
     return run_and_get_output(image, 'txt', lang, config, nice)
 
+
 def image_to_boxes(image, lang=None, config='', nice=0, dict_output=False):
     '''
-    Returns string output containing recognized characters and their box boundaries
+    Returns string containing recognized characters and their box boundaries
     '''
     config += 'batch.nochop makebox'
-    if dict_output:
-        box_header = 'char left bottom right top page\n'
-        return file_to_dict(box_header+run_and_get_output(image, 'box', lang, config, nice), ' ', 0)
-    
-    return run_and_get_output(image, 'box', lang, config, nice)
-    
+    result = run_and_get_output(image, 'box', lang, config, nice)
+
+    if not dict_output:
+        return result
+
+    box_header = 'char left bottom right top page\n'
+    return file_to_dict(box_header + result, ' ', 0)
+
+
 def image_to_data(image, lang=None, config='', nice=0, dict_output=False):
     '''
-    Returns string output containing box boundaries, confidences, and other information. 
-    Requires Tesseract 3.05+
+    Returns string containing box boundaries, confidences,
+    and other information. Requires Tesseract 3.05+
     '''
-    if dict_output:
-        return file_to_dict(run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
-    
-    return run_and_get_output(image, 'tsv', lang, config, nice)
-    
+
+    result = run_and_get_output(image, 'tsv', lang, config, nice)
+    if not dict_output:
+        return result
+
+    return file_to_dict(result, '\t', -1)
+
 
 def main():
     if len(sys.argv) == 2:
