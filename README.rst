@@ -69,7 +69,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_boxes** Returns string output containing recognized characters and their box boundaries
 
-* **image_to_data** Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+ (see <a href="https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github">Tesseract TSV documentation</a> for more information
+* **image_to_data** Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. See `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_ for more information: 
 
 **Parameters**
 
@@ -83,7 +83,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
-* **dict_output** Boolean, if ``True`` will return dictionary containing headers pointing to list columns of data. Used for ```image_to_boxes``` and ```image_to_data``` only
+* **dict_output** Boolean, if ``True`` will return dictionary containing headers pointing to list columns of data. Used for ``image_to_boxes`` and ``image_to_data`` only
 
 
 INSTALLATION
