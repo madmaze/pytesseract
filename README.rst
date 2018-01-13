@@ -15,7 +15,7 @@ text instead of writing it to a file.
 USAGE
 -----
 
-### Quickstart ###
+### Quickstart
 
 .. code-block:: python
 
@@ -39,7 +39,7 @@ USAGE
     print(pytesseract.image_to_data(Image.open('test.png')))
 
  
-### Functions ###
+### Functions
 
 **image_to_string**
 Returns the result of a Tesseract OCR run on the image to string
@@ -50,9 +50,9 @@ Returns string output containing recognized characters and their box boundaries
 **image_to_data**
 Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+ (see <a href="https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github">Tesseract TSV documentation</a> for more information
 
-### Parameters ###
+### Parameters
 
-``` def image_to_data(image, lang=None, config='', nice=0, format='dict') ```
+`` def image_to_data(image, lang=None, config='', nice=0, format='dict') ``
 
 **image**
 PIL image file for the image to be processed by Tesseract
