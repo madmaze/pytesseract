@@ -29,7 +29,10 @@ USAGE
     # Include the above line, if you don't have tesseract executable in your PATH
     # Example tesseract_cmd: 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
+    # Simple image to string
     print(pytesseract.image_to_string(Image.open('test.png')))
+    
+    # French text image to string
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
     
     # Get bounding box estimates
@@ -74,11 +77,13 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image** PIL image file for the image to be processed by Tesseract
 
-* **lang** Language code
+* **lang** Language code string
 
-* **config** Any additional configurations, ex: ```config="-psm 6"```
+* **config** Any additional configurations as a string, ex: ```config="-psm 6"```
 
-* **nice** Modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+* **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+
+* **dict_output** Boolean, if ``True`` will return dictionary containing headers pointing to list columns of data. Used for ```image_to_boxes``` and ```image_to_data``` only
 
 
 INSTALLATION
