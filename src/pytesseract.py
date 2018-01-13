@@ -111,15 +111,18 @@ def run_and_get_output(image, extension, lang=None, config='', nice=None):
     finally:
         cleanup(temp_name)
 
+def file_to_dict(tsv, cell_delimiter, str_col_idx):
+    rows = [row.split(cell_delimiter) for row in tsv.split('\n')]
+    header = rows.pop(0)
+    str_col_idx = str_col_idx if str_col_idx >= 0 else len(header) + str_col_idx
+    return_obj = {}
+    for i, head in enumerate(header):
+        return_obj[head] = [int(row[i]) if i != str_col_idx else row[i] for row in rows]
+    return return_obj
+
 def image_to_string(image, lang=None, config='', nice=0, boxes=False):
     '''
-    Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Tesseract's OCR result is
-    read, and the temporary files are erased.
-    if config is set, the config gets appended to the command.
-        ex: config="-psm 6"
-    If nice is not set to 0, Tesseract process will run with changed priority.
-    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    Returns the result of a Tesseract OCR run on the provided image to string
     '''
     if boxes:
         # Added for backwards compatibility
@@ -128,31 +131,27 @@ def image_to_string(image, lang=None, config='', nice=0, boxes=False):
         return image_to_boxes(image, lang, config, nice)
     return run_and_get_output(image, 'txt', lang, config, nice)
 
-def image_to_boxes(image, lang=None, config='', nice=0):
+def image_to_boxes(image, lang=None, config='', nice=0, dict_output=False):
     '''
-    Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Tesseract's box file 
-    creation result is read, and the temporary files are erased.
-    "batch.nochop makebox" gets added to the tesseract call
-    if config is set, the config gets appended to the command.
-        ex: config="-psm 6"
-    If nice is not set to 0, Tesseract process will run with changed priority.
-    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    Returns string output containing recognized characters and their box boundaries
     '''
     config += 'batch.nochop makebox'
+    if dict_output:
+        box_header = 'char left bottom right top page\n'
+        return file_to_dict(box_header+run_and_get_output(image, 'box', lang, config, nice), ' ', 0)
+    
     return run_and_get_output(image, 'box', lang, config, nice)
-
-def image_to_data(image, lang=None, config='', nice=0):
+    
+def image_to_data(image, lang=None, config='', nice=0, dict_output=False):
     '''
-    Runs tesseract on the specified image. First, the image is written to disk,
-    and then the tesseract command is run on the image. Tesseract's tsv file results
-    are read, and the temporary files are erased.
-    if config is set, the config gets appended to the command.
-        ex: config="-psm 6"
-    If nice is not set to 0, Tesseract process will run with changed priority.
-    Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+    Returns string output containing box boundaries, confidences, and other information. 
+    Requires Tesseract 3.05+
     '''
-    return run_and_get_output(image, 'tsv', lang, config, nice)     
+    if dict_output:
+        return file_to_dict(run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
+    
+    return run_and_get_output(image, 'tsv', lang, config, nice)
+    
 
 def main():
     if len(sys.argv) == 2:
