@@ -1,5 +1,4 @@
-Python Tesseract
-================
+# Python Tesseract
 
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
@@ -10,15 +9,14 @@ supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
 and others, whereas tesseract-ocr by default only supports tiff and bmp.
 Additionally, if used as a script, Python-tesseract will print the recognized
 text instead of writing it to a file.
-.. _Google's Tesseract-OCR Engine: https://github.com/tesseract-ocr/tesseract
+Google's Tesseract-OCR Engine: https://github.com/tesseract-ocr/tesseract
 
-USAGE
------
+## USAGE
+
 
 ### Quickstart
 
-.. code-block:: python
-
+```
     try:
         import Image
     except ImportError:
@@ -37,7 +35,7 @@ USAGE
     
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
-
+```
  
 ### Functions
 
@@ -52,7 +50,9 @@ Returns string output containing box boundaries, confidences, and other informat
 
 ### Parameters
 
-`` def image_to_data(image, lang=None, config='', nice=0, format='dict') ``
+```
+def image_to_data(image, lang=None, config='', nice=0, format='dict')
+```
 
 **image**
 PIL image file for the image to be processed by Tesseract
@@ -69,7 +69,7 @@ Modifies the processor priority for the Tesseract run. Not supported on Windows.
  
 Support for OpenCV image/NumPy array objects
 
-.. code-block:: python
+```python
 
     import cv2
 
@@ -77,17 +77,17 @@ Support for OpenCV image/NumPy array objects
     print(pytesseract.image_to_string(img))
     # OR explicit beforehand converting
     print(pytesseract.image_to_string(Image.fromarray(img))
-
+```
 Add the following config, if you have tessdata error like: "Error opening data file..."
 
-.. code-block:: python
+```python
 
     tessdata_dir_config = '--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     # Example config: '--tessdata-dir "C:\\Program Files (x86)\\Tesseract-OCR\\tessdata"'
     # It's important to add double quotes around the dir path.
 
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
-    
+``` 
 
 
 INSTALLATION
