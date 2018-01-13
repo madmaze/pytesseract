@@ -16,6 +16,7 @@ USAGE
 -----
 
 ### Quickstart ###
+
 .. code-block:: python
 
     try:
@@ -36,7 +37,7 @@ USAGE
     
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
- ```
+
  
 ### Functions ###
 
