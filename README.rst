@@ -68,7 +68,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_data** Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+ (see <a href="https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github">Tesseract TSV documentation</a> for more information
 
-### Parameters
+**Parameters**
 
 ``def image_to_data(image, lang=None, config='', nice=0, format='dict')``
 
