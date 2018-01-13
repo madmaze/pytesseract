@@ -77,9 +77,9 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image** PIL image file for the image to be processed by Tesseract
 
-* **lang** Language code string
+* **lang** Tesseract language code string
 
-* **config** Any additional configurations as a string, ex: ```config="-psm 6"```
+* **config** Any additional configurations as a string, ex: ``config="-psm 6"``
 
 * **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
