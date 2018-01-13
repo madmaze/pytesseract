@@ -14,6 +14,8 @@ text instead of writing it to a file.
 
 USAGE
 -----
+
+### Quickstart ###
 .. code-block:: python
 
     try:
@@ -34,7 +36,36 @@ USAGE
     
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
-    
+ ```
+ 
+### Functions ###
+
+**image_to_string**
+Returns the result of a Tesseract OCR run on the image to string
+
+**image_to_boxes**
+Returns string output containing recognized characters and their box boundaries
+
+**image_to_data**
+Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+ (see <a href="https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github">Tesseract TSV documentation</a> for more information
+
+### Parameters ###
+
+``` def image_to_data(image, lang=None, config='', nice=0, format='dict') ```
+
+**image**
+PIL image file for the image to be processed by Tesseract
+
+**lang**
+Language code
+
+**config**
+Any additional configurations, ex: ```config="-psm 6"```
+
+**nice**
+Modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+
+ 
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
@@ -55,6 +86,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
     # It's important to add double quotes around the dir path.
 
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
+    
+
 
 INSTALLATION
 ------------
