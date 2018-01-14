@@ -74,13 +74,13 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 ``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING)``
 
-* **image** PIL image file for the image to be processed by Tesseract
+* **image** Object, PIL Image/NumPy array of the image to be processed by Tesseract
 
-* **lang** Tesseract language code string
+* **lang** String, Tesseract language code string
 
-* **config** Any additional configurations as a string, ex: ``config="-psm 6"``
+* **config** String, Any additional configurations as a string, ex: ``config="-psm 6"``
 
-* **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+* **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
 * **output_type** Enum, specifies the type of the output, defaults to ``string``. For the full list of all supported types, please check the definition of  ``pytesseract.Output`` enum class.
 
