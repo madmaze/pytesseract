@@ -17,6 +17,7 @@ from pkgutil import find_loader
 import tempfile
 import shlex
 from glob import iglob
+from enum import Enum
 
 numpy_installed = True if find_loader('numpy') is not None else False
 if numpy_installed:
@@ -26,6 +27,12 @@ __all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
+
+
+class Output(Enum):
+    STRING = "string"
+    BYTES = "bytes"
+    DICT = "dict"
 
 
 class TesseractError(Exception):
@@ -103,13 +110,18 @@ def run_tesseract(input_filename,
     return True
 
 
-def run_and_get_output(image, extension, lang=None, config='', nice=None):
+def run_and_get_output(image,
+                       extension,
+                       lang=None,
+                       config='',
+                       nice=None,
+                       return_bytes=False):
     temp_name = ''
     try:
         temp_name = save_image(image)
         arguments = {
-            'input_filename': temp_name+'.bmp',
-            'output_filename_base': temp_name+'_out',
+            'input_filename': temp_name + '.bmp',
+            'output_filename_base': temp_name + '_out',
             'extension': extension,
             'lang': lang,
             'config': config,
@@ -117,10 +129,14 @@ def run_and_get_output(image, extension, lang=None, config='', nice=None):
         }
 
         run_tesseract(**arguments)
-        with open(output_filename_base+'.'+extension, 'rb') as output_file:
+        output_filename = arguments['output_filename_base'] + '.' + extension
+        with open(output_filename, 'rb') as output_file:
+            if return_bytes:
+                return output_file.read()
             return output_file.read().decode('utf-8').strip()
     finally:
-        cleanup(temp_name)
+        print("not cleaning!")
+        # cleanup(temp_name)
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
@@ -141,7 +157,12 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
     return result
 
 
-def image_to_string(image, lang=None, config='', nice=0, boxes=False):
+def image_to_string(image,
+                    lang=None,
+                    config='',
+                    nice=0,
+                    boxes=False,
+                    output_type=Output.STRING):
     '''
     Returns the result of a Tesseract OCR run on the provided image to string
     '''
@@ -149,35 +170,53 @@ def image_to_string(image, lang=None, config='', nice=0, boxes=False):
         # Added for backwards compatibility
         print('\nWarning: Argument \'boxes\' is deprecated and will be removed'
               ' in future versions. Use function image_to_boxes instead.\n')
-        return image_to_boxes(image, lang, config, nice)
-    return run_and_get_output(image, 'txt', lang, config, nice)
+        return image_to_boxes(image, lang, config, nice, output_type)
+
+    if output_type == Output.STRING:
+        return run_and_get_output(image, 'txt', lang, config, nice)
+    elif output_type == Output.DICT:
+        return {'text': run_and_get_output(image, 'txt', lang, config, nice)}
+    elif output_type == Output.BYTES:
+        return run_and_get_output(image, 'txt', lang, config, nice, True)
 
 
-def image_to_boxes(image, lang=None, config='', nice=0, dict_output=False):
+def image_to_boxes(image,
+                   lang=None,
+                   config='',
+                   nice=0,
+                   output_type=Output.STRING):
     '''
     Returns string containing recognized characters and their box boundaries
     '''
     config += 'batch.nochop makebox'
-    result = run_and_get_output(image, 'box', lang, config, nice)
 
-    if not dict_output:
-        return result
+    if output_type == Output.STRING:
+        return run_and_get_output(image, 'box', lang, config, nice)
+    elif output_type == Output.DICT:
+        box_header = 'char left bottom right top page\n'
+        return file_to_dict(
+            box_header + run_and_get_output(
+                image, 'box', lang, config, nice), ' ', 0)
+    elif output_type == Output.BYTES:
+        return run_and_get_output(image, 'box', lang, config, nice, True)
 
-    box_header = 'char left bottom right top page\n'
-    return file_to_dict(box_header + result, ' ', 0)
 
-
-def image_to_data(image, lang=None, config='', nice=0, dict_output=False):
+def image_to_data(image,
+                  lang=None,
+                  config='',
+                  nice=0,
+                  output_type=Output.STRING):
     '''
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
     '''
-
-    result = run_and_get_output(image, 'tsv', lang, config, nice)
-    if not dict_output:
-        return result
-
-    return file_to_dict(result, '\t', -1)
+    if output_type == Output.STRING:
+        return run_and_get_output(image, 'tsv', lang, config, nice)
+    if output_type == Output.DICT:
+        return file_to_dict(
+            run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
+    if output_type == Output.BYTES:
+        return run_and_get_output(image, 'tsv', lang, config, nice, True)
 
 
 def main():
