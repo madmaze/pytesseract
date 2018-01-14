@@ -119,7 +119,7 @@ def run_and_get_output(image,
     temp_name = ''
     try:
         temp_name = save_image(image)
-        arguments = {
+        kwargs = {
             'input_filename': temp_name + '.bmp',
             'output_filename_base': temp_name + '_out',
             'extension': extension,
@@ -128,8 +128,8 @@ def run_and_get_output(image,
             'nice': nice
         }
 
-        run_tesseract(**arguments)
-        output_filename = arguments['output_filename_base'] + '.' + extension
+        run_tesseract(**kwargs)
+        output_filename = kwargs['output_filename_base'] + '.' + extension
         with open(output_filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
@@ -171,12 +171,12 @@ def image_to_string(image,
               ' in future versions. Use function image_to_boxes instead.\n')
         return image_to_boxes(image, lang, config, nice, output_type)
 
-    if output_type == Output.STRING:
-        return run_and_get_output(image, 'txt', lang, config, nice)
-    elif output_type == Output.DICT:
+    if output_type == Output.DICT:
         return {'text': run_and_get_output(image, 'txt', lang, config, nice)}
     elif output_type == Output.BYTES:
         return run_and_get_output(image, 'txt', lang, config, nice, True)
+
+    return run_and_get_output(image, 'txt', lang, config, nice)
 
 
 def image_to_boxes(image,
@@ -187,17 +187,17 @@ def image_to_boxes(image,
     '''
     Returns string containing recognized characters and their box boundaries
     '''
-    config += 'batch.nochop makebox'
+    config += ' batch.nochop makebox'
 
-    if output_type == Output.STRING:
-        return run_and_get_output(image, 'box', lang, config, nice)
-    elif output_type == Output.DICT:
+    if output_type == Output.DICT:
         box_header = 'char left bottom right top page\n'
         return file_to_dict(
             box_header + run_and_get_output(
                 image, 'box', lang, config, nice), ' ', 0)
     elif output_type == Output.BYTES:
         return run_and_get_output(image, 'box', lang, config, nice, True)
+
+    return run_and_get_output(image, 'box', lang, config, nice)
 
 
 def image_to_data(image,
@@ -209,13 +209,13 @@ def image_to_data(image,
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
     '''
-    if output_type == Output.STRING:
-        return run_and_get_output(image, 'tsv', lang, config, nice)
     if output_type == Output.DICT:
         return file_to_dict(
             run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
-    if output_type == Output.BYTES:
+    elif output_type == Output.BYTES:
         return run_and_get_output(image, 'tsv', lang, config, nice, True)
+
+    return run_and_get_output(image, 'tsv', lang, config, nice)
 
 
 def main():
