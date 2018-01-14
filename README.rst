@@ -72,7 +72,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 **Parameters**
 
-``image_to_data(image, lang=None, config='', nice=0, dict_output=False)``
+``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING)``
 
 * **image** PIL image file for the image to be processed by Tesseract
 
@@ -82,7 +82,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
-* **dict_output** Boolean, if ``True`` will return dictionary containing headers pointing to list columns of data. Used for ``image_to_boxes`` and ``image_to_data`` only
+* **output_type** Enum, specifies the type of the output, defaults to ``string``. For the full list of all supported types, please check the definition of  ``pytesseract.Output`` enum class.
 
 
 INSTALLATION
