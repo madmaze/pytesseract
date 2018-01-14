@@ -1,5 +1,5 @@
 import os
-from sys import version_info
+from sys import version_info, argv as sys_argv
 from setuptools import setup, __version__ as tools_version
 
 
@@ -13,6 +13,9 @@ INSTALL_REQUIRES = ['Pillow']
 EXTRAS_REQUIRE = {}
 
 if int(tools_version.split('.', 1)[0]) < 18:
+    assert 'bdist_wheel' not in sys_argv, \
+        'bdist_wheel requires setuptools >= 18'
+
     if version_info[:2] < (3, 4):
         INSTALL_REQUIRES.append('enum34')
 else:
