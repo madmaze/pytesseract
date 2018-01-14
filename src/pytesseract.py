@@ -135,8 +135,7 @@ def run_and_get_output(image,
                 return output_file.read()
             return output_file.read().decode('utf-8').strip()
     finally:
-        print("not cleaning!")
-        # cleanup(temp_name)
+        cleanup(temp_name)
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
