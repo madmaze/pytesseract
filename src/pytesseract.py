@@ -17,7 +17,6 @@ from pkgutil import find_loader
 import tempfile
 import shlex
 from glob import iglob
-from enum import Enum
 
 numpy_installed = True if find_loader('numpy') is not None else False
 if numpy_installed:
@@ -29,7 +28,7 @@ __all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
 tesseract_cmd = 'tesseract'
 
 
-class Output(Enum):
+class Output():
     STRING = "string"
     BYTES = "bytes"
     DICT = "dict"
@@ -145,6 +144,11 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
         return result
 
     header = rows.pop(0)
+    if len(rows) and len(rows[-1]) < len(header):
+        # Fixes bug that occurs when last text string in TSV is null, and
+        # last row is missing a final cell in TSV file
+        rows[-1].append('')
+
     if str_col_idx < 0:
         str_col_idx += len(header)
 
