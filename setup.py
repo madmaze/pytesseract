@@ -1,6 +1,5 @@
 import os
-from sys import version_info, argv as sys_argv
-from setuptools import setup, __version__ as tools_version
+from setuptools import setup
 
 
 README_PATH = 'README.rst'
@@ -10,16 +9,6 @@ if os.path.exists(README_PATH):
         LONG_DESC = readme.read()
 
 INSTALL_REQUIRES = ['Pillow']
-EXTRAS_REQUIRE = {}
-
-if int(tools_version.split('.', 1)[0]) < 18:
-    assert 'bdist_wheel' not in sys_argv, \
-        'bdist_wheel requires setuptools >= 18'
-
-    if version_info[:2] < (3, 4):
-        INSTALL_REQUIRES.append('enum34')
-else:
-    EXTRAS_REQUIRE[':python_version<"3.4"'] = ['enum34']
 
 setup(
     name='pytesseract',
@@ -39,7 +28,6 @@ setup(
     package_dir={'pytesseract': 'src'},
     package_data={'pytesseract': ['*.png', '*.jpg']},
     install_requires=INSTALL_REQUIRES,
-    extras_require=EXTRAS_REQUIRE,
     entry_points={
         'console_scripts': ['pytesseract = pytesseract.pytesseract:main']
     },
