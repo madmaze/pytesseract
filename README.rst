@@ -82,7 +82,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
-* **output_type** Enum, specifies the type of the output, defaults to ``string``. For the full list of all supported types, please check the definition of  ``pytesseract.Output`` enum class.
+* **output_type** Class attribute, specifies the type of the output, defaults to ``string``. For the full list of all supported types, please check the definition of ``pytesseract.Output`` class.
 
 
 INSTALLATION
