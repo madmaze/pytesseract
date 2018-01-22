@@ -104,7 +104,7 @@ def run_tesseract(input_filename,
     proc.stderr.close()
 
     if status_code:
-        raise TesseractError(status, get_errors(error_string))
+        raise TesseractError(status_code, get_errors(error_string))
 
     return True
 
