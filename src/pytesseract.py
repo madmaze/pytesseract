@@ -24,6 +24,7 @@ if numpy_installed:
 
 __all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
 
+img_extention = 'png'
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
@@ -66,15 +67,18 @@ def prepare(image):
     raise TypeError('Unsupported image object')
 
 
-def save_image(image, boxes=False):
+def save_image(image):
     image = prepare(image)
-    if len(image.getbands()) == 4:
-        # In case we have 4 channels, lets discard the Alpha.
-        image = image.convert('RGB')
+
+    if 'A' in image.getbands():
+        # discard and replace the alpha channel with white background
+        background = Image.new('RGB', image.size, (255, 255, 255))
+        background.paste(image, (0, 0), image)
+        image = background
 
     temp_name = tempfile.mktemp(prefix='tess_')
-    input_file_name = temp_name + '.bmp'
-    image.save(input_file_name)
+    input_file_name = temp_name + os.extsep + img_extention
+    image.save(input_file_name, format=img_extention)
     return temp_name
 
 
@@ -119,7 +123,7 @@ def run_and_get_output(image,
     try:
         temp_name = save_image(image)
         kwargs = {
-            'input_filename': temp_name + '.bmp',
+            'input_filename': temp_name + os.extsep + img_extention,
             'output_filename_base': temp_name + '_out',
             'extension': extension,
             'lang': lang,
@@ -128,8 +132,8 @@ def run_and_get_output(image,
         }
 
         run_tesseract(**kwargs)
-        output_filename = kwargs['output_filename_base'] + '.' + extension
-        with open(output_filename, 'rb') as output_file:
+        filename = kwargs['output_filename_base'] + os.extsep + extension
+        with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
             return output_file.read().decode('utf-8').strip()
