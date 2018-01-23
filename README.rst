@@ -112,14 +112,14 @@ See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_ f
 
 .. code-block:: bash
 
-    $ (env)> pip install git+https://github.com/madmaze/pytesseract.git
+    $ (env)> pip install -U git+https://github.com/madmaze/pytesseract.git
 
 | Installing from source:
 
 .. code-block:: bash
 
     $> git clone https://github.com/madmaze/pytesseract.git
-    $ (env)> cd pytesseract && pip install .
+    $ (env)> cd pytesseract && pip install -U .
 
 LICENSE
 -------
