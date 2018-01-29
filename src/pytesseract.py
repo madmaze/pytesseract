@@ -22,8 +22,6 @@ numpy_installed = True if find_loader('numpy') is not None else False
 if numpy_installed:
     from numpy import ndarray
 
-__all__ = ['image_to_string', 'image_to_boxes', 'image_to_data']
-
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 
