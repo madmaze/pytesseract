@@ -66,9 +66,9 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_string** Returns the result of a Tesseract OCR run on the image to string
 
-* **image_to_boxes** Returns string output containing recognized characters and their box boundaries
+* **image_to_boxes** Returns result containing recognized characters and their box boundaries
 
-* **image_to_data** Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. See `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_ for more information: 
+* **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_
 
 **Parameters**
 
@@ -98,12 +98,12 @@ Prerequisites:
   (additional info how to install the engine on Linux, Mac OSX and Windows).
   You must be able to invoke the tesseract command as *tesseract*. If this
   isn't the case, for example because tesseract isn't in your PATH, you will
-  have to change the "tesseract_cmd" variable at the top of *tesseract.py*.
+  have to change the "tesseract_cmd" variable ``pytesseract.pytesseract.tesseract_cmd``.
   Under Debian/Ubuntu you can use the package **tesseract-ocr**. 
   For Mac OS users. please install homebrew package **tesseract**.
 
 | Installing via pip:
-See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_ for more information.
+Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_ for more information.
 
 .. code-block:: bash
 
