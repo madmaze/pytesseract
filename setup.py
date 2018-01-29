@@ -14,7 +14,7 @@ PACKAGE_DIR = 'src'
 
 setup(
     name=PACKAGE_NAME,
-    version='0.1.8',
+    version='0.1.9',
     author='Samuel Hoffstaetter',
     author_email='samuel@hoffstaetter.com',
     maintainer='Matthias Lee',
