@@ -9,9 +9,11 @@ if os.path.exists(README_PATH):
         LONG_DESC = readme.read()
 
 INSTALL_REQUIRES = ['Pillow']
+PACKAGE_NAME = 'pytesseract'
+PACKAGE_DIR = 'src'
 
 setup(
-    name='pytesseract',
+    name=PACKAGE_NAME,
     version='0.1.8',
     author='Samuel Hoffstaetter',
     author_email='samuel@hoffstaetter.com',
@@ -24,12 +26,12 @@ setup(
     license='GPLv3',
     keywords='python-tesseract OCR Python',
     url='https://github.com/madmaze/python-tesseract',
-    packages=['pytesseract'],
-    package_dir={'pytesseract': 'src'},
-    package_data={'pytesseract': ['*.png', '*.jpg']},
+    packages=[PACKAGE_NAME],
+    package_dir={PACKAGE_NAME: PACKAGE_DIR},
+    include_package_data=True,
     install_requires=INSTALL_REQUIRES,
     entry_points={
-        'console_scripts': ['pytesseract = pytesseract.pytesseract:main']
+        'console_scripts': ['{0} = {0}.{0}:main'.format(PACKAGE_NAME)]
     },
     classifiers=[
         'Programming Language :: Python',
