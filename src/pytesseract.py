@@ -47,7 +47,7 @@ def get_errors(error_string):
 
 def cleanup(temp_name):
     ''' Tries to remove files by filename wildcard path. '''
-    for filename in iglob(temp_name + '*'):
+    for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             os.remove(filename)
         except OSError:
