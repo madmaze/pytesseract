@@ -84,7 +84,7 @@ def save_image(image):
     temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = temp_name + os.extsep + img_extension
     image.save(input_file_name, format=img_extension, **image.info)
-    return temp_name, img_extension
+    return temp_name, input_file_name
 
 
 def run_tesseract(input_filename,
@@ -124,12 +124,12 @@ def run_and_get_output(image,
                        config='',
                        nice=None,
                        return_bytes=False):
-    temp_name = ''
-    img_extension = ''
+
+    temp_name, input_filename = '', ''
     try:
-        temp_name, img_extension = save_image(image)
+        temp_name, input_filename = save_image(image)
         kwargs = {
-            'input_filename': temp_name + os.extsep + img_extension,
+            'input_filename': input_filename,
             'output_filename_base': temp_name + '_out',
             'extension': extension,
             'lang': lang,
