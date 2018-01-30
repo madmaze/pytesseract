@@ -24,6 +24,7 @@ if numpy_installed:
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
+img_mode = 'RGB'
 
 
 class Output:
@@ -67,20 +68,23 @@ def prepare(image):
 def save_image(image):
     image = prepare(image)
 
-    img_extention = image.format
+    img_extension = image.format
     if image.format not in {'JPEG', 'PNG', 'TIFF', 'BMP', 'GIF'}:
-        img_extention = 'PNG'
+        img_extension = 'PNG'
+
+    if not image.mode.startswith(img_mode):
+        image = image.convert(img_mode)
 
     if 'A' in image.getbands():
         # discard and replace the alpha channel with white background
-        background = Image.new('RGB', image.size, (255, 255, 255))
+        background = Image.new(img_mode, image.size, (255, 255, 255))
         background.paste(image, (0, 0), image)
         image = background
 
     temp_name = tempfile.mktemp(prefix='tess_')
-    input_file_name = temp_name + os.extsep + img_extention
-    image.save(input_file_name, format=img_extention, **image.info)
-    return temp_name, img_extention
+    input_file_name = temp_name + os.extsep + img_extension
+    image.save(input_file_name, format=img_extension, **image.info)
+    return temp_name, img_extension
 
 
 def run_tesseract(input_filename,
@@ -121,11 +125,11 @@ def run_and_get_output(image,
                        nice=None,
                        return_bytes=False):
     temp_name = ''
-    img_extention = ''
+    img_extension = ''
     try:
-        temp_name, img_extention = save_image(image)
+        temp_name, img_extension = save_image(image)
         kwargs = {
-            'input_filename': temp_name + os.extsep + img_extention,
+            'input_filename': temp_name + os.extsep + img_extension,
             'output_filename_base': temp_name + '_out',
             'extension': extension,
             'lang': lang,
