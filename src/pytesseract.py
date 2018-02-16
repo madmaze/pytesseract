@@ -10,7 +10,7 @@ try:
 except ImportError:
     from PIL import Image
 
-import os, os.path
+import os
 import sys
 import subprocess
 from pkgutil import find_loader
@@ -38,47 +38,6 @@ class TesseractError(Exception):
         self.status = status
         self.message = message
         self.args = (status, message)
-        
-        
-def subprocess_args(include_stdout=True):
-    # The following is true only on Windows.
-    if hasattr(subprocess, 'STARTUPINFO'):
-        # On Windows, subprocess calls will pop up a command window by default
-        # when run from Pyinstaller with the ``--noconsole`` option. Avoid this
-        # distraction.
-        si = subprocess.STARTUPINFO()
-        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        # Windows doesn't search the path by default. Pass it an environment so
-        # it will.
-        env = os.environ
-    else:
-        si = None
-        env = None
-
-    # ``subprocess.check_output`` doesn't allow specifying ``stdout``::
-    #
-    #   Traceback (most recent call last):
-    #     File "test_subprocess.py", line 58, in <module>
-    #       **subprocess_args(stdout=None))
-    #     File "C:\Python27\lib\subprocess.py", line 567, in check_output
-    #       raise ValueError('stdout argument not allowed, it will be overridden.')
-    #   ValueError: stdout argument not allowed, it will be overridden.
-    #
-    # So, add it only if it's needed.
-    if include_stdout:
-        ret = {'stdout': subprocess.PIPE}
-    else:
-        ret = {}
-
-    # On Windows, running this from the binary produced by Pyinstaller
-    # with the ``--noconsole`` option requires redirecting everything
-    # (stdin, stdout, stderr) to avoid an OSError exception
-    # "[Error 6] the handle is invalid."
-    ret.update({'stdin': subprocess.PIPE,
-                'stderr': subprocess.PIPE,
-                'startupinfo': si,
-                'env': env })
-    return ret
 
 
 def get_errors(error_string):
@@ -125,8 +84,47 @@ def save_image(image):
     temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = temp_name + os.extsep + img_extension
     image.save(input_file_name, format=img_extension, **image.info)
-    return temp_name, img_extension
+    return temp_name, input_file_name
 
+def subprocess_args(include_stdout=True):
+    # The following is true only on Windows.
+    if hasattr(subprocess, 'STARTUPINFO'):
+        # On Windows, subprocess calls will pop up a command window by default
+        # when run from Pyinstaller with the ``--noconsole`` option. Avoid this
+        # distraction.
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        # Windows doesn't search the path by default. Pass it an environment so
+        # it will.
+        env = os.environ
+    else:
+        si = None
+        env = None
+
+    # ``subprocess.check_output`` doesn't allow specifying ``stdout``::
+    #
+    #   Traceback (most recent call last):
+    #     File "test_subprocess.py", line 58, in <module>
+    #       **subprocess_args(stdout=None))
+    #     File "C:\Python27\lib\subprocess.py", line 567, in check_output
+    #       raise ValueError('stdout argument not allowed, it will be overridden.')
+    #   ValueError: stdout argument not allowed, it will be overridden.
+    #
+    # So, add it only if it's needed.
+    if include_stdout:
+        ret = {'stdout': subprocess.PIPE}
+    else:
+        ret = {}
+
+    # On Windows, running this from the binary produced by Pyinstaller
+    # with the ``--noconsole`` option requires redirecting everything
+    # (stdin, stdout, stderr) to avoid an OSError exception
+    # "[Error 6] the handle is invalid."
+    ret.update({'stdin': subprocess.PIPE,
+                'stderr': subprocess.PIPE,
+                'startupinfo': si,
+                'env': env })
+    return ret
 
 def run_tesseract(input_filename,
                   output_filename_base,
@@ -165,12 +163,12 @@ def run_and_get_output(image,
                        config='',
                        nice=None,
                        return_bytes=False):
-    temp_name = ''
-    img_extension = ''
+
+    temp_name, input_filename = '', ''
     try:
-        temp_name, img_extension = save_image(image)
+        temp_name, input_filename = save_image(image)
         kwargs = {
-            'input_filename': temp_name + os.extsep + img_extension,
+            'input_filename': input_filename,
             'output_filename_base': temp_name + '_out',
             'extension': extension,
             'lang': lang,
