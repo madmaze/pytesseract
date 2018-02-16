@@ -86,6 +86,27 @@ def save_image(image):
     image.save(input_file_name, format=img_extension, **image.info)
     return temp_name, input_file_name
 
+def subprocess_args(include_stdout=True):
+    # See https://github.com/pyinstaller/pyinstaller/wiki/Recipe-subprocess
+    # for reference and comments.
+    if hasattr(subprocess, 'STARTUPINFO'):
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        env = os.environ
+    else:
+        si = None
+        env = None
+
+    if include_stdout:
+        ret = {'stdout': subprocess.PIPE}
+    else:
+        ret = {}
+
+    ret.update({'stdin': subprocess.PIPE,
+                'stderr': subprocess.PIPE,
+                'startupinfo': si,
+                'env': env })
+    return ret
 
 def run_tesseract(input_filename,
                   output_filename_base,
@@ -108,7 +129,7 @@ def run_tesseract(input_filename,
     if extension != 'box':
         command.append(extension)
 
-    proc = subprocess.Popen(command, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(command, **subprocess_args())
     status_code, error_string = proc.wait(), proc.stderr.read()
     proc.stderr.close()
 
