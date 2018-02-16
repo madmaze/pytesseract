@@ -24,7 +24,7 @@ if numpy_installed:
 
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
-img_mode = 'RGB'
+RGB_MODE = 'RGB'
 
 
 class Output:
@@ -72,12 +72,12 @@ def save_image(image):
     if image.format not in {'JPEG', 'PNG', 'TIFF', 'BMP', 'GIF'}:
         img_extension = 'PNG'
 
-    if not image.mode.startswith(img_mode):
-        image = image.convert(img_mode)
+    if not image.mode.startswith(RGB_MODE):
+        image = image.convert(RGB_MODE)
 
     if 'A' in image.getbands():
         # discard and replace the alpha channel with white background
-        background = Image.new(img_mode, image.size, (255, 255, 255))
+        background = Image.new(RGB_MODE, image.size, (255, 255, 255))
         background.paste(image, (0, 0), image)
         image = background
 
@@ -86,27 +86,28 @@ def save_image(image):
     image.save(input_file_name, format=img_extension, **image.info)
     return temp_name, input_file_name
 
+
 def subprocess_args(include_stdout=True):
     # See https://github.com/pyinstaller/pyinstaller/wiki/Recipe-subprocess
     # for reference and comments.
+
+    kwargs = {
+        'stdin': subprocess.PIPE,
+        'stderr': subprocess.PIPE,
+        'startupinfo': None,
+        'env': None
+    }
+
     if hasattr(subprocess, 'STARTUPINFO'):
-        si = subprocess.STARTUPINFO()
-        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        env = os.environ
-    else:
-        si = None
-        env = None
+        kwargs['startupinfo'] = subprocess.STARTUPINFO()
+        kwargs['startupinfo'].dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        kwargs['env'] = os.environ
 
     if include_stdout:
-        ret = {'stdout': subprocess.PIPE}
-    else:
-        ret = {}
+        kwargs['stdout'] = subprocess.PIPE
 
-    ret.update({'stdin': subprocess.PIPE,
-                'stderr': subprocess.PIPE,
-                'startupinfo': si,
-                'env': env })
-    return ret
+    return kwargs
+
 
 def run_tesseract(input_filename,
                   output_filename_base,
