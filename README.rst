@@ -1,6 +1,21 @@
 Python Tesseract
 ================
 
+.. image:: https://img.shields.io/pypi/v/pytesseract.svg
+   :target: https://pypi.python.org/pypi/pytesseract
+   :alt: PyPI release
+
+
+.. image:: 	https://img.shields.io/github/release/madmaze/pytesseract.svg
+   :target: https://github.com/madmaze/pytesseract/releases
+   :alt: Github release
+
+
+.. image:: https://img.shields.io/pypi/pyversions/pytesseract.svg
+   :target: https://pypi.python.org/pypi/pytesseract
+   :alt: PyPI version
+
+
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
 
@@ -78,7 +93,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **lang** String, Tesseract language code string
 
-* **config** String, Any additional configurations as a string, ex: ``config="-psm 6"``
+* **config** String, Any additional configurations as a string, ex: ``config='--psm 6'``
 
 * **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
