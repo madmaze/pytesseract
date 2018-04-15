@@ -55,6 +55,9 @@ USAGE
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
     
+    # Get informations about orientation and script detection
+    print(pytesseract.image_to_osd(Image.open('test.png'))
+    
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
@@ -84,6 +87,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 * **image_to_boxes** Returns result containing recognized characters and their box boundaries
 
 * **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_
+
+* **image_to_osd** Returns result containing informations about orientation and script detection.
 
 **Parameters**
 
