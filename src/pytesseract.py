@@ -2,7 +2,6 @@
 
 '''
 Python-tesseract. For more information: https://github.com/madmaze/pytesseract
-
 '''
 
 try:
@@ -192,6 +191,20 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
     return result
 
 
+def osd_to_dict(osd):
+    osd_keys = {
+        'Page number': ('page_num', int),
+        'Orientation in degrees': ('orientation', int),
+        'Rotate': ('rotate', int),
+        'Orientation confidence': ('orientation_conf', float),
+        'Script': ('script', str),
+        'Script confidence': ('script_conf', float)
+    }
+    lines = [line.split(': ') for line in osd.split('\n')]
+    return {osd_keys[k][0]: osd_keys[k][1](v) for k, v in lines}
+
+
+
 def image_to_string(image,
                     lang=None,
                     config='',
@@ -252,6 +265,25 @@ def image_to_data(image,
         return run_and_get_output(image, 'tsv', lang, config, nice, True)
 
     return run_and_get_output(image, 'tsv', lang, config, nice)
+
+
+def image_to_osd(image,
+                 lang=None,
+                 config='',
+                 nice=0,
+                 output_type=Output.STRING):
+    '''
+    Returns string containing the orientation and script detection (OSD)
+    '''
+    config += ' --psm 0'
+
+    if output_type == Output.DICT:
+        return osd_to_dict(
+            run_and_get_output(image, 'osd', lang, config, nice))
+    elif output_type == Output.BYTES:
+        return run_and_get_output(image, 'osd', lang, config, nice, True)
+
+    return run_and_get_output(image, 'osd', lang, config, nice)
 
 
 def main():
