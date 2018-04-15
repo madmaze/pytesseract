@@ -199,9 +199,26 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
     return result
 
 
+def is_valid(val, _type):
+    if _type is int:
+        return val.isdigit()
+
+    if _type is float:
+        try:
+            float(val)
+            return True
+        except ValueError:
+            return False
+
+    return True
+
+
 def osd_to_dict(osd):
-    lines = (line.split(': ') for line in osd.split('\n'))
-    return {OSD_KEYS[k][0]: OSD_KEYS[k][1](v) for k, v in lines}
+    return {
+        OSD_KEYS[kv[0]][0]: OSD_KEYS[kv[0]][1](kv[1]) for kv in (
+            line.split(': ') for line in osd.split('\n')
+        ) if len(kv) == 2 and is_valid(kv[1], OSD_KEYS[kv[0]][1])
+    }
 
 
 def image_to_string(image,
