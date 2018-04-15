@@ -24,6 +24,14 @@ if numpy_installed:
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 RGB_MODE = 'RGB'
+OSD_KEYS = {
+    'Page number': ('page_num', int),
+    'Orientation in degrees': ('orientation', int),
+    'Rotate': ('rotate', int),
+    'Orientation confidence': ('orientation_conf', float),
+    'Script': ('script', str),
+    'Script confidence': ('script_conf', float)
+}
 
 
 class Output:
@@ -192,17 +200,8 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
 
 
 def osd_to_dict(osd):
-    osd_keys = {
-        'Page number': ('page_num', int),
-        'Orientation in degrees': ('orientation', int),
-        'Rotate': ('rotate', int),
-        'Orientation confidence': ('orientation_conf', float),
-        'Script': ('script', str),
-        'Script confidence': ('script_conf', float)
-    }
-    lines = [line.split(': ') for line in osd.split('\n')]
-    return {osd_keys[k][0]: osd_keys[k][1](v) for k, v in lines}
-
+    lines = (line.split(': ') for line in osd.split('\n'))
+    return {OSD_KEYS[k][0]: OSD_KEYS[k][1](v) for k, v in lines}
 
 
 def image_to_string(image,
