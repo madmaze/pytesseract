@@ -45,19 +45,19 @@ USAGE
 
     # Simple image to string
     print(pytesseract.image_to_string(Image.open('test.png')))
-    
+
     # French text image to string
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
-    
+
     # Get bounding box estimates
     print(pytesseract.image_to_boxes(Image.open('test.png')))
-    
+
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
-    
+
     # Get informations about orientation and script detection
     print(pytesseract.image_to_osd(Image.open('test.png'))
-    
+
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
@@ -81,6 +81,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 
 **Functions**
+
+* **get_tesseract_version** Returns the Tesseract version installed in the system.
 
 * **image_to_string** Returns the result of a Tesseract OCR run on the image to string
 
@@ -113,12 +115,12 @@ Prerequisites:
 - Python-tesseract requires python 2.5+ or python 3.x
 - You will need the Python Imaging Library (PIL) (or the Pillow fork).
   Under Debian/Ubuntu, this is the package **python-imaging** or **python3-imaging**.
-- Install `Google Tesseract OCR <https://github.com/tesseract-ocr/tesseract>`_ 
+- Install `Google Tesseract OCR <https://github.com/tesseract-ocr/tesseract>`_
   (additional info how to install the engine on Linux, Mac OSX and Windows).
   You must be able to invoke the tesseract command as *tesseract*. If this
   isn't the case, for example because tesseract isn't in your PATH, you will
   have to change the "tesseract_cmd" variable ``pytesseract.pytesseract.tesseract_cmd``.
-  Under Debian/Ubuntu you can use the package **tesseract-ocr**. 
+  Under Debian/Ubuntu you can use the package **tesseract-ocr**.
   For Mac OS users. please install homebrew package **tesseract**.
 
 | Installing via pip:
