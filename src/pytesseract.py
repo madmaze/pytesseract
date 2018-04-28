@@ -17,7 +17,7 @@ import tempfile
 import shlex
 from glob import iglob
 
-numpy_installed = True if find_loader('numpy') is not None else False
+numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
     from numpy import ndarray
 
@@ -183,7 +183,7 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
         return result
 
     header = rows.pop(0)
-    if rows and len(rows[-1]) < len(header):
+    if len(rows[-1]) < len(header):
         # Fixes bug that occurs when last text string in TSV is null, and
         # last row is missing a final cell in TSV file
         rows[-1].append('')
@@ -219,6 +219,13 @@ def osd_to_dict(osd):
             line.split(': ') for line in osd.split('\n')
         ) if len(kv) == 2 and is_valid(kv[1], OSD_KEYS[kv[0]][1])
     }
+
+
+def get_tesseract_version():
+    '''
+    Returns a string containing the Tesseract version.
+    '''
+    return subprocess.check_output([tesseract_cmd, '--version']).split()[1]
 
 
 def image_to_string(image,
