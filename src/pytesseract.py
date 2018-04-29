@@ -244,7 +244,7 @@ def get_tesseract_version():
     '''
     try:
         return subprocess.check_output(
-            [tesseract_cmd, '--version']
+            [tesseract_cmd, '--version'], stderr=subprocess.STDOUT
         ).decode('utf-8').split()[1]
     except OSError:
         raise TesseractNotFoundError()
