@@ -151,3 +151,4 @@ CONTRIBUTERS
 - `Juarez Bochi <https://github.com/jbochi>`_
 - `Matthias Lee <https://github.com/madmaze>`_
 - `Lars Kistner <https://github.com/Sr4l>`_
+- `Ryan Mitchell <https://github.com/REMitchell>`_
