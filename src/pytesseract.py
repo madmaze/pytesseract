@@ -62,6 +62,16 @@ class TSVNotSupported(Exception):
         )
 
 
+def run_once(func):
+    def wrapper(*args, **kwargs):
+        if wrapper._result is wrapper:
+            wrapper._result = func(*args, **kwargs)
+        return wrapper._result
+
+    wrapper._result = wrapper
+    return wrapper
+
+
 def get_errors(error_string):
     return u' '.join(
         line for line in error_string.decode('utf-8').splitlines()
@@ -238,16 +248,20 @@ def osd_to_dict(osd):
     }
 
 
+@run_once
 def get_tesseract_version():
     '''
     Returns a string containing the Tesseract version.
     '''
     try:
-        return subprocess.check_output(
-            [tesseract_cmd, '--version'], stderr=subprocess.STDOUT
-        ).decode('utf-8').split()[1]
+        return LooseVersion(
+            subprocess.check_output(
+                [tesseract_cmd, '--version'], stderr=subprocess.STDOUT
+            ).decode('utf-8').split()[1]
+        )
     except OSError:
         raise TesseractNotFoundError()
+
 
 def image_to_string(image,
                     lang=None,
@@ -302,8 +316,11 @@ def image_to_data(image,
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
     '''
-    if LooseVersion(get_tesseract_version()) < '3.05':
+
+    # TODO: we can use decoration for this check
+    if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
+
     if output_type == Output.DICT:
         return file_to_dict(
             run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
