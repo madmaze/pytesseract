@@ -147,10 +147,11 @@ LICENSE
 -------
 Python-tesseract is released under the GPL v3.
 
-CONTRIBUTERS
+CONTRIBUTORS
 ------------
 - Originally written by `Samuel Hoffstaetter <https://github.com/h>`_
 - `Juarez Bochi <https://github.com/jbochi>`_
 - `Matthias Lee <https://github.com/madmaze>`_
 - `Lars Kistner <https://github.com/Sr4l>`_
 - `Ryan Mitchell <https://github.com/REMitchell>`_
+- `Emilio Cecchini <https://github.com/check-emee>`_
