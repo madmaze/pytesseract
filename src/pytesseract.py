@@ -16,8 +16,9 @@ from pkgutil import find_loader
 import tempfile
 import shlex
 from glob import iglob
+from distutils.version import LooseVersion
 
-numpy_installed = True if find_loader('numpy') is not None else False
+numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
     from numpy import ndarray
 
@@ -45,6 +46,20 @@ class TesseractError(Exception):
         self.status = status
         self.message = message
         self.args = (status, message)
+
+
+class TesseractNotFoundError(OSError):
+    def __init__(self):
+        super(TesseractNotFoundError, self).__init__(
+            tesseract_cmd + " is not installed or it's not in your path"
+        )
+
+
+class TSVNotSupported(Exception):
+    def __init__(self):
+        super(TSVNotSupported, self).__init__(
+            'tsv output not supported. It requires Tesseract >= 3.05'
+        )
 
 
 def get_errors(error_string):
@@ -165,13 +180,15 @@ def run_and_get_output(image,
             'config': config,
             'nice': nice
         }
-
-        run_tesseract(**kwargs)
-        filename = kwargs['output_filename_base'] + os.extsep + extension
-        with open(filename, 'rb') as output_file:
-            if return_bytes:
-                return output_file.read()
-            return output_file.read().decode('utf-8').strip()
+        try:
+            run_tesseract(**kwargs)
+            filename = kwargs['output_filename_base'] + os.extsep + extension
+            with open(filename, 'rb') as output_file:
+                if return_bytes:
+                    return output_file.read()
+                return output_file.read().decode('utf-8').strip()
+        except OSError:
+            raise TesseractNotFoundError()
     finally:
         cleanup(temp_name)
 
@@ -183,7 +200,7 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
         return result
 
     header = rows.pop(0)
-    if rows and len(rows[-1]) < len(header):
+    if len(rows[-1]) < len(header):
         # Fixes bug that occurs when last text string in TSV is null, and
         # last row is missing a final cell in TSV file
         rows[-1].append('')
@@ -220,6 +237,17 @@ def osd_to_dict(osd):
         ) if len(kv) == 2 and is_valid(kv[1], OSD_KEYS[kv[0]][1])
     }
 
+
+def get_tesseract_version():
+    '''
+    Returns a string containing the Tesseract version.
+    '''
+    try:
+        return subprocess.check_output(
+            [tesseract_cmd, '--version'], stderr=subprocess.STDOUT
+        ).decode('utf-8').split()[1]
+    except OSError:
+        raise TesseractNotFoundError()
 
 def image_to_string(image,
                     lang=None,
@@ -274,6 +302,8 @@ def image_to_data(image,
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
     '''
+    if LooseVersion(get_tesseract_version()) < '3.05':
+        raise TSVNotSupported()
     if output_type == Output.DICT:
         return file_to_dict(
             run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
