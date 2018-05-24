@@ -1,3 +1,4 @@
 recursive-include src *.jpg
 recursive-include src *.png
+include LICENSE
 include README.rst
