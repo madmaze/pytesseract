@@ -39,9 +39,9 @@ USAGE
         from PIL import Image
     import pytesseract
 
-    pytesseract.pytesseract.tesseract_cmd = '<full_path_to_your_tesseract_executable>'
-    # Include the above line, if you don't have tesseract executable in your PATH
-    # Example tesseract_cmd: 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
+    # If you don't have tesseract executable in your PATH, include the following:
+    pytesseract.pytesseract.tesseract_cmd = r'<full_path_to_your_tesseract_executable>'
+    # Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
     # Simple image to string
     print(pytesseract.image_to_string(Image.open('test.png')))
@@ -64,7 +64,7 @@ Support for OpenCV image/NumPy array objects
 
     import cv2
 
-    img = cv2.imread('/**path_to_image**/digits.png')
+    img = cv2.imread(r'/<path_to_image>/digits.png')
     print(pytesseract.image_to_string(img))
     # OR explicit beforehand converting
     print(pytesseract.image_to_string(Image.fromarray(img))
@@ -73,8 +73,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 .. code-block:: python
 
-    tessdata_dir_config = '--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
-    # Example config: '--tessdata-dir "C:\\Program Files (x86)\\Tesseract-OCR\\tessdata"'
+    tessdata_dir_config = r'--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
+    # Example config: r'--tessdata-dir "C:\Program Files (x86)\Tesseract-OCR\tessdata"'
     # It's important to add double quotes around the dir path.
 
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
