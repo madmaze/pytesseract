@@ -15,6 +15,7 @@ import subprocess
 from pkgutil import find_loader
 import tempfile
 import shlex
+import string
 from glob import iglob
 from distutils.version import LooseVersion
 
@@ -41,24 +42,24 @@ class Output:
     DICT = "dict"
 
 
-class TesseractError(Exception):
+class TesseractError(RuntimeError):
     def __init__(self, status, message):
         self.status = status
         self.message = message
         self.args = (status, message)
 
 
-class TesseractNotFoundError(OSError):
+class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super(TesseractNotFoundError, self).__init__(
             tesseract_cmd + " is not installed or it's not in your path"
         )
 
 
-class TSVNotSupported(Exception):
+class TSVNotSupported(EnvironmentError):
     def __init__(self):
         super(TSVNotSupported, self).__init__(
-            'tsv output not supported. It requires Tesseract >= 3.05'
+            'TSV output not supported. Tesseract >= 3.05 required'
         )
 
 
@@ -251,13 +252,13 @@ def osd_to_dict(osd):
 @run_once
 def get_tesseract_version():
     '''
-    Returns a string containing the Tesseract version.
+    Returns LooseVersion object of the Tesseract version
     '''
     try:
         return LooseVersion(
             subprocess.check_output(
                 [tesseract_cmd, '--version'], stderr=subprocess.STDOUT
-            ).decode('utf-8').split()[1]
+            ).decode('utf-8').split()[1].lstrip(string.printable[10:])
         )
     except OSError:
         raise TesseractNotFoundError()
@@ -278,12 +279,14 @@ def image_to_string(image,
               ' in future versions. Use function image_to_boxes instead.\n')
         return image_to_boxes(image, lang, config, nice, output_type)
 
-    if output_type == Output.DICT:
-        return {'text': run_and_get_output(image, 'txt', lang, config, nice)}
-    elif output_type == Output.BYTES:
-        return run_and_get_output(image, 'txt', lang, config, nice, True)
+    args = [image, 'txt', lang, config, nice]
 
-    return run_and_get_output(image, 'txt', lang, config, nice)
+    if output_type == Output.DICT:
+        return {'text': run_and_get_output(*args)}
+    elif output_type == Output.BYTES:
+        args.append(True)
+
+    return run_and_get_output(*args)
 
 
 def image_to_boxes(image,
@@ -295,16 +298,15 @@ def image_to_boxes(image,
     Returns string containing recognized characters and their box boundaries
     '''
     config += ' batch.nochop makebox'
+    args = [image, 'box', lang, config, nice]
 
     if output_type == Output.DICT:
         box_header = 'char left bottom right top page\n'
-        return file_to_dict(
-            box_header + run_and_get_output(
-                image, 'box', lang, config, nice), ' ', 0)
+        return file_to_dict(box_header + run_and_get_output(*args), ' ', 0)
     elif output_type == Output.BYTES:
-        return run_and_get_output(image, 'box', lang, config, nice, True)
+        args.append(True)
 
-    return run_and_get_output(image, 'box', lang, config, nice)
+    return run_and_get_output(*args)
 
 
 def image_to_data(image,
@@ -317,17 +319,17 @@ def image_to_data(image,
     and other information. Requires Tesseract 3.05+
     '''
 
-    # TODO: we can use decoration for this check
     if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
 
-    if output_type == Output.DICT:
-        return file_to_dict(
-            run_and_get_output(image, 'tsv', lang, config, nice), '\t', -1)
-    elif output_type == Output.BYTES:
-        return run_and_get_output(image, 'tsv', lang, config, nice, True)
+    args = [image, 'tsv', lang, config, nice]
 
-    return run_and_get_output(image, 'tsv', lang, config, nice)
+    if output_type == Output.DICT:
+        return file_to_dict(run_and_get_output(*args), '\t', -1)
+    elif output_type == Output.BYTES:
+        args.append(True)
+
+    return run_and_get_output(*args)
 
 
 def image_to_osd(image,
@@ -339,14 +341,14 @@ def image_to_osd(image,
     Returns string containing the orientation and script detection (OSD)
     '''
     config += ' --psm 0'
+    args = [image, 'osd', lang, config, nice]
 
     if output_type == Output.DICT:
-        return osd_to_dict(
-            run_and_get_output(image, 'osd', lang, config, nice))
+        return osd_to_dict(run_and_get_output(*args))
     elif output_type == Output.BYTES:
-        return run_and_get_output(image, 'osd', lang, config, nice, True)
+        args.append(True)
 
-    return run_and_get_output(image, 'osd', lang, config, nice)
+    return run_and_get_output(*args)
 
 
 def main():
