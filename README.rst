@@ -5,22 +5,19 @@ Python Tesseract
    :target: https://pypi.python.org/pypi/pytesseract
    :alt: PyPI release
 
-
 .. image:: 	https://img.shields.io/github/release/madmaze/pytesseract.svg
    :target: https://github.com/madmaze/pytesseract/releases
    :alt: Github release
-
 
 .. image:: https://img.shields.io/pypi/pyversions/pytesseract.svg
    :target: https://pypi.python.org/pypi/pytesseract
    :alt: PyPI version
 
-
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
 
-Python-tesseract is a wrapper for `Google's Tesseract-OCR Engine <https://github.com/tesseract-ocr/tesseract>`_. It is also useful as a
-stand-alone invocation script to tesseract, as it can read all image types
+Python-tesseract is a wrapper for `Google's Tesseract-OCR Engine <https://github.com/tesseract-ocr/tesseract>`_.
+It is also useful as a stand-alone invocation script to tesseract, as it can read all image types
 supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
 and others, whereas tesseract-ocr by default only supports tiff and bmp.
 Additionally, if used as a script, Python-tesseract will print the recognized
@@ -55,7 +52,7 @@ USAGE
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
 
-    # Get informations about orientation and script detection
+    # Get information about orientation and script detection
     print(pytesseract.image_to_osd(Image.open('test.png'))
 
 Support for OpenCV image/NumPy array objects
@@ -90,7 +87,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_
 
-* **image_to_osd** Returns result containing informations about orientation and script detection.
+* **image_to_osd** Returns result containing information about orientation and script detection.
 
 **Parameters**
 
@@ -104,7 +101,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
-* **output_type** Class attribute, specifies the type of the output, defaults to ``string``. For the full list of all supported types, please check the definition of `pytesseract.Output <https://github.com/madmaze/pytesseract/blob/master/src/pytesseract.py>`_ class.
+* **output_type** Class attribute, specifies the type of the output, defaults to ``string``.  For the full list of all supported types, please check the definition of `pytesseract.Output <https://github.com/madmaze/pytesseract/blob/master/src/pytesseract.py>`_ class.
 
 
 INSTALLATION
@@ -124,6 +121,7 @@ Prerequisites:
   For Mac OS users. please install homebrew package **tesseract**.
 
 | Installing via pip:
+
 Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_ for more information.
 
 .. code-block:: bash
