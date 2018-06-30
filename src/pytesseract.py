@@ -148,22 +148,26 @@ def run_tesseract(input_filename,
                   lang,
                   config='',
                   nice=0):
-    command = []
+    cmd_args = []
 
     if not sys.platform.startswith('win32') and nice != 0:
-        command += ('nice', '-n', str(nice))
+        cmd_args += ('nice', '-n', str(nice))
 
-    command += (tesseract_cmd, input_filename, output_filename_base)
+    cmd_args += (tesseract_cmd, input_filename, output_filename_base)
 
     if lang is not None:
-        command += ('-l', lang)
+        cmd_args += ('-l', lang)
 
-    command += shlex.split(config)
+    cmd_args += shlex.split(config)
 
     if extension != 'box':
-        command.append(extension)
+        cmd_args.append(extension)
 
-    proc = subprocess.Popen(command, **subprocess_args())
+    try:
+        proc = subprocess.Popen(cmd_args, **subprocess_args())
+    except OSError:
+        raise TesseractNotFoundError()
+
     status_code, error_string = proc.wait(), proc.stderr.read()
     proc.stderr.close()
 
@@ -177,7 +181,7 @@ def run_and_get_output(image,
                        extension,
                        lang=None,
                        config='',
-                       nice=None,
+                       nice=0,
                        return_bytes=False):
 
     temp_name, input_filename = '', ''
@@ -191,15 +195,13 @@ def run_and_get_output(image,
             'config': config,
             'nice': nice
         }
-        try:
-            run_tesseract(**kwargs)
-            filename = kwargs['output_filename_base'] + os.extsep + extension
-            with open(filename, 'rb') as output_file:
-                if return_bytes:
-                    return output_file.read()
-                return output_file.read().decode('utf-8').strip()
-        except OSError:
-            raise TesseractNotFoundError()
+
+        run_tesseract(**kwargs)
+        filename = kwargs['output_filename_base'] + os.extsep + extension
+        with open(filename, 'rb') as output_file:
+            if return_bytes:
+                return output_file.read()
+            return output_file.read().decode('utf-8').strip()
     finally:
         cleanup(temp_name)
 
