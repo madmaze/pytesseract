@@ -160,7 +160,7 @@ def run_tesseract(input_filename,
 
     cmd_args += shlex.split(config)
 
-    if extension != 'box':
+    if extension not in ('box', 'osd'):
         cmd_args.append(extension)
 
     try:
@@ -335,7 +335,7 @@ def image_to_data(image,
 
 
 def image_to_osd(image,
-                 lang=None,
+                 lang='osd',
                  config='',
                  nice=0,
                  output_type=Output.STRING):
