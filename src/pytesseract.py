@@ -342,7 +342,7 @@ def image_to_osd(image,
     '''
     Returns string containing the orientation and script detection (OSD)
     '''
-    config += ' --psm 0'
+    config += ' -psm 0' if get_tesseract_version() < '3.05' else ' --psm 0'   
     args = [image, 'osd', lang, config, nice]
 
     if output_type == Output.DICT:
