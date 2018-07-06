@@ -110,7 +110,7 @@ INSTALLATION
 Prerequisites:
 
 - Python-tesseract requires python 2.5+ or python 3.x
-- You will need the Python Imaging Library (PIL) (or the Pillow fork).
+- You will need the Python Imaging Library (PIL) (or the `Pillow <https://pypi.org/project/Pillow/>`_ fork).
   Under Debian/Ubuntu, this is the package **python-imaging** or **python3-imaging**.
 - Install `Google Tesseract OCR <https://github.com/tesseract-ocr/tesseract>`_
   (additional info how to install the engine on Linux, Mac OSX and Windows).
