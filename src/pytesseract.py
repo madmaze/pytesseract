@@ -12,12 +12,13 @@ except ImportError:
 import os
 import sys
 import subprocess
-from pkgutil import find_loader
 import tempfile
 import shlex
 import string
 from glob import iglob
+from pkgutil import find_loader
 from distutils.version import LooseVersion
+from os.path import realpath, normpath, normcase
 
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
@@ -99,8 +100,11 @@ def prepare(image):
 
 
 def save_image(image):
-    image = prepare(image)
+    temp_name = tempfile.mktemp(prefix='tess_')
+    if isinstance(image, str):
+        return temp_name, realpath(normpath(normcase(image)))
 
+    image = prepare(image)
     img_extension = image.format
     if image.format not in {'JPEG', 'PNG', 'TIFF', 'BMP', 'GIF'}:
         img_extension = 'PNG'
@@ -114,7 +118,6 @@ def save_image(image):
         background.paste(image, (0, 0), image)
         image = background
 
-    temp_name = tempfile.mktemp(prefix='tess_')
     input_file_name = temp_name + os.extsep + img_extension
     image.save(input_file_name, format=img_extension, **image.info)
     return temp_name, input_file_name
@@ -324,7 +327,7 @@ def image_to_data(image,
     if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
 
-    config +=  ' -c tessedit_create_tsv=1'
+    config = '{} {}'.format('-c tessedit_create_tsv=1', config.strip()).strip()
     args = [image, 'tsv', lang, config, nice]
 
     if output_type == Output.DICT:
@@ -343,7 +346,10 @@ def image_to_osd(image,
     '''
     Returns string containing the orientation and script detection (OSD)
     '''
-    config += ' -{}psm 0'.format('' if get_tesseract_version() < '3.05' else '-')
+    config = '{}-psm 0 {}'.format(
+        '' if get_tesseract_version() < '3.05' else '-',
+        config.strip()
+    ).strip()
     args = [image, 'osd', lang, config, nice]
 
     if output_type == Output.DICT:
