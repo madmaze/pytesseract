@@ -313,7 +313,7 @@ def image_to_boxes(image,
 
 def image_to_data(image,
                   lang=None,
-                  config=' -c tessedit_create_tsv=1',
+                  config='',
                   nice=0,
                   output_type=Output.STRING):
     '''
@@ -324,6 +324,7 @@ def image_to_data(image,
     if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
 
+    config +=  ' -c tessedit_create_tsv=1'
     args = [image, 'tsv', lang, config, nice]
 
     if output_type == Output.DICT:
