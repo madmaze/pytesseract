@@ -160,7 +160,7 @@ def run_tesseract(input_filename,
 
     cmd_args += shlex.split(config)
 
-    if extension not in ('box', 'osd'):
+    if extension not in ('box', 'osd', 'tsv'):
         cmd_args.append(extension)
 
     try:
@@ -313,7 +313,7 @@ def image_to_boxes(image,
 
 def image_to_data(image,
                   lang=None,
-                  config='',
+                  config=' -c tessedit_create_tsv=1',
                   nice=0,
                   output_type=Output.STRING):
     '''
