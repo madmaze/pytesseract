@@ -31,9 +31,9 @@ USAGE
 .. code-block:: python
 
     try:
-        import Image
-    except ImportError:
         from PIL import Image
+    except ImportError:
+        import Image
     import pytesseract
 
     # If you don't have tesseract executable in your PATH, include the following:
