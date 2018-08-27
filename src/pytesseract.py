@@ -5,9 +5,9 @@ Python-tesseract. For more information: https://github.com/madmaze/pytesseract
 '''
 
 try:
-    import Image
-except ImportError:
     from PIL import Image
+except ImportError:
+    import Image
 
 import os
 import sys
