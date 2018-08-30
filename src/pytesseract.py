@@ -216,18 +216,25 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
         return result
 
     header = rows.pop(0)
-    if len(rows[-1]) < len(header):
+    length = len(header)
+    if len(rows[-1]) < length:
         # Fixes bug that occurs when last text string in TSV is null, and
         # last row is missing a final cell in TSV file
         rows[-1].append('')
 
     if str_col_idx < 0:
-        str_col_idx += len(header)
+        str_col_idx += length
 
     for i, head in enumerate(header):
-        result[head] = [
-            int(row[i]) if i != str_col_idx else row[i] for row in rows
-        ]
+        result[head] = list()
+        for row in rows:
+            if len(row) <= i:
+                continue
+
+            val = row[i]
+            if row[i].isdigit() and i != str_col_idx:
+                val = int(row[i])
+            result[head].append(val)
 
     return result
 
