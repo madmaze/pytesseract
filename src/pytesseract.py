@@ -305,26 +305,14 @@ def image_to_pdf_or_hocr(image,
                     lang=None,
                     config='',
                     nice=0,
-                    boxes=False,
-                    output_type=Output.BYTES,
                     extension='pdf'):
     '''
     Returns the result of a Tesseract OCR run on the provided image to string
     '''
-    if boxes:
-        # Added for backwards compatibility
-        print('\nWarning: Argument \'boxes\' is deprecated and will be removed'
-              ' in future versions. Use function image_to_boxes instead.\n')
-        return image_to_boxes(image, lang, config, nice, output_type)
 
     if extension not in ['pdf', 'hocr']:
         extension = 'txt'
-    args = [image, extension, lang, config, nice]
-
-    if output_type == Output.DICT:
-        return {'text': run_and_get_output(*args)}
-    elif output_type == Output.BYTES:
-        args.append(True)
+    args = [image, extension, lang, config, nice, True]
 
     return run_and_get_output(*args)
 
