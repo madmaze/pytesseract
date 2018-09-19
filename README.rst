@@ -59,6 +59,12 @@ USAGE
     # NOTE: If you don't use supported images, tesseract will return error
     print(pytesseract.image_to_string('test.png'))
 
+    # get a searchable PDF
+    print(pytesseract.image_to_pdf_or_hocr('test.png', extension='pdf'))
+
+    # get HOCR output
+    print(pytesseract.image_to_pdf_or_hocr('test.png', extension='hocr'))
+
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
