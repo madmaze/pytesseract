@@ -301,6 +301,22 @@ def image_to_string(image,
     return run_and_get_output(*args)
 
 
+def image_to_pdf_or_hocr(image,
+                    lang=None,
+                    config='',
+                    nice=0,
+                    extension='pdf'):
+    '''
+    Returns the result of a Tesseract OCR run on the provided image to string
+    '''
+
+    if extension not in ['pdf', 'hocr']:
+        extension = 'txt'
+    args = [image, extension, lang, config, nice, True]
+
+    return run_and_get_output(*args)
+
+
 def image_to_boxes(image,
                    lang=None,
                    config='',
