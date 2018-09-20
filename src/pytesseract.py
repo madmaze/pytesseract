@@ -280,17 +280,10 @@ def image_to_string(image,
                     lang=None,
                     config='',
                     nice=0,
-                    boxes=False,
                     output_type=Output.STRING):
     '''
     Returns the result of a Tesseract OCR run on the provided image to string
     '''
-    if boxes:
-        # Added for backwards compatibility
-        print('\nWarning: Argument \'boxes\' is deprecated and will be removed'
-              ' in future versions. Use function image_to_boxes instead.\n')
-        return image_to_boxes(image, lang, config, nice, output_type)
-
     args = [image, 'txt', lang, config, nice]
 
     if output_type == Output.DICT:
