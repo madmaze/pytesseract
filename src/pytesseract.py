@@ -24,7 +24,7 @@ numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
     from numpy import ndarray
 
-from io import StringIO
+from io import BytesIO
 pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
@@ -364,7 +364,7 @@ def image_to_data(image,
             raise PandasNotSupported()
 
         args.append(True)
-        return pd.read_csv(StringIO(run_and_get_output(*args)), sep="\t")
+        return pd.read_csv(BytesIO(run_and_get_output(*args)), sep="\t")
     elif output_type == Output.BYTES:
         args.append(True)
 
