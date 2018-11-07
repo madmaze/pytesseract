@@ -49,6 +49,11 @@ class Output:
     DATAFRAME = "data.frame"
 
 
+class PandasNotSupported(EnvironmentError):
+    def __init__(self):
+        super(PandasNotSupported, self).__init__('Missing pandas package')
+
+
 class TesseractError(RuntimeError):
     def __init__(self, status, message):
         self.status = status
@@ -354,7 +359,10 @@ def image_to_data(image,
 
     if output_type == Output.DICT:
         return file_to_dict(run_and_get_output(*args), '\t', -1)
-    elif pandas_installed and output_type == Output.DATAFRAME:
+    elif output_type == Output.DATAFRAME:
+        if not pandas_installed:
+            raise PandasNotSupported()
+
         args.append(True)
         return pd.read_csv(StringIO(run_and_get_output(*args)), sep="\t")
     elif output_type == Output.BYTES:
