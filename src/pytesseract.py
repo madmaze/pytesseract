@@ -16,6 +16,7 @@ import tempfile
 import shlex
 import string
 from glob import iglob
+from csv import QUOTE_NONE
 from pkgutil import find_loader
 from distutils.version import LooseVersion
 from os.path import realpath, normpath, normcase
@@ -43,10 +44,10 @@ OSD_KEYS = {
 
 
 class Output:
-    STRING = "string"
-    BYTES = "bytes"
-    DICT = "dict"
-    DATAFRAME = "data.frame"
+    BYTES = 'bytes'
+    DATAFRAME = 'data.frame'
+    DICT = 'dict'
+    STRING = 'string'
 
 
 class PandasNotSupported(EnvironmentError):
@@ -92,7 +93,7 @@ def get_errors(error_string):
 
 
 def cleanup(temp_name):
-    ''' Tries to remove files by filename wildcard path. '''
+    ''' Tries to remove temp files by filename wildcard path. '''
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             os.remove(filename)
@@ -297,12 +298,11 @@ def image_to_string(image,
     '''
     args = [image, 'txt', lang, config, nice]
 
-    if output_type == Output.DICT:
-        return {'text': run_and_get_output(*args)}
-    elif output_type == Output.BYTES:
-        args.append(True)
-
-    return run_and_get_output(*args)
+    return {
+        Output.BYTES: lambda: run_and_get_output(*(args + [True])),
+        Output.DICT: lambda: {'text': run_and_get_output(*args)},
+        Output.STRING: lambda: run_and_get_output(*args),
+    }[output_type]()
 
 
 def image_to_pdf_or_hocr(image,
@@ -311,11 +311,11 @@ def image_to_pdf_or_hocr(image,
                     nice=0,
                     extension='pdf'):
     '''
-    Returns the result of a Tesseract OCR run on the provided image to string
+    Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
     '''
 
     if extension not in ['pdf', 'hocr']:
-        extension = 'txt'
+        raise ValueError('Unsupported extension: {}'.format(extension))
     args = [image, extension, lang, config, nice, True]
 
     return run_and_get_output(*args)
@@ -332,13 +332,25 @@ def image_to_boxes(image,
     config += ' batch.nochop makebox'
     args = [image, 'box', lang, config, nice]
 
-    if output_type == Output.DICT:
-        box_header = 'char left bottom right top page\n'
-        return file_to_dict(box_header + run_and_get_output(*args), ' ', 0)
-    elif output_type == Output.BYTES:
-        args.append(True)
+    return {
+        Output.BYTES: lambda: run_and_get_output(*(args + [True])),
+        Output.DICT: lambda: file_to_dict(
+            'char left bottom right top page\n' + run_and_get_output(*args),
+            ' ',
+            0),
+        Output.STRING: lambda: run_and_get_output(*args),
+    }[output_type]()
 
-    return run_and_get_output(*args)
+
+def get_pandas_output(args):
+    if not pandas_installed:
+        raise PandasNotSupported()
+
+    return pd.read_csv(
+        BytesIO(run_and_get_output(*args)),
+        quoting=QUOTE_NONE,
+        sep='\t'
+    )
 
 
 def image_to_data(image,
@@ -357,18 +369,12 @@ def image_to_data(image,
     config = '{} {}'.format('-c tessedit_create_tsv=1', config.strip()).strip()
     args = [image, 'tsv', lang, config, nice]
 
-    if output_type == Output.DICT:
-        return file_to_dict(run_and_get_output(*args), '\t', -1)
-    elif output_type == Output.DATAFRAME:
-        if not pandas_installed:
-            raise PandasNotSupported()
-
-        args.append(True)
-        return pd.read_csv(BytesIO(run_and_get_output(*args)), sep="\t")
-    elif output_type == Output.BYTES:
-        args.append(True)
-
-    return run_and_get_output(*args)
+    return {
+        Output.BYTES: lambda: run_and_get_output(*(args + [True])),
+        Output.DATAFRAME: lambda: get_pandas_output(args + [True]),
+        Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
+        Output.STRING: lambda: run_and_get_output(*args),
+    }[output_type]()
 
 
 def image_to_osd(image,
@@ -385,12 +391,11 @@ def image_to_osd(image,
     ).strip()
     args = [image, 'osd', lang, config, nice]
 
-    if output_type == Output.DICT:
-        return osd_to_dict(run_and_get_output(*args))
-    elif output_type == Output.BYTES:
-        args.append(True)
-
-    return run_and_get_output(*args)
+    return {
+        Output.BYTES: lambda: run_and_get_output(*(args + [True])),
+        Output.DICT: lambda: osd_to_dict(run_and_get_output(*args)),
+        Output.STRING: lambda: run_and_get_output(*args),
+    }[output_type]()
 
 
 def main():
