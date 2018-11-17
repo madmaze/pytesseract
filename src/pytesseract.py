@@ -17,6 +17,7 @@ import shlex
 import string
 from glob import iglob
 from csv import QUOTE_NONE
+from functools import wraps
 from pkgutil import find_loader
 from distutils.version import LooseVersion
 from os.path import realpath, normpath, normcase
@@ -77,6 +78,7 @@ class TSVNotSupported(EnvironmentError):
 
 
 def run_once(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         if wrapper._result is wrapper:
             wrapper._result = func(*args, **kwargs)
