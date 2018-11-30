@@ -186,6 +186,8 @@ def run_tesseract(input_filename,
         raise TesseractNotFoundError()
 
     status_code, error_string = proc.wait(), proc.stderr.read()
+    proc.stdin.close()
+    proc.stdout.close()
     proc.stderr.close()
 
     if status_code:
