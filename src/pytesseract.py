@@ -410,7 +410,8 @@ def main():
         exit(2)
 
     try:
-        print(image_to_string(Image.open(filename), lang=lang))
+        with Image.open(filename) as img:
+            print(image_to_string(img, lang=lang))
     except IOError:
         sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
         exit(1)
