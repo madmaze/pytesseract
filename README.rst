@@ -55,14 +55,14 @@ USAGE
     # Get information about orientation and script detection
     print(pytesseract.image_to_osd(Image.open('test.png')))
 
-    # In order to bypass the internal image conversions, just use relative or absolute image path
-    # NOTE: If you don't use supported images, tesseract will return error
+    # In order to bypass the image conversions of pytesseract, just use relative or absolute image path
+    # NOTE: In this case you should provide tesseract supported images or tesseract will return error
     print(pytesseract.image_to_string('test.png'))
 
-    # get a searchable PDF
+    # Get a searchable PDF
     pdf = pytesseract.image_to_pdf_or_hocr('test.png', extension='pdf')
 
-    # get HOCR output
+    # Get HOCR output
     hocr = pytesseract.image_to_pdf_or_hocr('test.png', extension='hocr')
 
 Support for OpenCV image/NumPy array objects
@@ -80,12 +80,10 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 .. code-block:: python
 
-    tessdata_dir_config = r'--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     # Example config: r'--tessdata-dir "C:\Program Files (x86)\Tesseract-OCR\tessdata"'
     # It's important to add double quotes around the dir path.
-
+    tessdata_dir_config = r'--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
-
 
 **Functions**
 
