@@ -177,7 +177,7 @@ def run_tesseract(input_filename,
 
     cmd_args += shlex.split(config)
 
-    if extension not in ('box', 'osd', 'tsv'):
+    if extension not in {'box', 'osd', 'tsv'}:
         cmd_args.append(extension)
 
     try:
@@ -318,7 +318,7 @@ def image_to_pdf_or_hocr(image,
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
     '''
 
-    if extension not in ['pdf', 'hocr']:
+    if extension not in {'pdf', 'hocr'}:
         raise ValueError('Unsupported extension: {}'.format(extension))
     args = [image, extension, lang, config, nice, True]
 
