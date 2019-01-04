@@ -145,13 +145,13 @@ def subprocess_args(include_stdout=True):
         'stdin': subprocess.PIPE,
         'stderr': subprocess.PIPE,
         'startupinfo': None,
-        'env': None
+        'env': os.environ
     }
 
     if hasattr(subprocess, 'STARTUPINFO'):
         kwargs['startupinfo'] = subprocess.STARTUPINFO()
         kwargs['startupinfo'].dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        kwargs['env'] = os.environ
+        kwargs['startupinfo'].wShowWindow = subprocess.SW_HIDE
 
     if include_stdout:
         kwargs['stdout'] = subprocess.PIPE
