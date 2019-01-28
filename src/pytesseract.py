@@ -182,9 +182,11 @@ def run_tesseract(input_filename,
 
     try:
         proc = subprocess.Popen(cmd_args, **subprocess_args())
-        _, error_string = proc.communicate()
     except OSError:
         raise TesseractNotFoundError()
+
+    try:
+        _, error_string = proc.communicate()
     finally:
         proc.stdin.close()
         proc.stdout.close()
@@ -192,8 +194,6 @@ def run_tesseract(input_filename,
 
     if proc.returncode:
         raise TesseractError(proc.returncode, get_errors(error_string))
-
-    return True
 
 
 def run_and_get_output(image,
