@@ -21,12 +21,12 @@ from functools import wraps
 from pkgutil import find_loader
 from distutils.version import LooseVersion
 from os.path import realpath, normpath, normcase
+from io import BytesIO
 
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
     from numpy import ndarray
 
-from io import BytesIO
 pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
@@ -310,10 +310,10 @@ def image_to_string(image,
 
 
 def image_to_pdf_or_hocr(image,
-                    lang=None,
-                    config='',
-                    nice=0,
-                    extension='pdf'):
+                         lang=None,
+                         config='',
+                         nice=0,
+                         extension='pdf'):
     '''
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
     '''
