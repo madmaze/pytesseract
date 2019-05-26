@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-'''
+"""
 Python-tesseract. For more information: https://github.com/madmaze/pytesseract
-'''
+"""
 
 try:
     from PIL import Image
@@ -95,7 +95,7 @@ def get_errors(error_string):
 
 
 def cleanup(temp_name):
-    ''' Tries to remove temp files by filename wildcard path. '''
+    """ Tries to remove temp files by filename wildcard path. """
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             os.remove(filename)
@@ -279,9 +279,9 @@ def osd_to_dict(osd):
 
 @run_once
 def get_tesseract_version():
-    '''
+    """
     Returns LooseVersion object of the Tesseract version
-    '''
+    """
     try:
         return LooseVersion(
             subprocess.check_output(
@@ -297,9 +297,9 @@ def image_to_string(image,
                     config='',
                     nice=0,
                     output_type=Output.STRING):
-    '''
+    """
     Returns the result of a Tesseract OCR run on the provided image to string
-    '''
+    """
     args = [image, 'txt', lang, config, nice]
 
     return {
@@ -330,9 +330,9 @@ def image_to_boxes(image,
                    config='',
                    nice=0,
                    output_type=Output.STRING):
-    '''
+    """
     Returns string containing recognized characters and their box boundaries
-    '''
+    """
     config += ' batch.nochop makebox'
     args = [image, 'box', lang, config, nice]
 
@@ -362,10 +362,10 @@ def image_to_data(image,
                   config='',
                   nice=0,
                   output_type=Output.STRING):
-    '''
+    """
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
-    '''
+    """
 
     if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
@@ -386,9 +386,9 @@ def image_to_osd(image,
                  config='',
                  nice=0,
                  output_type=Output.STRING):
-    '''
+    """
     Returns string containing the orientation and script detection (OSD)
-    '''
+    """
     config = '{}-psm 0 {}'.format(
         '' if get_tesseract_version() < '3.05' else '-',
         config.strip()
