@@ -156,6 +156,16 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
     $> git clone https://github.com/madmaze/pytesseract.git
     $ (env)> cd pytesseract && pip install -U .
 
+TESTING
+-------
+
+To run this project's test suite, install and run ``tox``.
+
+.. code-block:: bash
+
+    $ (env)> pip install tox
+    $ (env)> tox
+
 LICENSE
 -------
 Python-tesseract is released under the GPL v3.
