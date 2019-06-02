@@ -27,6 +27,11 @@ USAGE
 
 **Quickstart**
 
+.. note::
+
+    Test images are located in the ``tests/data`` folder of the Git
+    repo.
+
 .. code-block:: python
 
     try:
@@ -119,7 +124,7 @@ INSTALLATION
 
 Prerequisites:
 
-- Python-tesseract requires python 2.7+ or python 3.x
+- Python-tesseract requires python 2.7 or python 3.5+
 - You will need the Python Imaging Library (PIL) (or the `Pillow <https://pypi.org/project/Pillow/>`_ fork).
   Under Debian/Ubuntu, this is the package **python-imaging** or **python3-imaging**.
 - Install `Google Tesseract OCR <https://github.com/tesseract-ocr/tesseract>`_
@@ -150,6 +155,16 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
 
     $> git clone https://github.com/madmaze/pytesseract.git
     $ (env)> cd pytesseract && pip install -U .
+
+TESTING
+-------
+
+To run this project's test suite, install and run ``tox``.
+
+.. code-block:: bash
+
+    $ (env)> pip install tox
+    $ (env)> tox
 
 LICENSE
 -------
