@@ -118,6 +118,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **output_type** Class attribute, specifies the type of the output, defaults to ``string``.  For the full list of all supported types, please check the definition of `pytesseract.Output <https://github.com/madmaze/pytesseract/blob/master/src/pytesseract.py>`_ class.
 
+* **timeout** Integer or Float, timeout duration in seconds for the OCR processing after which pytesseract will terminate and raise RuntimeError.
+
 
 INSTALLATION
 ------------
