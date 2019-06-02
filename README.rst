@@ -162,4 +162,4 @@ CONTRIBUTORS
 - `Matthias Lee <https://github.com/madmaze>`_
 - `Lars Kistner <https://github.com/Sr4l>`_
 - `Ryan Mitchell <https://github.com/REMitchell>`_
-- `Emilio Cecchini <https://github.com/check-emee>`_
+- `Emilio Cecchini <https://github.com/ceccoemi>`_
