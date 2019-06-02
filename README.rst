@@ -159,7 +159,8 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
 TESTING
 -------
 
-To run this project's test suite, install and run ``tox``.
+To run this project's test suite, install and run ``tox``. Ensure that you have ``tesseract``
+installed and in your PATH.
 
 .. code-block:: bash
 
