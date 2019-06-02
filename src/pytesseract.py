@@ -216,7 +216,7 @@ def run_tesseract(input_filename,
     except OSError:
         raise TesseractNotFoundError()
 
-    with timeout_manager(ping, timeout) as error_string:
+    with timeout_manager(proc, timeout) as error_string:
         if proc.returncode:
             raise TesseractError(proc.returncode, get_errors(error_string))
 
