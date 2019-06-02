@@ -21,6 +21,8 @@ from functools import wraps
 from pkgutil import find_loader
 from distutils.version import LooseVersion
 from os.path import realpath, normpath, normcase
+from contextlib import contextmanager
+from threading import Timer
 from io import BytesIO
 
 numpy_installed = find_loader('numpy') is not None
@@ -75,6 +77,34 @@ class TSVNotSupported(EnvironmentError):
         super(TSVNotSupported, self).__init__(
             'TSV output not supported. Tesseract >= 3.05 required'
         )
+
+
+def kill(process, code):
+    process.kill()
+    process.returncode = code
+
+
+@contextmanager
+def timeout_manager(proc, seconds=0):
+    try:
+        if not seconds:
+            yield proc.communicate()[1]
+            return
+
+        timeout_code = -1
+        timer = Timer(seconds, kill, [proc, timeout_code])
+        timer.start()
+        try:
+            _, error_string = proc.communicate()
+            yield error_string
+        finally:
+            timer.cancel()
+            if proc.returncode is timeout_code and not error_string:
+                raise RuntimeError('Tesseract process timeout')
+    finally:
+        proc.stdin.close()
+        proc.stdout.close()
+        proc.stderr.close()
 
 
 def run_once(func):
@@ -164,7 +194,8 @@ def run_tesseract(input_filename,
                   extension,
                   lang,
                   config='',
-                  nice=0):
+                  nice=0,
+                  timeout=0):
     cmd_args = []
 
     if not sys.platform.startswith('win32') and nice != 0:
@@ -185,15 +216,9 @@ def run_tesseract(input_filename,
     except OSError:
         raise TesseractNotFoundError()
 
-    try:
-        _, error_string = proc.communicate()
-    finally:
-        proc.stdin.close()
-        proc.stdout.close()
-        proc.stderr.close()
-
-    if proc.returncode:
-        raise TesseractError(proc.returncode, get_errors(error_string))
+    with timeout_manager(ping, timeout) as error_string:
+        if proc.returncode:
+            raise TesseractError(proc.returncode, get_errors(error_string))
 
 
 def run_and_get_output(image,
@@ -201,6 +226,7 @@ def run_and_get_output(image,
                        lang=None,
                        config='',
                        nice=0,
+                       timeout=0,
                        return_bytes=False):
 
     temp_name, input_filename = '', ''
@@ -212,7 +238,8 @@ def run_and_get_output(image,
             'extension': extension,
             'lang': lang,
             'config': config,
-            'nice': nice
+            'nice': nice,
+            'timeout': timeout
         }
 
         run_tesseract(**kwargs)
@@ -296,11 +323,12 @@ def image_to_string(image,
                     lang=None,
                     config='',
                     nice=0,
-                    output_type=Output.STRING):
+                    output_type=Output.STRING,
+                    timeout=0):
     """
     Returns the result of a Tesseract OCR run on the provided image to string
     """
-    args = [image, 'txt', lang, config, nice]
+    args = [image, 'txt', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -313,14 +341,15 @@ def image_to_pdf_or_hocr(image,
                          lang=None,
                          config='',
                          nice=0,
-                         extension='pdf'):
+                         extension='pdf',
+                         timeout=0):
     """
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
     """
 
     if extension not in {'pdf', 'hocr'}:
         raise ValueError('Unsupported extension: {}'.format(extension))
-    args = [image, extension, lang, config, nice, True]
+    args = [image, extension, lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
 
@@ -329,12 +358,13 @@ def image_to_boxes(image,
                    lang=None,
                    config='',
                    nice=0,
-                   output_type=Output.STRING):
+                   output_type=Output.STRING,
+                   timeout=0):
     """
     Returns string containing recognized characters and their box boundaries
     """
     config += ' batch.nochop makebox'
-    args = [image, 'box', lang, config, nice]
+    args = [image, 'box', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -361,7 +391,8 @@ def image_to_data(image,
                   lang=None,
                   config='',
                   nice=0,
-                  output_type=Output.STRING):
+                  output_type=Output.STRING,
+                  timeout=0):
     """
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
@@ -371,7 +402,7 @@ def image_to_data(image,
         raise TSVNotSupported()
 
     config = '{} {}'.format('-c tessedit_create_tsv=1', config.strip()).strip()
-    args = [image, 'tsv', lang, config, nice]
+    args = [image, 'tsv', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -385,7 +416,8 @@ def image_to_osd(image,
                  lang='osd',
                  config='',
                  nice=0,
-                 output_type=Output.STRING):
+                 output_type=Output.STRING,
+                 timeout=0):
     """
     Returns string containing the orientation and script detection (OSD)
     """
@@ -393,7 +425,7 @@ def image_to_osd(image,
         '' if get_tesseract_version() < '3.05' else '-',
         config.strip()
     ).strip()
-    args = [image, 'osd', lang, config, nice]
+    args = [image, 'osd', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
