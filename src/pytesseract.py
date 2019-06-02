@@ -314,9 +314,9 @@ def image_to_pdf_or_hocr(image,
                          config='',
                          nice=0,
                          extension='pdf'):
-    '''
+    """
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
-    '''
+    """
 
     if extension not in {'pdf', 'hocr'}:
         raise ValueError('Unsupported extension: {}'.format(extension))
