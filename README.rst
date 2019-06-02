@@ -178,3 +178,4 @@ CONTRIBUTORS
 - `Lars Kistner <https://github.com/Sr4l>`_
 - `Ryan Mitchell <https://github.com/REMitchell>`_
 - `Emilio Cecchini <https://github.com/ceccoemi>`_
+- `John Hagen <https://github.com/johnthagen>`_
