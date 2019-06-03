@@ -175,7 +175,8 @@ def run_tesseract(input_filename,
     if lang is not None:
         cmd_args += ('-l', lang)
 
-    cmd_args += shlex.split(config)
+    if config:
+        cmd_args += shlex.split(config)
 
     if extension not in {'box', 'osd', 'tsv'}:
         cmd_args.append(extension)
