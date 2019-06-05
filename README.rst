@@ -106,7 +106,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 **Parameters**
 
-``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING)``
+``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0)``
 
 * **image** Object, PIL Image/NumPy array of the image to be processed by Tesseract
 
