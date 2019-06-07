@@ -151,7 +151,7 @@ def save_image(image):
     image = prepare(image)
     img_extension = image.format
     if image.format not in {'JPEG', 'PNG', 'TIFF', 'BMP', 'GIF'}:
-        img_extension = 'PNG'
+        raise TypeError('Unsupported image format/type')
 
     if not image.mode.startswith(RGB_MODE):
         image = image.convert(RGB_MODE)
