@@ -36,6 +36,9 @@ if pandas_installed:
 # CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
 tesseract_cmd = 'tesseract'
 RGB_MODE = 'RGB'
+SUPPORTED_FORMATS = {
+    'JPEG', 'PNG', 'PBM', 'PGM', 'PPM', 'TIFF', 'BMP', 'GIF'
+}
 OSD_KEYS = {
     'Page number': ('page_num', int),
     'Orientation in degrees': ('orientation', int),
@@ -150,7 +153,7 @@ def save_image(image):
 
     image = prepare(image)
     img_extension = image.format
-    if image.format not in {'JPEG', 'PNG', 'TIFF', 'BMP', 'GIF'}:
+    if image.format not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')
 
     if not image.mode.startswith(RGB_MODE):
