@@ -96,6 +96,10 @@ Add the following config, if you have tessdata error like: "Error opening data f
     tessdata_dir_config = r'--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
 
+    # Example of adding any additional options.
+    custom_oem_psm_config = r'--oem 3 --psm 6'
+    pytesseract.image_to_string(image, config=custom_oem_psm_config)
+
 **Functions**
 
 * **get_tesseract_version** Returns the Tesseract version installed in the system.
