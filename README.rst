@@ -87,6 +87,14 @@ Support for OpenCV image/NumPy array objects
     # OR explicit beforehand converting
     print(pytesseract.image_to_string(Image.fromarray(img))
 
+If you need custom configuration like `oem`/`psm`, use the **config** keyword. 
+
+.. code-block:: python
+
+    # Example of adding any additional options.
+    custom_oem_psm_config = r'--oem 3 --psm 6'
+    pytesseract.image_to_string(image, config=custom_oem_psm_config)
+
 Add the following config, if you have tessdata error like: "Error opening data file..."
 
 .. code-block:: python
@@ -95,10 +103,6 @@ Add the following config, if you have tessdata error like: "Error opening data f
     # It's important to add double quotes around the dir path.
     tessdata_dir_config = r'--tessdata-dir "<replace_with_your_tessdata_dir_path>"'
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
-
-    # Example of adding any additional options.
-    custom_oem_psm_config = r'--oem 3 --psm 6'
-    pytesseract.image_to_string(image, config=custom_oem_psm_config)
 
 **Functions**
 
