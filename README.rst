@@ -31,10 +31,7 @@ USAGE
 
 **Quickstart**
 
-.. note::
-
-    Test images are located in the ``tests/data`` folder of the Git
-    repo.
+*Note*: Test images are located in the ``tests/data`` folder of the Git repo.
 
 .. code-block:: python
 
