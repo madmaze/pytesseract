@@ -199,7 +199,8 @@ def run_tesseract(input_filename,
                   config='',
                   nice=0,
                   timeout=0,
-                  oem=1):
+                  oem=1,
+                  psm = 3):
     cmd_args = []
 
     if not sys.platform.startswith('win32') and nice != 0:
@@ -209,14 +210,16 @@ def run_tesseract(input_filename,
 
     if lang is not None:
         cmd_args += ('-l', lang)
-
+    
+    cmd_arg+=('--psm',psm)
+    
     if config:
         cmd_args += shlex.split(config)
 
     if extension not in {'box', 'osd', 'tsv'}:
         cmd_args.append(extension)
 
-    if float(get_tesseract_version()) <='4.0.0':
+    if get_tesseract_version() > '3.8.2': 
         cmd_args+=('--oem',oem)
 
     try:
@@ -235,7 +238,9 @@ def run_and_get_output(image,
                        config='',
                        nice=0,
                        timeout=0,
-                       return_bytes=False):
+                       return_bytes=False,
+                      oem=1,
+                      psm=3):
 
     temp_name, input_filename = '', ''
     try:
@@ -247,7 +252,9 @@ def run_and_get_output(image,
             'lang': lang,
             'config': config,
             'nice': nice,
-            'timeout': timeout
+            'timeout': timeout,
+            'oem': oem,
+            'psm': psm,
         }
 
         run_tesseract(**kwargs)
@@ -332,11 +339,13 @@ def image_to_string(image,
                     config='',
                     nice=0,
                     output_type=Output.STRING,
-                    timeout=0):
+                    timeout=0,
+                    oem=1,
+                    psm=3):
     """
     Returns the result of a Tesseract OCR run on the provided image to string
     """
-    args = [image, 'txt', lang, config, nice, timeout]
+    args = [image, 'txt', lang, config, nice, timeout, oem, psm]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -350,7 +359,9 @@ def image_to_pdf_or_hocr(image,
                          config='',
                          nice=0,
                          extension='pdf',
-                         timeout=0):
+                         timeout=0,
+                         oem=1,
+                         psm=3):
     """
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
     """
@@ -367,12 +378,14 @@ def image_to_boxes(image,
                    config='',
                    nice=0,
                    output_type=Output.STRING,
-                   timeout=0):
+                   timeout=0,
+                   oem=1,
+                   psm=3):
     """
     Returns string containing recognized characters and their box boundaries
     """
     config += ' batch.nochop makebox'
-    args = [image, 'box', lang, config, nice, timeout]
+    args = [image, 'box', lang, config, nice, timeout, oem, psm]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -400,7 +413,9 @@ def image_to_data(image,
                   config='',
                   nice=0,
                   output_type=Output.STRING,
-                  timeout=0):
+                  timeout=0,
+                  oem=1,
+                  psm=3):
     """
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
@@ -410,7 +425,7 @@ def image_to_data(image,
         raise TSVNotSupported()
 
     config = '{} {}'.format('-c tessedit_create_tsv=1', config.strip()).strip()
-    args = [image, 'tsv', lang, config, nice, timeout]
+    args = [image, 'tsv', lang, config, nice, timeout, oem, psm]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
@@ -425,7 +440,9 @@ def image_to_osd(image,
                  config='',
                  nice=0,
                  output_type=Output.STRING,
-                 timeout=0):
+                 timeout=0,
+                 oem=1,
+                 psm=3):
     """
     Returns string containing the orientation and script detection (OSD)
     """
@@ -433,7 +450,7 @@ def image_to_osd(image,
         '' if get_tesseract_version() < '3.05' else '-',
         config.strip()
     ).strip()
-    args = [image, 'osd', lang, config, nice, timeout]
+    args = [image, 'osd', lang, config, nice, timeout, oem, psm]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
