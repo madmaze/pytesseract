@@ -198,7 +198,8 @@ def run_tesseract(input_filename,
                   lang,
                   config='',
                   nice=0,
-                  timeout=0):
+                  timeout=0,
+                  oem=1):
     cmd_args = []
 
     if not sys.platform.startswith('win32') and nice != 0:
@@ -214,6 +215,9 @@ def run_tesseract(input_filename,
 
     if extension not in {'box', 'osd', 'tsv'}:
         cmd_args.append(extension)
+
+    if float(get_tesseract_version()) <='4.0.0':
+        cmd_args+=('--oem',oem)
 
     try:
         proc = subprocess.Popen(cmd_args, **subprocess_args())
