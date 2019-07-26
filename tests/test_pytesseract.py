@@ -4,7 +4,7 @@ from sys import version_info as PYTHON_VERSION
 import pytest
 
 from pytesseract import image_to_string, Output, get_tesseract_version, \
-    image_to_data
+    image_to_data, TSVNotSupported
 
 try:
     import pandas
@@ -35,6 +35,15 @@ def test_quick_brown_dog_image(test_file):
 def test_european_image():
     test_file = os.path.join(DATA_DIR, 'test-european.jpg')
     assert 'La volpe marrone' in image_to_string(test_file, 'fra')
+
+
+@pytest.mark.skipif(
+    TESSERACT_VERSION[:2] >= (3, 5),
+    reason='requires tesseract < 3.05'
+)
+def test_pandas_support(test_file):
+    with pytest.raises(TSVNotSupported):
+        image_to_data(test_file, output_type=Output.DATAFRAME)
 
 
 @pytest.mark.skipif(

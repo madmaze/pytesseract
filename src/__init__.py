@@ -6,5 +6,6 @@ from .pytesseract import (  # noqa: F401
     image_to_osd,
     image_to_pdf_or_hocr,
     TesseractError,
+    TSVNotSupported,
     Output
 )
