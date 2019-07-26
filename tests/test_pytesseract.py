@@ -3,8 +3,9 @@ from sys import version_info as PYTHON_VERSION
 
 import pytest
 
-from pytesseract import image_to_string, Output, get_tesseract_version, \
-    image_to_data, TSVNotSupported
+from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
+    image_to_string, prepare
+from pytesseract.pytesseract import Output, TSVNotSupported
 
 try:
     import pandas
@@ -89,3 +90,9 @@ def test_common_output(test_file, output):
             assert isinstance(result, unicode)
         else:
             assert isinstance(result, str)
+
+
+@pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
+def test_invalid_type_in_prepare(obj):
+    with pytest.raises(TypeError):
+        prepare(obj)
