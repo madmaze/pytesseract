@@ -25,7 +25,24 @@ def test_file():
     return os.path.join(DATA_DIR, 'test.png')
 
 
-def test_quick_brown_dog_image(test_file):
+@pytest.mark.parametrize('test_file', [
+    # os.path.join(DATA_DIR, 'test.bmp'),
+    os.path.join(DATA_DIR, 'test.gif'),
+    os.path.join(DATA_DIR, 'test.jpeg'),
+    os.path.join(DATA_DIR, 'test.pgm'),
+    os.path.join(DATA_DIR, 'test.png'),
+    os.path.join(DATA_DIR, 'test.ppm'),
+    os.path.join(DATA_DIR, 'test.tiff'),
+], ids=[
+    # 'bmp',
+    'gif',
+    'jpeg',
+    'pgm',
+    'png',
+    'ppm',
+    'tiff',
+])
+def test_image_formats(test_file):
     # Don't perform assertion against full string in case the version
     # of tesseract installed doesn't catch it all. This test is testing
     # that pytesseract command line program is called correctly.
