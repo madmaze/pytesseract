@@ -9,6 +9,11 @@ from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
 from pytesseract.pytesseract import Output, TSVNotSupported
 
 try:
+    from PIL import Image
+except ImportError:
+    import Image
+
+try:
     import pandas
 except ImportError:
     pandas = None
@@ -29,30 +34,48 @@ def test_file():
 @pytest.mark.parametrize('test_file', [
     # os.path.join(DATA_DIR, 'test.bmp'),
     os.path.join(DATA_DIR, 'test.gif'),
+    Image.open(os.path.join(DATA_DIR, 'test.gif')),
     os.path.join(DATA_DIR, 'test.jpeg'),
+    Image.open(os.path.join(DATA_DIR, 'test.jpeg')),
     os.path.join(DATA_DIR, 'test.pgm'),
+    Image.open(os.path.join(DATA_DIR, 'test.pgm')),
     os.path.join(DATA_DIR, 'test.png'),
+    Image.open(os.path.join(DATA_DIR, 'test.png')),
     os.path.join(DATA_DIR, 'test.ppm'),
+    Image.open(os.path.join(DATA_DIR, 'test.ppm')),
     os.path.join(DATA_DIR, 'test.tiff'),
+    Image.open(os.path.join(DATA_DIR, 'test.tiff')),
 ], ids=[
     # 'bmp',  # bug? https://github.com/tesseract-ocr/tesseract/issues/2558
-    'gif',
-    'jpeg',
-    'pgm',
-    'png',
-    'ppm',
-    'tiff',
+    'gif_path', 'gif_image',
+    'jpeg_path', 'jpeg_image',
+    'pgm_path', 'pgm_image',
+    'png_path', 'png_image',
+    'ppm_path', 'ppm_image',
+    'tiff_path', 'tiff_image',
 ])
-def test_image_formats(test_file):
+def test_image(test_file):
     # Don't perform assertion against full string in case the version
     # of tesseract installed doesn't catch it all. This test is testing
     # that pytesseract command line program is called correctly.
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
 
 
+@pytest.mark.parametrize('test_file', [
+    os.path.join(DATA_DIR, 'test-european.jpg'),
+    Image.open(os.path.join(DATA_DIR, 'test-european.jpg')),
+], ids=[
+    'jpeg_path', 'jpeg_image',
+])
+@pytest.mark.lang_fra
+def test_european_image(test_file):
+    assert 'La volpe marrone' in image_to_string(test_file, 'fra')
+
+
 def test_multiprocessing(test_file):
     """Test parallel system calls."""
     test_files = [
+        os.path.join(DATA_DIR, 'test.gif'),
         os.path.join(DATA_DIR, 'test.gif'),
         os.path.join(DATA_DIR, 'test.jpeg'),
         os.path.join(DATA_DIR, 'test.pgm'),
@@ -66,12 +89,6 @@ def test_multiprocessing(test_file):
         assert 'The quick brown dog' in result
     p.close()
     p.join()
-
-
-@pytest.mark.lang_fra
-def test_european_image():
-    test_file = os.path.join(DATA_DIR, 'test-european.jpg')
-    assert 'La volpe marrone' in image_to_string(test_file, 'fra')
 
 
 @pytest.mark.skipif(
