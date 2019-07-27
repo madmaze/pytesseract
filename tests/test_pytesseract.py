@@ -132,3 +132,20 @@ def test_common_output(test_file, output):
 def test_invalid_type_in_prepare(obj):
     with pytest.raises(TypeError):
         prepare(obj)
+
+
+@pytest.mark.parametrize('path', [
+    r'invalid_tesseract',
+    r'',
+    os.path.sep + r'invalid_tesseract',
+], ids=[
+    'executable_name',
+    'empty_name',
+    'absolute_path',
+])
+def test_wrong_cmd(test_file, path):  # This must be the last test!
+    """Test invalid or missing tesseract command."""
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = path
+    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
+        pytesseract.pytesseract.image_to_string(test_file)
