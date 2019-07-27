@@ -1,5 +1,6 @@
 import os.path
 from sys import version_info as PYTHON_VERSION
+from multiprocessing import Pool
 
 import pytest
 
@@ -47,6 +48,24 @@ def test_image_formats(test_file):
     # of tesseract installed doesn't catch it all. This test is testing
     # that pytesseract command line program is called correctly.
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+
+
+def test_multiprocessing(test_file):
+    """Test parallel system calls."""
+    test_files = [
+        os.path.join(DATA_DIR, 'test.gif'),
+        os.path.join(DATA_DIR, 'test.jpeg'),
+        os.path.join(DATA_DIR, 'test.pgm'),
+        os.path.join(DATA_DIR, 'test.png'),
+        os.path.join(DATA_DIR, 'test.ppm'),
+        os.path.join(DATA_DIR, 'test.tiff'),
+    ]
+    p = Pool(2)
+    results = p.map(image_to_string, test_files)
+    for result in results:
+        assert 'The quick brown dog' in result
+    p.close()
+    p.join()
 
 
 @pytest.mark.lang_fra
