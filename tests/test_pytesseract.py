@@ -5,7 +5,7 @@ from multiprocessing import Pool
 import pytest
 
 from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
-    image_to_string, prepare
+    image_to_string, image_to_boxes, prepare
 from pytesseract.pytesseract import Output, TSVNotSupported
 
 try:
@@ -98,6 +98,27 @@ def test_image_to_string__multiprocessing(test_file):
         assert 'The quick brown dog' in result
     p.close()
     p.join()
+
+
+def test_image_to_boxes(test_file):
+    result = image_to_boxes(test_file)
+
+    if PYTHON_VERSION[:1] < (3, ):
+        assert isinstance(result, unicode)
+    else:
+        assert isinstance(result, str)
+
+    lines = result.strip().split('\n')
+    assert len(lines) > 0
+
+    assert lines[0].split(' ')[0] == 'T'  # T of word 'This'
+
+    for line in lines:
+        chars = line.split(' ')
+        assert chars[1].isnumeric()  # left
+        assert chars[2].isnumeric()  # top
+        assert chars[3].isnumeric()  # width
+        assert chars[4].isnumeric()  # height
 
 
 @pytest.mark.skipif(
