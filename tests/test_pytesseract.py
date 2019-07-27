@@ -200,12 +200,21 @@ def test_image_to_data__pandas_output(test_file):
 def test_image_to_data__common_output(test_file, output):
     """Test and compare the type of the result."""
     result = image_to_data(test_file, output_type=output)
+    expected_keys = ['level', 'page_num', 'block_num', 'par_num',
+                     'line_num', 'word_num', 'left', 'top', 'width',
+                     'height', 'conf', 'text']
+
     if output is Output.BYTES:
         assert isinstance(result, bytes)
+
     elif output is Output.DICT:
         assert isinstance(result, dict)
+        assert bool(set(result.keys()).intersection(expected_keys))
+
     elif output is Output.STRING:
         assert isinstance(result, unicode if IS_PYTHON_2 else str)
+        for key in expected_keys:
+            assert key in result
 
 
 @pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
