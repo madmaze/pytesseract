@@ -74,7 +74,7 @@ def test_image_to_string(test_file):
     'jpg_path', 'jpg_image',
 ])
 @pytest.mark.lang_fra
-def test_image_to_string__european(test_file):
+def test_image_to_string_european(test_file):
     assert 'La volpe marrone' in image_to_string(test_file, 'fra')
 
 
@@ -82,12 +82,12 @@ def test_image_to_string__european(test_file):
     platform.startswith('win32'),
     reason='used paths with `/` as separator'
 )
-def test_image_to_string__batch():
+def test_image_to_string_batch():
     batch_file = os.path.join(DATA_DIR, 'images.txt')
     assert 'The quick brown dog' in image_to_string(batch_file)
 
 
-def test_image_to_string__multiprocessing(test_file):
+def test_image_to_string_multiprocessing(test_file):
     """Test parallel system calls."""
     test_files = [
         os.path.join(DATA_DIR, 'test.gif'),
@@ -106,7 +106,7 @@ def test_image_to_string__multiprocessing(test_file):
     p.join()
 
 
-def test_image_to_string__timeout(test_file):
+def test_image_to_string_timeout(test_file):
     with pytest.raises(RuntimeError):
         image_to_string(test_file, timeout=0.000000001)
 
@@ -197,7 +197,7 @@ def test_image_to_data__pandas_output(test_file):
     'dict',
     'string',
 ])
-def test_image_to_data__common_output(test_file, output):
+def test_image_to_data_common_output(test_file, output):
     """Test and compare the type of the result."""
     result = image_to_data(test_file, output_type=output)
     expected_keys = ['level', 'page_num', 'block_num', 'par_num',
