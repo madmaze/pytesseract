@@ -7,7 +7,7 @@ from multiprocessing import Pool
 import pytest
 
 from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
-    image_to_string, image_to_boxes, image_to_pdf_or_hocr, prepare
+    image_to_string, image_to_boxes, image_to_pdf_or_hocr, image_to_osd, prepare
 from pytesseract.pytesseract import Output, TSVNotSupported
 
 try:
@@ -126,6 +126,14 @@ def test_image_to_boxes(test_file):
         assert chars[2].isnumeric()  # top
         assert chars[3].isnumeric()  # width
         assert chars[4].isnumeric()  # height
+
+
+def test_image_to_osd(test_file):
+    result = image_to_osd(test_file)
+    assert isinstance(result, unicode if IS_PYTHON_2 else str)
+    for key in ['Page number', 'Orientation in degrees', 'Rotate',
+                'Orientation confidence', 'Script', 'Script confidence']:
+        assert key + ':' in result
 
 
 @pytest.mark.parametrize('extension', ['pdf', 'hocr'])
