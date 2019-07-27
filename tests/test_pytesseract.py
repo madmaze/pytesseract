@@ -35,7 +35,7 @@ def test_file():
     os.path.join(DATA_DIR, 'test.ppm'),
     os.path.join(DATA_DIR, 'test.tiff'),
 ], ids=[
-    # 'bmp',
+    # 'bmp',  # bug? https://github.com/tesseract-ocr/tesseract/issues/2558
     'gif',
     'jpeg',
     'pgm',
