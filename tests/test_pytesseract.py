@@ -38,9 +38,9 @@ def test_file():
 
 
 @pytest.mark.parametrize('test_file', [
+    # https://github.com/tesseract-ocr/tesseract/issues/2558
     # os.path.join(DATA_DIR, 'test.bmp'),
-    os.path.join(DATA_DIR, 'test.gif'),
-    Image.open(os.path.join(DATA_DIR, 'test.gif')),
+    # os.path.join(DATA_DIR, 'test.gif'),
     os.path.join(DATA_DIR, 'test.jpg'),
     Image.open(os.path.join(DATA_DIR, 'test.jpg')),
     os.path.join(DATA_DIR, 'test.pgm'),
@@ -52,8 +52,7 @@ def test_file():
     os.path.join(DATA_DIR, 'test.tiff'),
     Image.open(os.path.join(DATA_DIR, 'test.tiff')),
 ], ids=[
-    # 'bmp',  # bug? https://github.com/tesseract-ocr/tesseract/issues/2558
-    'gif_path', 'gif_image',
+    # 'bpm_path', 'gif_path',
     'jpg_path', 'jpg_image',
     'pgm_path', 'pgm_image',
     'png_path', 'png_image',
@@ -90,8 +89,8 @@ def test_image_to_string_batch():
 def test_image_to_string_multiprocessing(test_file):
     """Test parallel system calls."""
     test_files = [
-        os.path.join(DATA_DIR, 'test.gif'),
-        os.path.join(DATA_DIR, 'test.gif'),
+        # os.path.join(DATA_DIR, 'test.bmp'),
+        # os.path.join(DATA_DIR, 'test.gif'),
         os.path.join(DATA_DIR, 'test.jpg'),
         os.path.join(DATA_DIR, 'test.pgm'),
         os.path.join(DATA_DIR, 'test.png'),
