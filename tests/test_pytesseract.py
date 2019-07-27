@@ -1,5 +1,5 @@
 import os.path
-from sys import version_info as PYTHON_VERSION
+from sys import platform, version_info as PYTHON_VERSION
 from multiprocessing import Pool
 
 import pytest
@@ -70,6 +70,15 @@ def test_image(test_file):
 @pytest.mark.lang_fra
 def test_european_image(test_file):
     assert 'La volpe marrone' in image_to_string(test_file, 'fra')
+
+
+@pytest.mark.skipif(
+    platform.startswith('win32'),
+    reason='used paths with `/` as separator'
+)
+def test_batch():
+    batch_file = os.path.join(DATA_DIR, 'images.txt')
+    assert 'The quick brown dog' in image_to_string(batch_file)
 
 
 def test_multiprocessing(test_file):
