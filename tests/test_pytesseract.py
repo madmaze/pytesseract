@@ -106,6 +106,11 @@ def test_image_to_string__multiprocessing(test_file):
     p.join()
 
 
+def test_image_to_string__timeout(test_file):
+    with pytest.raises(RuntimeError):
+        image_to_string(test_file, timeout=0.000000001)
+
+
 def test_image_to_boxes(test_file):
     result = image_to_boxes(test_file)
     assert isinstance(result, unicode if IS_PYTHON_2 else str)
