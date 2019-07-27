@@ -95,3 +95,4 @@ ENV/
 
 # PyCharm project settings
 .idea
+*.iml
