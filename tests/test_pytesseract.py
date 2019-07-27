@@ -1,11 +1,13 @@
+# encoding: utf-8
+
 import os.path
-from sys import platform, version_info as PYTHON_VERSION
+from sys import platform, version_info
 from multiprocessing import Pool
 
 import pytest
 
 from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
-    image_to_string, image_to_boxes, prepare
+    image_to_string, image_to_boxes, image_to_pdf_or_hocr, prepare
 from pytesseract.pytesseract import Output, TSVNotSupported
 
 try:
@@ -19,7 +21,11 @@ except ImportError:
     pandas = None
 
 
+IS_PYTHON_2 = version_info[:1] < (3, )
+IS_PYTHON_3 = not IS_PYTHON_2
+
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 
@@ -102,11 +108,7 @@ def test_image_to_string__multiprocessing(test_file):
 
 def test_image_to_boxes(test_file):
     result = image_to_boxes(test_file)
-
-    if PYTHON_VERSION[:1] < (3, ):
-        assert isinstance(result, unicode)
-    else:
-        assert isinstance(result, str)
+    assert isinstance(result, unicode if IS_PYTHON_2 else str)
 
     lines = result.strip().split('\n')
     assert len(lines) > 0
@@ -119,6 +121,27 @@ def test_image_to_boxes(test_file):
         assert chars[2].isnumeric()  # top
         assert chars[3].isnumeric()  # width
         assert chars[4].isnumeric()  # height
+
+
+@pytest.mark.parametrize('extension', ['pdf', 'hocr'])
+def test_image_to_pdf_or_hocr(test_file, extension):
+    result = image_to_pdf_or_hocr(test_file, extension=extension)
+
+    if extension is 'pdf':
+        if IS_PYTHON_2:
+            assert isinstance(result, str)
+            result = str(result).strip()
+            assert result.startswith('%PDF')
+            assert result.endswith('EOF')
+        else:
+            assert isinstance(result, bytes)
+
+    if extension is 'hocr':
+        assert isinstance(result, bytes)  # type
+        result = result.decode('utf-8') if IS_PYTHON_2 else str(result, 'utf-8')
+        result = str(result).strip()
+        assert result.startswith('<?xml')
+        assert result.endswith('</html>')
 
 
 @pytest.mark.skipif(
@@ -169,10 +192,7 @@ def test_image_to_data__common_output(test_file, output):
     elif output is Output.DICT:
         assert isinstance(result, dict)
     elif output is Output.STRING:
-        if PYTHON_VERSION[:1] < (3, ):
-            assert isinstance(result, unicode)
-        else:
-            assert isinstance(result, str)
+        assert isinstance(result, unicode if IS_PYTHON_2 else str)
 
 
 @pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
