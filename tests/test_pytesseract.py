@@ -54,7 +54,7 @@ def test_file():
     'ppm_path', 'ppm_image',
     'tiff_path', 'tiff_image',
 ])
-def test_image(test_file):
+def test_image_to_string(test_file):
     # Don't perform assertion against full string in case the version
     # of tesseract installed doesn't catch it all. This test is testing
     # that pytesseract command line program is called correctly.
@@ -68,7 +68,7 @@ def test_image(test_file):
     'jpeg_path', 'jpeg_image',
 ])
 @pytest.mark.lang_fra
-def test_european_image(test_file):
+def test_image_to_string__european(test_file):
     assert 'La volpe marrone' in image_to_string(test_file, 'fra')
 
 
@@ -76,12 +76,12 @@ def test_european_image(test_file):
     platform.startswith('win32'),
     reason='used paths with `/` as separator'
 )
-def test_batch():
+def test_image_to_string__batch():
     batch_file = os.path.join(DATA_DIR, 'images.txt')
     assert 'The quick brown dog' in image_to_string(batch_file)
 
 
-def test_multiprocessing(test_file):
+def test_image_to_string__multiprocessing(test_file):
     """Test parallel system calls."""
     test_files = [
         os.path.join(DATA_DIR, 'test.gif'),
@@ -104,7 +104,7 @@ def test_multiprocessing(test_file):
     TESSERACT_VERSION[:2] >= (3, 5),
     reason='requires tesseract < 3.05'
 )
-def test_pandas_support(test_file):
+def test_image_to_data__pandas_support(test_file):
     with pytest.raises(TSVNotSupported):
         image_to_data(test_file, output_type=Output.DATAFRAME)
 
@@ -117,7 +117,7 @@ def test_pandas_support(test_file):
     pandas is None,
     reason='requires pandas'
 )
-def test_pandas_output(test_file):
+def test_image_to_data__pandas_output(test_file):
     """Test and compare the type and meta information of the result."""
     result = image_to_data(test_file, output_type=Output.DATAFRAME)
     assert isinstance(result, pandas.DataFrame)
@@ -140,7 +140,7 @@ def test_pandas_output(test_file):
     'dict',
     'string',
 ])
-def test_common_output(test_file, output):
+def test_image_to_data__common_output(test_file, output):
     """Test and compare the type of the result."""
     result = image_to_data(test_file, output_type=output)
     if output is Output.BYTES:
@@ -155,7 +155,7 @@ def test_common_output(test_file, output):
 
 
 @pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
-def test_wrong_type_in_prepare(obj):
+def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
         prepare(obj)
 
@@ -169,7 +169,7 @@ def test_wrong_type_in_prepare(obj):
     'empty_name',
     'absolute_path',
 ])
-def test_wrong_cmd(test_file, path):  # This must be the last test!
+def test_wrong_tesseract_cmd(test_file, path):  # This must be the last test!
     """Test wrong or missing tesseract command."""
     import pytesseract
     pytesseract.pytesseract.tesseract_cmd = path
