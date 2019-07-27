@@ -35,8 +35,8 @@ def test_file():
     # os.path.join(DATA_DIR, 'test.bmp'),
     os.path.join(DATA_DIR, 'test.gif'),
     Image.open(os.path.join(DATA_DIR, 'test.gif')),
-    os.path.join(DATA_DIR, 'test.jpeg'),
-    Image.open(os.path.join(DATA_DIR, 'test.jpeg')),
+    os.path.join(DATA_DIR, 'test.jpg'),
+    Image.open(os.path.join(DATA_DIR, 'test.jpg')),
     os.path.join(DATA_DIR, 'test.pgm'),
     Image.open(os.path.join(DATA_DIR, 'test.pgm')),
     os.path.join(DATA_DIR, 'test.png'),
@@ -48,7 +48,7 @@ def test_file():
 ], ids=[
     # 'bmp',  # bug? https://github.com/tesseract-ocr/tesseract/issues/2558
     'gif_path', 'gif_image',
-    'jpeg_path', 'jpeg_image',
+    'jpg_path', 'jpg_image',
     'pgm_path', 'pgm_image',
     'png_path', 'png_image',
     'ppm_path', 'ppm_image',
@@ -65,7 +65,7 @@ def test_image_to_string(test_file):
     os.path.join(DATA_DIR, 'test-european.jpg'),
     Image.open(os.path.join(DATA_DIR, 'test-european.jpg')),
 ], ids=[
-    'jpeg_path', 'jpeg_image',
+    'jpg_path', 'jpg_image',
 ])
 @pytest.mark.lang_fra
 def test_image_to_string__european(test_file):
@@ -86,7 +86,7 @@ def test_image_to_string__multiprocessing(test_file):
     test_files = [
         os.path.join(DATA_DIR, 'test.gif'),
         os.path.join(DATA_DIR, 'test.gif'),
-        os.path.join(DATA_DIR, 'test.jpeg'),
+        os.path.join(DATA_DIR, 'test.jpg'),
         os.path.join(DATA_DIR, 'test.pgm'),
         os.path.join(DATA_DIR, 'test.png'),
         os.path.join(DATA_DIR, 'test.ppm'),
@@ -164,7 +164,7 @@ def test_wrong_prepare_type(obj):
     r'wrong_tesseract',
     r'',
     os.path.sep + r'wrong_tesseract',
-], ids=[
+    ], ids=[
     'executable_name',
     'empty_name',
     'absolute_path',
