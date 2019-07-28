@@ -93,7 +93,7 @@ def test_image_to_string_batch():
     assert 'The quick brown dog' in image_to_string(batch_file)
 
 
-def test_image_to_string_multiprocessing(test_file):
+def test_image_to_string_multiprocessing():
     """Test parallel system calls."""
     test_files = [
         # os.path.join(DATA_DIR, 'test.bmp'),
