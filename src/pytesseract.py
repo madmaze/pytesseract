@@ -4,26 +4,26 @@
 Python-tesseract. For more information: https://github.com/madmaze/pytesseract
 """
 
+import os
+import shlex
+import string
+import subprocess
+import sys
+import tempfile
+from contextlib import contextmanager
+from csv import QUOTE_NONE
+from distutils.version import LooseVersion
+from functools import wraps
+from glob import iglob
+from io import BytesIO
+from os.path import normcase, normpath, realpath
+from pkgutil import find_loader
+from threading import Timer
+
 try:
     from PIL import Image
 except ImportError:
     import Image
-
-import os
-import sys
-import subprocess
-import tempfile
-import shlex
-import string
-from glob import iglob
-from csv import QUOTE_NONE
-from functools import wraps
-from pkgutil import find_loader
-from distutils.version import LooseVersion
-from os.path import realpath, normpath, normcase
-from contextlib import contextmanager
-from threading import Timer
-from io import BytesIO
 
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
@@ -136,7 +136,7 @@ def cleanup(temp_name):
             pass
 
 
-def prepare(image):
+def _prepare(image):
     if isinstance(image, Image.Image):
         return image
 
@@ -151,7 +151,7 @@ def save_image(image):
     if isinstance(image, str):
         return temp_name, realpath(normpath(normcase(image)))
 
-    image = prepare(image)
+    image = _prepare(image)
     img_extension = image.format
     if image.format not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')

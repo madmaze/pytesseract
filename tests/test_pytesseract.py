@@ -1,14 +1,21 @@
 # encoding: utf-8
 
 import os.path
-from sys import platform, version_info
 from multiprocessing import Pool
+from sys import platform, version_info
 
 import pytest
-
-from pytesseract.pytesseract import get_tesseract_version, image_to_data, \
-    image_to_string, image_to_boxes, image_to_pdf_or_hocr, image_to_osd, prepare
-from pytesseract.pytesseract import Output, TSVNotSupported
+from pytesseract import (
+    Output,
+    TSVNotSupported,
+    _prepare,
+    get_tesseract_version,
+    image_to_boxes,
+    image_to_data,
+    image_to_osd,
+    image_to_pdf_or_hocr,
+    image_to_string
+)
 
 try:
     from PIL import Image
@@ -219,7 +226,7 @@ def test_image_to_data_common_output(test_file, output):
 @pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
 def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
-        prepare(obj)
+        _prepare(obj)
 
 
 @pytest.mark.parametrize('path', [
