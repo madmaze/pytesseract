@@ -46,6 +46,8 @@ matrix:
 before_install:
   - sudo apt-get install -y tesseract-ocr
   - sudo apt-get install -y tesseract-ocr-fra
+  - tesseract --version
+  - tesseract --list-langs
 
 install:
   pip install tox
