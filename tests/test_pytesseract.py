@@ -8,7 +8,6 @@ import pytest
 from pytesseract import (
     Output,
     TSVNotSupported,
-    _prepare,
     get_tesseract_version,
     image_to_boxes,
     image_to_data,
@@ -16,6 +15,7 @@ from pytesseract import (
     image_to_pdf_or_hocr,
     image_to_string
 )
+from pytesseract.pytesseract import prepare
 
 try:
     from PIL import Image
@@ -226,7 +226,7 @@ def test_image_to_data_common_output(test_file, output):
 @pytest.mark.parametrize('obj', [1, 1., None], ids=['int', 'float', 'none'])
 def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
-        _prepare(obj)
+        prepare(obj)
 
 
 @pytest.mark.parametrize('path', [

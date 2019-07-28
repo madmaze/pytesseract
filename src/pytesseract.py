@@ -136,7 +136,7 @@ def cleanup(temp_name):
             pass
 
 
-def _prepare(image):
+def prepare(image):
     if isinstance(image, Image.Image):
         return image
 
@@ -151,7 +151,7 @@ def save_image(image):
     if isinstance(image, str):
         return temp_name, realpath(normpath(normcase(image)))
 
-    image = _prepare(image)
+    image = prepare(image)
     img_extension = image.format
     if image.format not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')

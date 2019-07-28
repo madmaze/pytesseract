@@ -3,7 +3,6 @@ from .pytesseract import (  # noqa: F401
     TesseractError,
     TesseractNotFoundError,
     TSVNotSupported,
-    _prepare,
     get_tesseract_version,
     image_to_boxes,
     image_to_data,
