@@ -28,10 +28,6 @@ matrix:
       env: TOXENV=py27
     - os: linux
       dist: bionic
-      python: 3.5
-      env: TOXENV=py35
-    - os: linux
-      dist: bionic
       python: 3.6
       env: TOXENV=py36
     - os: linux
