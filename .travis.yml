@@ -24,20 +24,8 @@ matrix:
       env: TOXENV=pep8
     - os: linux
       dist: bionic
-      python: 2.7
-      env: TOXENV=py27
-    - os: linux
-      dist: bionic
-      python: 3.6
-      env: TOXENV=py36
-    - os: linux
-      dist: bionic
       python: 3.7
       env: TOXENV=py37
-    - os: linux
-      dist: bionic
-      python: 3.7
-      env: TOXENV=pep8
 
 before_install:
   - sudo apt-get install -y tesseract-ocr
