@@ -1,0 +1,2 @@
+./tests/data/test.jpg
+./tests/data/test-european.jpg
