@@ -212,7 +212,7 @@ def run_tesseract(input_filename,
     if config:
         cmd_args += shlex.split(config)
 
-    if extension not in {'box', 'osd', 'tsv'}:
+    if extension and extension not in {'box', 'osd', 'tsv'}:
         cmd_args.append(extension)
 
     try:
@@ -226,7 +226,7 @@ def run_tesseract(input_filename,
 
 
 def run_and_get_output(image,
-                       extension,
+                       extension='',
                        lang=None,
                        config='',
                        nice=0,
