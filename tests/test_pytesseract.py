@@ -41,7 +41,12 @@ pytestmark = pytest.mark.pytesseract  # used marker for the module
 
 @pytest.fixture(scope='session')
 def test_file():
-    return os.path.join(DATA_DIR, 'test.png')
+    return os.path.join(DATA_DIR, 'test.jpg')
+
+
+@pytest.fixture(scope='session')
+def test_file_european():
+    return os.path.join(DATA_DIR, 'test-european.jpg')
 
 
 @pytest.mark.parametrize('path', [
@@ -64,42 +69,31 @@ def test_wrong_tesseract_cmd(test_file, path):
 
 @pytest.mark.parametrize('test_file', [
     # https://github.com/tesseract-ocr/tesseract/issues/2558
-    # os.path.join(DATA_DIR, 'test.bmp'),
-    # os.path.join(DATA_DIR, 'test.gif'),
-    os.path.join(DATA_DIR, 'test.jpg'),
-    Image.open(os.path.join(DATA_DIR, 'test.jpg')),
-    os.path.join(DATA_DIR, 'test.pgm'),
-    Image.open(os.path.join(DATA_DIR, 'test.pgm')),
-    os.path.join(DATA_DIR, 'test.png'),
-    Image.open(os.path.join(DATA_DIR, 'test.png')),
-    os.path.join(DATA_DIR, 'test.ppm'),
-    Image.open(os.path.join(DATA_DIR, 'test.ppm')),
-    os.path.join(DATA_DIR, 'test.tiff'),
-    Image.open(os.path.join(DATA_DIR, 'test.tiff')),
+    'test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff', # 'test.bmp', 'test.gif',
 ], ids=[
-    # 'bpm_path', 'gif_path',
-    'jpg_path', 'jpg_image',
-    'pgm_path', 'pgm_image',
-    'png_path', 'png_image',
-    'ppm_path', 'ppm_image',
-    'tiff_path', 'tiff_image',
+    'jpg', 'pgm', 'png', 'ppm', 'tiff', # 'bmp', 'gif',
 ])
-def test_image_to_string(test_file):
+def test_image_to_string_with_image_type(test_file):
     # Don't perform assertion against full string in case the version
     # of tesseract installed doesn't catch it all. This test is testing
     # that pytesseract command line program is called correctly.
-    assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+    test_file_path = os.path.join(DATA_DIR, test_file)
+    assert 'The quick brown dog' in image_to_string(test_file_path, 'eng')
 
 
 @pytest.mark.parametrize('test_file', [
-    os.path.join(DATA_DIR, 'test-european.jpg'),
-    Image.open(os.path.join(DATA_DIR, 'test-european.jpg')),
+    os.path.join(DATA_DIR, 'test.jpg'),
+    Image.open(os.path.join(DATA_DIR, 'test.jpg')),
 ], ids=[
-    'jpg_path', 'jpg_image',
+    'path_str', 'image_object'
 ])
+def test_image_to_string_with_args_type(test_file):
+    assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+
+
 @pytest.mark.lang_fra
-def test_image_to_string_european(test_file):
-    assert 'La volpe marrone' in image_to_string(test_file, 'fra')
+def test_image_to_string_european(test_file_european):
+    assert 'La volpe marrone' in image_to_string(test_file_european, 'fra')
 
 
 @pytest.mark.skipif(
@@ -113,15 +107,8 @@ def test_image_to_string_batch():
 
 def test_image_to_string_multiprocessing():
     """Test parallel system calls."""
-    test_files = [
-        # os.path.join(DATA_DIR, 'test.bmp'),
-        # os.path.join(DATA_DIR, 'test.gif'),
-        os.path.join(DATA_DIR, 'test.jpg'),
-        os.path.join(DATA_DIR, 'test.pgm'),
-        os.path.join(DATA_DIR, 'test.png'),
-        os.path.join(DATA_DIR, 'test.ppm'),
-        os.path.join(DATA_DIR, 'test.tiff'),
-    ]
+    test_files = ['test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff']
+    test_files = [os.path.join(DATA_DIR, test_file) for test_file in test_files]
     p = Pool(2)
     results = p.map(image_to_string, test_files)
     for result in results:
