@@ -27,14 +27,12 @@ try:
 except ImportError:
     pandas = None
 
-
 IS_PYTHON_2 = version_info[:1] < (3, )
 IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 
@@ -49,30 +47,27 @@ def test_file_european():
     return os.path.join(DATA_DIR, 'test-european.jpg')
 
 
-@pytest.mark.parametrize('path', [
-    r'wrong_tesseract',
-    r'',
-    os.path.sep + r'wrong_tesseract',
-    ], ids=[
-    'executable_name',
-    'empty_name',
-    'absolute_path',
-])
-def test_wrong_tesseract_cmd(test_file, path):
-    """Test wrong or missing tesseract command."""
-    import pytesseract
-    pytesseract.pytesseract.tesseract_cmd = path
-    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
-        pytesseract.pytesseract.image_to_string(test_file)
-    pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
-
-
-@pytest.mark.parametrize('test_file', [
-    # https://github.com/tesseract-ocr/tesseract/issues/2558
-    'test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff', # 'test.bmp', 'test.gif',
-], ids=[
-    'jpg', 'pgm', 'png', 'ppm', 'tiff', # 'bmp', 'gif',
-])
+@pytest.mark.parametrize(
+    'test_file',
+    [
+        'test.jpg',
+        'test.pgm',
+        'test.png',
+        'test.ppm',
+        'test.tiff',
+        # 'test.bmp',  # https://github.com/tesseract-ocr/tesseract/issues/2558
+        # 'test.gif',
+    ],
+    ids=[
+        'jpg',
+        'pgm',
+        'png',
+        'ppm',
+        'tiff',
+        # 'bmp',
+        # 'gif',
+    ]
+)
 def test_image_to_string_with_image_type(test_file):
     # Don't perform assertion against full string in case the version
     # of tesseract installed doesn't catch it all. This test is testing
@@ -81,12 +76,13 @@ def test_image_to_string_with_image_type(test_file):
     assert 'The quick brown dog' in image_to_string(test_file_path, 'eng')
 
 
-@pytest.mark.parametrize('test_file', [
-    os.path.join(DATA_DIR, 'test.jpg'),
-    Image.open(os.path.join(DATA_DIR, 'test.jpg')),
-], ids=[
-    'path_str', 'image_object'
-])
+@pytest.mark.parametrize(
+    'test_file', [
+        os.path.join(DATA_DIR, 'test.jpg'),
+        Image.open(os.path.join(DATA_DIR, 'test.jpg')),
+    ],
+    ids=['path_str', 'image_object']
+)
 def test_image_to_string_with_args_type(test_file):
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
 
@@ -142,8 +138,10 @@ def test_image_to_boxes(test_file):
 def test_image_to_osd(test_file):
     result = image_to_osd(test_file)
     assert isinstance(result, unicode if IS_PYTHON_2 else str)
-    for key in ['Page number', 'Orientation in degrees', 'Rotate',
-                'Orientation confidence', 'Script', 'Script confidence']:
+    for key in [
+        'Page number', 'Orientation in degrees', 'Rotate',
+        'Orientation confidence', 'Script', 'Script confidence'
+    ]:
         assert key + ':' in result
 
 
@@ -189,9 +187,10 @@ def test_image_to_data__pandas_output(test_file):
     """Test and compare the type and meta information of the result."""
     result = image_to_data(test_file, output_type=Output.DATAFRAME)
     assert isinstance(result, pandas.DataFrame)
-    expected_columns = ['level', 'page_num', 'block_num', 'par_num',
-                        'line_num', 'word_num', 'left', 'top', 'width',
-                        'height', 'conf', 'text']
+    expected_columns = [
+        'level', 'page_num', 'block_num', 'par_num', 'line_num', 'word_num',
+        'left', 'top', 'width', 'height', 'conf', 'text'
+    ]
     assert bool(set(result.columns).intersection(expected_columns))
 
 
@@ -199,21 +198,25 @@ def test_image_to_data__pandas_output(test_file):
     TESSERACT_VERSION[:2] < (3, 5),
     reason='requires tesseract >= 3.05'
 )
-@pytest.mark.parametrize('output', [
-    Output.BYTES,
-    Output.DICT,
-    Output.STRING,
-], ids=[
-    'bytes',
-    'dict',
-    'string',
-])
+@pytest.mark.parametrize(
+    'output', [
+        Output.BYTES,
+        Output.DICT,
+        Output.STRING,
+    ],
+    ids=[
+        'bytes',
+        'dict',
+        'string',
+    ]
+)
 def test_image_to_data_common_output(test_file, output):
     """Test and compare the type of the result."""
     result = image_to_data(test_file, output_type=output)
-    expected_keys = ['level', 'page_num', 'block_num', 'par_num',
-                     'line_num', 'word_num', 'left', 'top', 'width',
-                     'height', 'conf', 'text']
+    expected_keys = [
+        'level', 'page_num', 'block_num', 'par_num', 'line_num', 'word_num',
+        'left', 'top', 'width', 'height', 'conf', 'text'
+    ]
 
     if output is Output.BYTES:
         assert isinstance(result, bytes)
@@ -232,3 +235,24 @@ def test_image_to_data_common_output(test_file, output):
 def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
         prepare(obj)
+
+
+@pytest.mark.parametrize(
+    'path', [
+        r'wrong_tesseract',
+        r'',
+        os.path.sep + r'wrong_tesseract',
+        ],
+    ids=[
+        'executable_name',
+        'empty_name',
+        'absolute_path',
+    ]
+)
+def test_wrong_tesseract_cmd(test_file, path):
+    """Test wrong or missing tesseract command."""
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = path
+    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
+        pytesseract.pytesseract.image_to_string(test_file)
+    pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
