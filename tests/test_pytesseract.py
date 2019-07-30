@@ -44,6 +44,24 @@ def test_file():
     return os.path.join(DATA_DIR, 'test.png')
 
 
+@pytest.mark.parametrize('path', [
+    r'wrong_tesseract',
+    r'',
+    os.path.sep + r'wrong_tesseract',
+    ], ids=[
+    'executable_name',
+    'empty_name',
+    'absolute_path',
+])
+def test_wrong_tesseract_cmd(test_file, path):
+    """Test wrong or missing tesseract command."""
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = path
+    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
+        pytesseract.pytesseract.image_to_string(test_file)
+    pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
+
+
 @pytest.mark.parametrize('test_file', [
     # https://github.com/tesseract-ocr/tesseract/issues/2558
     # os.path.join(DATA_DIR, 'test.bmp'),
@@ -227,20 +245,3 @@ def test_image_to_data_common_output(test_file, output):
 def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
         prepare(obj)
-
-
-@pytest.mark.parametrize('path', [
-    r'wrong_tesseract',
-    r'',
-    os.path.sep + r'wrong_tesseract',
-    ], ids=[
-    'executable_name',
-    'empty_name',
-    'absolute_path',
-])
-def test_wrong_tesseract_cmd(test_file, path):  # This must be the last test!
-    """Test wrong or missing tesseract command."""
-    import pytesseract
-    pytesseract.pytesseract.tesseract_cmd = path
-    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
-        pytesseract.pytesseract.image_to_string(test_file)
