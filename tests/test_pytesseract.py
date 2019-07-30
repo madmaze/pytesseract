@@ -55,8 +55,8 @@ def test_file_european():
         'test.png',
         'test.ppm',
         'test.tiff',
-        # 'test.bmp',  # https://github.com/tesseract-ocr/tesseract/issues/2558
-        # 'test.gif',
+        'test.bmp',
+        'test.gif',
     ],
     ids=[
         'jpg',
@@ -64,8 +64,8 @@ def test_file_european():
         'png',
         'ppm',
         'tiff',
-        # 'bmp',
-        # 'gif',
+        'bmp',
+        'gif',
     ]
 )
 def test_image_to_string_with_image_type(test_file):
