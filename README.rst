@@ -191,3 +191,4 @@ CONTRIBUTORS
 - `Ryan Mitchell <https://github.com/REMitchell>`_
 - `Emilio Cecchini <https://github.com/ceccoemi>`_
 - `John Hagen <https://github.com/johnthagen>`_
+- `Darius Morawiec <https://github.com/nok>`_
