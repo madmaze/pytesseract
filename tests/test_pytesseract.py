@@ -101,14 +101,11 @@ def test_image_to_string_with_args_type(test_file):
     numpy_installed is False,
     reason='requires numpy'
 )
-@pytest.mark.parametrize(
-    'test_file', [
-        np.array(Image.open(TEST_JPEG))
-    ],
-    ids=['ndarray']
-)
-def test_image_to_string_with_numpy(test_file):
-    assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+def test_image_to_string_with_numpy_array():
+    assert 'The quick brown dog' in image_to_string(
+        np.array(Image.open(TEST_JPEG)),
+        'eng'
+    )
 
 
 @pytest.mark.lang_fra
