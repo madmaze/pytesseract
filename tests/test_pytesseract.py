@@ -17,17 +17,22 @@ from pytesseract import (
 )
 
 from pytesseract.pytesseract import (
+    numpy_installed,
     pandas_installed,
     prepare
 )
+
+if numpy_installed:
+    import numpy as np
+
+if pandas_installed:
+    import pandas
 
 try:
     from PIL import Image
 except ImportError:
     import Image
 
-if pandas_installed:
-    import pandas
 
 IS_PYTHON_2 = version_info[:1] < (3, )
 IS_PYTHON_3 = not IS_PYTHON_2
@@ -35,13 +40,14 @@ IS_PYTHON_3 = not IS_PYTHON_2
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+TEST_JPEG = os.path.join(DATA_DIR, 'test.jpg')
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 
 
 @pytest.fixture(scope='session')
 def test_file():
-    return os.path.join(DATA_DIR, 'test.jpg')
+    return TEST_JPEG
 
 
 @pytest.fixture(scope='session')
@@ -82,13 +88,24 @@ def test_image_to_string_with_image_type(test_file):
 
 @pytest.mark.parametrize(
     'test_file', [
-        os.path.join(DATA_DIR, 'test.jpg'),
-        Image.open(os.path.join(DATA_DIR, 'test.jpg')),
+        TEST_JPEG,
+        Image.open(TEST_JPEG),
     ],
     ids=['path_str', 'image_object']
 )
 def test_image_to_string_with_args_type(test_file):
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+
+
+@pytest.mark.skipif(
+    numpy_installed is False,
+    reason='requires numpy'
+)
+def test_image_to_string_with_numpy_array():
+    assert 'The quick brown dog' in image_to_string(
+        np.array(Image.open(TEST_JPEG)),
+        'eng'
+    )
 
 
 @pytest.mark.lang_fra

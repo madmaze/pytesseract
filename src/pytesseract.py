@@ -137,23 +137,14 @@ def cleanup(temp_name):
 
 
 def prepare(image):
-    if isinstance(image, Image.Image):
-        return image
-
     if numpy_installed and isinstance(image, ndarray):
-        return Image.fromarray(image)
+        image = Image.fromarray(image)
 
-    raise TypeError('Unsupported image object')
+    if not isinstance(image, Image.Image):
+        raise TypeError('Unsupported image object')
 
-
-def save_image(image):
-    _, temp_name = tempfile.mkstemp(prefix='tess_')
-    if isinstance(image, str):
-        return temp_name, realpath(normpath(normcase(image)))
-
-    image = prepare(image)
-    img_extension = image.format
-    if image.format not in SUPPORTED_FORMATS:
+    extension = 'PNG' if not image.format else image.format
+    if extension not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')
 
     if not image.mode.startswith(RGB_MODE):
@@ -165,8 +156,18 @@ def save_image(image):
         background.paste(image, (0, 0), image)
         image = background
 
-    input_file_name = temp_name + os.extsep + img_extension
-    image.save(input_file_name, format=img_extension, **image.info)
+    image.format = extension
+    return image, extension
+
+
+def save_image(image):
+    _, temp_name = tempfile.mkstemp(prefix='tess_')
+    if isinstance(image, str):
+        return temp_name, realpath(normpath(normcase(image)))
+
+    image, extension = prepare(image)
+    input_file_name = temp_name + os.extsep + extension
+    image.save(input_file_name, format=extension, **image.info)
     return temp_name, input_file_name
 
 
