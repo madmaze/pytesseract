@@ -96,6 +96,17 @@ def test_image_to_string_with_args_type(test_file):
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
 
 
+@pytest.mark.skipif(
+    numpy_installed is False,
+    reason='requires numpy'
+)
+def test_image_to_string_with_numpy_array(test_file):
+    assert 'The quick brown dog' in image_to_string(
+        np.array(Image.open(test_file)),
+        'eng'
+    )
+
+
 @pytest.mark.lang_fra
 def test_image_to_string_european(test_file_european):
     assert 'La volpe marrone' in image_to_string(test_file_european, 'fra')
@@ -173,17 +184,6 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         result = str(result).strip()
         assert result.startswith('<?xml')
         assert result.endswith('</html>')
-
-
-@pytest.mark.skipif(
-    numpy_installed is False,
-    reason='requires numpy'
-)
-def test_image_to_string_with_numpy_array(test_file):
-    assert 'The quick brown dog' in image_to_string(
-        np.array(Image.open(test_file)),
-        'eng'
-    )
 
 
 @pytest.mark.skipif(
