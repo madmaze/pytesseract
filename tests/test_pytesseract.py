@@ -15,17 +15,19 @@ from pytesseract import (
     image_to_pdf_or_hocr,
     image_to_string
 )
-from pytesseract.pytesseract import prepare
+
+from pytesseract.pytesseract import (
+    pandas_installed,
+    prepare
+)
 
 try:
     from PIL import Image
 except ImportError:
     import Image
 
-try:
+if pandas_installed:
     import pandas
-except ImportError:
-    pandas = None
 
 IS_PYTHON_2 = version_info[:1] < (3, )
 IS_PYTHON_3 = not IS_PYTHON_2
@@ -182,7 +184,7 @@ def test_image_to_data__pandas_support(test_file):
     reason='requires tesseract >= 3.05'
 )
 @pytest.mark.skipif(
-    pandas is None,
+    pandas_installed is False,
     reason='requires pandas'
 )
 def test_image_to_data__pandas_output(test_file):
