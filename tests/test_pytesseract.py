@@ -17,17 +17,22 @@ from pytesseract import (
 )
 
 from pytesseract.pytesseract import (
+    numpy_installed,
     pandas_installed,
     prepare
 )
+
+if numpy_installed:
+    import numpy as np
+
+if pandas_installed:
+    import pandas
 
 try:
     from PIL import Image
 except ImportError:
     import Image
 
-if pandas_installed:
-    import pandas
 
 IS_PYTHON_2 = version_info[:1] < (3, )
 IS_PYTHON_3 = not IS_PYTHON_2
@@ -168,6 +173,17 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         result = str(result).strip()
         assert result.startswith('<?xml')
         assert result.endswith('</html>')
+
+
+@pytest.mark.skipif(
+    numpy_installed is False,
+    reason='requires numpy'
+)
+def test_image_to_string_with_numpy_array(test_file):
+    assert 'The quick brown dog' in image_to_string(
+        np.array(Image.open(test_file)),
+        'eng'
+    )
 
 
 @pytest.mark.skipif(
