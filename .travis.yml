@@ -9,11 +9,16 @@ addons:
     - tesseract-ocr-fra
 
 cache:
-  apt: true
+  apt: false
   pip: true
 
 matrix:
   include:
+    - os: linux
+      dist: bionic
+      python: 3.7
+      env: TOXENV=py37
+      name: "3.7 Bionic"
     - os: linux
       dist: xenial
       python: 2.7
@@ -39,11 +44,6 @@ matrix:
       python: 3.7
       env: TOXENV=pep8
       name: "3.7 Xenial pep8"
-    - os: linux
-      dist: bionic
-      python: 3.7
-      env: TOXENV=py37
-      name: "3.7 Bionic"
 
 before_install:
 #  - sudo apt-get update
