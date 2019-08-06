@@ -4,12 +4,9 @@ addons:
   apt:
     config:
       retries: true
-    packages:
-    - tesseract-ocr
-    - tesseract-ocr-fra
 
 cache:
-  apt: false
+  apt: true
   pip: true
 
 matrix:
@@ -37,18 +34,12 @@ matrix:
     - os: linux
       dist: xenial
       python: 3.7
-      env: TOXENV=py37
+      env: TOXENV=py37-pep8
       name: "3.7 Xenial"
-    - os: linux
-      dist: xenial
-      python: 3.7
-      env: TOXENV=pep8
-      name: "3.7 Xenial pep8"
 
 before_install:
-#  - sudo apt-get update
-#  - sudo apt-get install -y tesseract-ocr
-#  - sudo apt-get install -y tesseract-ocr-fra
+  - sudo apt-get install -y tesseract-ocr
+  - sudo apt-get install -y tesseract-ocr-fra
   - tesseract --version
   - tesseract --list-langs
 
