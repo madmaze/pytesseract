@@ -5,6 +5,10 @@ Python Tesseract
     :target: https://travis-ci.org/madmaze/pytesseract
     :alt: Travis build status
 
+.. image:: https://img.shields.io/pypi/pyversions/pytesseract.svg
+   :target: https://pypi.python.org/pypi/pytesseract
+   :alt: Python versions
+
 .. image:: https://img.shields.io/pypi/v/pytesseract.svg
    :target: https://pypi.python.org/pypi/pytesseract
    :alt: PyPI release
@@ -13,9 +17,9 @@ Python Tesseract
    :target: https://github.com/madmaze/pytesseract/releases
    :alt: Github release
 
-.. image:: https://img.shields.io/pypi/pyversions/pytesseract.svg
-   :target: https://pypi.python.org/pypi/pytesseract
-   :alt: Python versions
+.. image:: https://anaconda.org/conda-forge/pytesseract/badges/version.svg
+   :target: https://anaconda.org/conda-forge/pytesseract
+   :alt: Conda versions
 
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
@@ -169,6 +173,10 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
     $> git clone https://github.com/madmaze/pytesseract.git
     $ (env)> cd pytesseract && pip install -U .
 
+| Install with conda (via `conda-forge <https://anaconda.org/conda-forge/pytesseract>`_):
+
+    $> conda install -c conda-forge pytesseract
+
 TESTING
 -------
 
@@ -194,3 +202,4 @@ CONTRIBUTORS
 - `Emilio Cecchini <https://github.com/ceccoemi>`_
 - `John Hagen <https://github.com/johnthagen>`_
 - `Darius Morawiec <https://github.com/nok>`_
+- `Eddie Bedada <https://github.com/adbeda>`_
