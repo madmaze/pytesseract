@@ -7,7 +7,7 @@ addons:
 
 cache:
   apt: true
-  pip
+  pip: true
 
 matrix:
   include:
