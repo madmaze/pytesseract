@@ -39,6 +39,7 @@ RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
     'JPEG', 'PNG', 'PBM', 'PGM', 'PPM', 'TIFF', 'BMP', 'GIF'
 }
+
 OSD_KEYS = {
     'Page number': ('page_num', int),
     'Orientation in degrees': ('orientation', int),
