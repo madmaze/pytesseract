@@ -175,6 +175,8 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
 
 | Install with conda (via `conda-forge <https://anaconda.org/conda-forge/pytesseract>`_):
 
+.. code-block:: bash
+
     $> conda install -c conda-forge pytesseract
 
 TESTING
