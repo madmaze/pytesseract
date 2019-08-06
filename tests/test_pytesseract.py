@@ -101,9 +101,9 @@ def test_image_to_string_with_args_type(test_file):
     numpy_installed is False,
     reason='requires numpy'
 )
-def test_image_to_string_with_numpy_array():
+def test_image_to_string_with_numpy_array(test_file):
     assert 'The quick brown dog' in image_to_string(
-        np.array(Image.open(TEST_JPEG)),
+        np.array(Image.open(test_file)),
         'eng'
     )
 
