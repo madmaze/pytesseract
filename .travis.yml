@@ -1,33 +1,49 @@
 language: python
 
+addons:
+  apt:
+    config:
+      retries: true
+
+cache:
+  apt: true
+  pip
+
 matrix:
   include:
     - os: linux
       dist: xenial
       python: 2.7
       env: TOXENV=py27
+      name: "2.7 Xenial"
     - os: linux
       dist: xenial
       python: 3.5
       env: TOXENV=py35
+      name: "3.5 Xenial"
     - os: linux
       dist: xenial
       python: 3.6
       env: TOXENV=py36
+      name: "3.6 Xenial"
     - os: linux
       dist: xenial
       python: 3.7
       env: TOXENV=py37
+      name: "3.7 Xenial"
     - os: linux
       dist: xenial
       python: 3.7
       env: TOXENV=pep8
+      name: "3.7 Xenial pep8"
     - os: linux
       dist: bionic
       python: 3.7
       env: TOXENV=py37
+      name: "3.7 Bionic"
 
 before_install:
+  - sudo apt-get update
   - sudo apt-get install -y tesseract-ocr
   - sudo apt-get install -y tesseract-ocr-fra
   - tesseract --version
