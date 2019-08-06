@@ -113,6 +113,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_osd** Returns result containing information about orientation and script detection.
 
+* **run_and_get_output** Returns the raw output from Tesseract OCR. Gives a bit more control over the parameters that are sent to tesseract.
+
 **Parameters**
 
 ``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0)``
