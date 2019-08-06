@@ -12,11 +12,6 @@ cache:
 matrix:
   include:
     - os: linux
-      dist: bionic
-      python: 3.7
-      env: TOXENV=py37
-      name: "3.7 Bionic"
-    - os: linux
       dist: xenial
       python: 2.7
       env: TOXENV=py27
@@ -36,6 +31,11 @@ matrix:
       python: 3.7
       env: TOXENV=py37-pep8
       name: "3.7 Xenial"
+    - os: linux
+      dist: bionic
+      python: 3.7
+      env: TOXENV=py37
+      name: "3.7 Bionic"
 
 before_install:
   - sudo apt-get install -y tesseract-ocr
