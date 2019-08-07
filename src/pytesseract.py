@@ -162,7 +162,8 @@ def prepare(image):
 
 
 def save_image(image):
-    _, temp_name = tempfile.mkstemp(prefix='tess_')
+    fd, temp_name = tempfile.mkstemp(prefix='tess_')
+    os.close(fd)
     if isinstance(image, str):
         return temp_name, realpath(normpath(normcase(image)))
 
