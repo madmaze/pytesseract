@@ -162,8 +162,9 @@ def prepare(image):
 
 
 def save_image(image):
-    fd, temp_name = tempfile.mkstemp(prefix='tess_')
-    os.close(fd)
+    with tempfile.NamedTemporaryFile(prefix='tess_', delete=False) as f:
+        temp_name = f.name
+
     if isinstance(image, str):
         return temp_name, realpath(normpath(normcase(image)))
 
