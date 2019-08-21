@@ -9,7 +9,7 @@ Python Tesseract
    :target: https://pypi.python.org/pypi/pytesseract
    :alt: Python versions
 
-.. image:: https://img.shields.io/pypi/v/pytesseract.svg
+.. image:: https://img.shields.io/pypi/v/pytesseract.svg?color=blue
    :target: https://pypi.python.org/pypi/pytesseract
    :alt: PyPI release
 
@@ -17,7 +17,7 @@ Python Tesseract
    :target: https://github.com/madmaze/pytesseract/releases
    :alt: Github release
 
-.. image:: https://anaconda.org/conda-forge/pytesseract/badges/version.svg
+.. image:: https://img.shields.io/conda/vn/conda-forge/pytesseract.svg?color=blue
    :target: https://anaconda.org/conda-forge/pytesseract
    :alt: Conda release
 
