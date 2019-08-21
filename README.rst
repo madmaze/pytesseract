@@ -62,6 +62,14 @@ USAGE
     # Batch processing with a single file containing the list of multiple image file paths 
     print(pytesseract.image_to_string('images.txt'))
 
+    # Timeout/terminate the tesseract job after a period of time
+    try:
+        print(pytesseract.image_to_string('test.jpg', timeout=2) # Timeout after 2 second
+        print(pytesseract.image_to_string('test.jpg', timeout=0.5) # Timeout after half a second
+    except RuntimeError as timeout_error:
+        # Tesseract processing is terminated
+        pass
+
     # Get bounding box estimates
     print(pytesseract.image_to_boxes(Image.open('test.png')))
 
