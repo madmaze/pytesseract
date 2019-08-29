@@ -287,7 +287,7 @@ def test_wrong_tesseract_cmd(test_file, path):
         'invalid_path'
     ]
 )
-def test_proper_oserror_exception_handling(tesT_file, path):
+def test_proper_oserror_exception_handling(test_file, path):
     """"Test for bubbling up OSError exceptions."""
     import pytesseract
     pytesseract.pytesseract.tesseract_cmd = path
