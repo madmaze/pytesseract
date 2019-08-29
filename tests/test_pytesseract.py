@@ -8,7 +8,7 @@ import pytest
 from pytesseract import (
     Output,
     TSVNotSupported,
-    TesseractNotFoundError
+    TesseractNotFoundError,
     get_tesseract_version,
     image_to_boxes,
     image_to_data,
@@ -292,6 +292,8 @@ def test_proper_oserror_exception_handling(test_file, path):
     """"Test for bubbling up OSError exceptions."""
     import pytesseract
     pytesseract.pytesseract.tesseract_cmd = path
-    with pytest.raises(TesseractNotFoundError if IS_PYTHON_2 else OSError):
+    with pytest.raises(
+        TesseractNotFoundError if IS_PYTHON_2 and path else OSError
+    ):
         pytesseract.pytesseract.image_to_string(test_file)
     pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
