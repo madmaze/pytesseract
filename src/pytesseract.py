@@ -227,7 +227,7 @@ def run_tesseract(input_filename,
         if e.errno is not ENOENT:
             raise e
         raise TesseractNotFoundError()
-            
+
     with timeout_manager(proc, timeout) as error_string:
         if proc.returncode:
             raise TesseractError(proc.returncode, get_errors(error_string))
