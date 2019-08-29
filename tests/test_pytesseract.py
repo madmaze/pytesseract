@@ -262,10 +262,9 @@ def test_wrong_prepare_type(obj):
     'path', [
         r'wrong_tesseract',
         getcwd() + path.sep + r'wrong_tesseract',
-        ],
+    ],
     ids=[
         'executable_name',
-        'empty_name',
         'absolute_path',
     ]
 )
