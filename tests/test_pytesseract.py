@@ -260,7 +260,7 @@ def test_wrong_prepare_type(obj):
 
 
 @pytest.mark.parametrize(
-    'path', [
+    'test_path', [
         r'wrong_tesseract',
         getcwd() + path.sep + r'wrong_tesseract',
     ],
@@ -269,17 +269,17 @@ def test_wrong_prepare_type(obj):
         'absolute_path',
     ]
 )
-def test_wrong_tesseract_cmd(test_file, path):
+def test_wrong_tesseract_cmd(test_file, test_path):
     """Test wrong or missing tesseract command."""
     import pytesseract
-    pytesseract.pytesseract.tesseract_cmd = path
+    pytesseract.pytesseract.tesseract_cmd = test_path
     with pytest.raises(TesseractNotFoundError):
         pytesseract.pytesseract.image_to_string(test_file)
     pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
 
 
 @pytest.mark.parametrize(
-    'path', [
+    'test_path', [
         path.sep + r'wrong_tesseract',
         r''
     ],
@@ -288,12 +288,12 @@ def test_wrong_tesseract_cmd(test_file, path):
         'invalid_path'
     ]
 )
-def test_proper_oserror_exception_handling(test_file, path):
+def test_proper_oserror_exception_handling(test_file, test_path):
     """"Test for bubbling up OSError exceptions."""
     import pytesseract
-    pytesseract.pytesseract.tesseract_cmd = path
+    pytesseract.pytesseract.tesseract_cmd = test_path
     with pytest.raises(
-        TesseractNotFoundError if IS_PYTHON_2 and path else OSError
+        TesseractNotFoundError if IS_PYTHON_2 and test_path else OSError
     ):
         pytesseract.pytesseract.image_to_string(test_file)
     pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
