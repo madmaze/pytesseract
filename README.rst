@@ -133,9 +133,9 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image** Object, PIL Image/NumPy array of the image to be processed by Tesseract
 
-* **lang** String, Tesseract language code string
+* **lang** String, Tesseract language code string. Defaults to ``eng`` if not specified! Example for multiple languages: ``lang='eng+fra'``
 
-* **config** String, Any additional configurations as a string, ex: ``config='--psm 6'``
+* **config** String, Any **additional custom configuration flags** that are not available via the pytesseract function. For example: ``config='--psm 6'``
 
 * **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
