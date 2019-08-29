@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import os.path
+from os import getcwd, path
 from multiprocessing import Pool
 from sys import platform, version_info
 
@@ -8,6 +8,7 @@ import pytest
 from pytesseract import (
     Output,
     TSVNotSupported,
+    TesseractNotFoundError,
     get_tesseract_version,
     image_to_boxes,
     image_to_data,
@@ -39,8 +40,8 @@ IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-TEST_JPEG = os.path.join(DATA_DIR, 'test.jpg')
+DATA_DIR = path.join(path.dirname(path.abspath(__file__)), 'data')
+TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 
@@ -52,7 +53,7 @@ def test_file():
 
 @pytest.fixture(scope='session')
 def test_file_european():
-    return os.path.join(DATA_DIR, 'test-european.jpg')
+    return path.join(DATA_DIR, 'test-european.jpg')
 
 
 @pytest.mark.parametrize(
@@ -82,7 +83,7 @@ def test_image_to_string_with_image_type(test_file):
     # that pytesseract command line program is called correctly.
     if test_file.endswith('gif') and TESSERACT_VERSION[0] < 4:
         pytest.skip('skip gif test')
-    test_file_path = os.path.join(DATA_DIR, test_file)
+    test_file_path = path.join(DATA_DIR, test_file)
     assert 'The quick brown dog' in image_to_string(test_file_path, 'eng')
 
 
@@ -118,14 +119,14 @@ def test_image_to_string_european(test_file_european):
     reason='used paths with `/` as separator'
 )
 def test_image_to_string_batch():
-    batch_file = os.path.join(DATA_DIR, 'images.txt')
+    batch_file = path.join(DATA_DIR, 'images.txt')
     assert 'The quick brown dog' in image_to_string(batch_file)
 
 
 def test_image_to_string_multiprocessing():
     """Test parallel system calls."""
     test_files = ['test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff']
-    test_files = [os.path.join(DATA_DIR, test_file) for test_file in test_files]
+    test_files = [path.join(DATA_DIR, test_file) for test_file in test_files]
     p = Pool(2)
     results = p.map(image_to_string, test_files)
     for result in results:
@@ -261,12 +262,10 @@ def test_wrong_prepare_type(obj):
 @pytest.mark.parametrize(
     'path', [
         r'wrong_tesseract',
-        r'',
-        os.path.sep + r'wrong_tesseract',
-        ],
+        getcwd() + path.sep + r'wrong_tesseract',
+    ],
     ids=[
         'executable_name',
-        'empty_name',
         'absolute_path',
     ]
 )
@@ -274,6 +273,27 @@ def test_wrong_tesseract_cmd(test_file, path):
     """Test wrong or missing tesseract command."""
     import pytesseract
     pytesseract.pytesseract.tesseract_cmd = path
-    with pytest.raises(pytesseract.pytesseract.TesseractNotFoundError):
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.pytesseract.image_to_string(test_file)
+    pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
+
+
+@pytest.mark.parametrize(
+    'path', [
+        path.sep + r'wrong_tesseract',
+        r''
+    ],
+    ids=[
+        'permission_error_path',
+        'invalid_path'
+    ]
+)
+def test_proper_oserror_exception_handling(test_file, path):
+    """"Test for bubbling up OSError exceptions."""
+    import pytesseract
+    pytesseract.pytesseract.tesseract_cmd = path
+    with pytest.raises(
+        TesseractNotFoundError if IS_PYTHON_2 and path else OSError
+    ):
         pytesseract.pytesseract.image_to_string(test_file)
     pytesseract.pytesseract.tesseract_cmd = 'tesseract'  # restore the def value
