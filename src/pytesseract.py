@@ -137,7 +137,7 @@ def cleanup(temp_name):
         except OSError as e:
             if e.errno is not ENOENT:
                 raise e
-            
+
 
 def prepare(image):
     if numpy_installed and isinstance(image, ndarray):
