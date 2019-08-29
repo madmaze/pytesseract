@@ -10,6 +10,7 @@ import string
 import subprocess
 import sys
 import tempfile
+from errno import ENOENT
 from contextlib import contextmanager
 from csv import QUOTE_NONE
 from distutils.version import LooseVersion
@@ -133,9 +134,10 @@ def cleanup(temp_name):
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             os.remove(filename)
-        except OSError:
-            pass
-
+        except OSError as e:
+            if e.errno is not ENOENT:
+                raise e
+            
 
 def prepare(image):
     if numpy_installed and isinstance(image, ndarray):
@@ -221,9 +223,11 @@ def run_tesseract(input_filename,
 
     try:
         proc = subprocess.Popen(cmd_args, **subprocess_args())
-    except OSError:
+    except OSError as e:
+        if e.errno is not ENOENT:
+            raise e
         raise TesseractNotFoundError()
-
+            
     with timeout_manager(proc, timeout) as error_string:
         if proc.returncode:
             raise TesseractError(proc.returncode, get_errors(error_string))
