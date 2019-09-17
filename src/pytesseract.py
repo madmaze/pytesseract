@@ -134,7 +134,7 @@ def cleanup(temp_name):
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             os.remove(filename)
-        except OSError:
+        except OSError as e:
             if e.errno != ENOENT:
                 raise e
 
