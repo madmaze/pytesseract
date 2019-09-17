@@ -104,7 +104,7 @@ def timeout_manager(proc, seconds=0):
             yield error_string
         finally:
             timer.cancel()
-            if proc.returncode is timeout_code:
+            if proc.returncode == timeout_code:
                 raise RuntimeError('Tesseract process timeout')
     finally:
         proc.stdin.close()
@@ -135,7 +135,7 @@ def cleanup(temp_name):
         try:
             os.remove(filename)
         except OSError:
-            if e.errno == ENOENT:
+            if e.errno != ENOENT:
                 raise e
 
 
@@ -224,7 +224,7 @@ def run_tesseract(input_filename,
     try:
         proc = subprocess.Popen(cmd_args, **subprocess_args())
     except OSError as e:
-        if e.errno == ENOENT:
+        if e.errno != ENOENT:
             raise e
         raise TesseractNotFoundError()
 
