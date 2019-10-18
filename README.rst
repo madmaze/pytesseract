@@ -159,7 +159,8 @@ Prerequisites:
   have to change the "tesseract_cmd" variable ``pytesseract.pytesseract.tesseract_cmd``.
   Under Debian/Ubuntu you can use the package **tesseract-ocr**.
   For Mac OS users. please install homebrew package **tesseract**.
-  **Note:** Make sure that you also have installed ``tessconfigs`` and ``configs`` from `tesseract-ocr/tessconfigs <https://github.com/tesseract-ocr/tessconfigs>`_ or via the OS package manager.
+
+  *Note:* Make sure that you also have installed ``tessconfigs`` and ``configs`` from `tesseract-ocr/tessconfigs <https://github.com/tesseract-ocr/tessconfigs>`_ or via the OS package manager.
 
 | Installing via pip:
 
