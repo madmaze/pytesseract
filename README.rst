@@ -59,7 +59,7 @@ USAGE
     # NOTE: In this case you should provide tesseract supported images or tesseract will return error
     print(pytesseract.image_to_string('test.png'))
 
-    # Batch processing with a single file containing the list of multiple image file paths 
+    # Batch processing with a single file containing the list of multiple image file paths
     print(pytesseract.image_to_string('images.txt'))
 
     # Timeout/terminate the tesseract job after a period of time
@@ -96,7 +96,7 @@ Support for OpenCV image/NumPy array objects
     # OR explicit beforehand converting
     print(pytesseract.image_to_string(Image.fromarray(img))
 
-If you need custom configuration like `oem`/`psm`, use the **config** keyword. 
+If you need custom configuration like `oem`/`psm`, use the **config** keyword.
 
 .. code-block:: python
 

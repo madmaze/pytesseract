@@ -9,5 +9,5 @@ from .pytesseract import (  # noqa: F401
     image_to_osd,
     image_to_pdf_or_hocr,
     image_to_string,
-    run_and_get_output
+    run_and_get_output,
 )

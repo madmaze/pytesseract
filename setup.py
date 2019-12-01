@@ -1,6 +1,6 @@
 import os
-from setuptools import setup
 
+from setuptools import setup
 
 README_PATH = 'README.rst'
 LONG_DESC = ''
@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
     entry_points={
-        'console_scripts': ['{0} = {0}.{0}:main'.format(PACKAGE_NAME)]
+        'console_scripts': ['{0} = {0}.{0}:main'.format(PACKAGE_NAME)],
     },
     classifiers=[
         'Programming Language :: Python',
@@ -41,5 +41,5 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ]
+    ],
 )
