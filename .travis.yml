@@ -29,12 +29,12 @@ matrix:
     - os: linux
       dist: xenial
       python: 3.7
-      env: TOXENV=py37-pre-commit
+      env: TOXENV=py37
       name: "3.7 Xenial"
     - os: linux
       dist: bionic
       python: 3.7
-      env: TOXENV=py37
+      env: TOXENV=py37-pre-commit
       name: "3.7 Bionic"
 
 before_install:
