@@ -159,17 +159,21 @@ def prepare(image):
     return image, extension
 
 
-def save_image(image):
-    with tempfile.NamedTemporaryFile(prefix='tess_', delete=False) as f:
-        temp_name = f.name
+@contextmanager
+def save(image):
+    with tempfile.NamedTemporaryFile(prefix='tess_') as f:
+        if isinstance(image, str):
+            yield f.name, realpath(normpath(normcase(image)))
+            return
 
-    if isinstance(image, str):
-        return temp_name, realpath(normpath(normcase(image)))
+        image, extension = prepare(image)
+        input_file_name = f.name + os.extsep + extension
+        image.save(input_file_name, format=extension, **image.info)
 
-    image, extension = prepare(image)
-    input_file_name = temp_name + os.extsep + extension
-    image.save(input_file_name, format=extension, **image.info)
-    return temp_name, input_file_name
+        try:
+            yield f.name, input_file_name
+        finally:
+            cleanup(input_file_name)
 
 
 def subprocess_args(include_stdout=True):
@@ -241,9 +245,7 @@ def run_and_get_output(
     return_bytes=False,
 ):
 
-    temp_name, input_filename = '', ''
-    try:
-        temp_name, input_filename = save_image(image)
+    with save(image) as (temp_name, input_filename):
         kwargs = {
             'input_filename': input_filename,
             'output_filename_base': temp_name + '_out',
@@ -260,8 +262,6 @@ def run_and_get_output(
             if return_bytes:
                 return output_file.read()
             return output_file.read().decode('utf-8').strip()
-    finally:
-        cleanup(temp_name)
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
