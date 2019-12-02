@@ -248,7 +248,7 @@ def run_and_get_output(
     with save(image) as (temp_name, input_filename):
         kwargs = {
             'input_filename': input_filename,
-            'output_filename_base': temp_name + '_out',
+            'output_filename_base': temp_name,
             'extension': extension,
             'lang': lang,
             'config': config,
