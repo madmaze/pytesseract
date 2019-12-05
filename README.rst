@@ -131,17 +131,17 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 ``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0)``
 
-* **image** Object, PIL Image/NumPy array of the image to be processed by Tesseract
+* **image** Object or String - PIL Image/NumPy array or file path of the image to be processed by Tesseract. If you pass object instead of file path, pytesseract will implicitly convert the image to `RGB mode <https://pillow.readthedocs.io/en/stable/handbook/concepts.html#modes>`_.
 
-* **lang** String, Tesseract language code string. Defaults to ``eng`` if not specified! Example for multiple languages: ``lang='eng+fra'``
+* **lang** String - Tesseract language code string. Defaults to ``eng`` if not specified! Example for multiple languages: ``lang='eng+fra'``
 
-* **config** String, Any **additional custom configuration flags** that are not available via the pytesseract function. For example: ``config='--psm 6'``
+* **config** String - Any **additional custom configuration flags** that are not available via the pytesseract function. For example: ``config='--psm 6'``
 
-* **nice** Integer, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+* **nice** Integer - modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
-* **output_type** Class attribute, specifies the type of the output, defaults to ``string``.  For the full list of all supported types, please check the definition of `pytesseract.Output <https://github.com/madmaze/pytesseract/blob/master/src/pytesseract.py>`_ class.
+* **output_type** Class attribute - specifies the type of the output, defaults to ``string``.  For the full list of all supported types, please check the definition of `pytesseract.Output <https://github.com/madmaze/pytesseract/blob/master/src/pytesseract.py>`_ class.
 
-* **timeout** Integer or Float, duration in seconds for the OCR processing, after which, pytesseract will terminate and raise RuntimeError.
+* **timeout** Integer or Float - duration in seconds for the OCR processing, after which, pytesseract will terminate and raise RuntimeError.
 
 
 INSTALLATION
