@@ -129,7 +129,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 **Parameters**
 
-``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0)``
+``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0, pandas_config=None)``
 
 * **image** Object or String - PIL Image/NumPy array or file path of the image to be processed by Tesseract. If you pass object instead of file path, pytesseract will implicitly convert the image to `RGB mode <https://pillow.readthedocs.io/en/stable/handbook/concepts.html#modes>`_.
 
@@ -143,6 +143,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **timeout** Integer or Float - duration in seconds for the OCR processing, after which, pytesseract will terminate and raise RuntimeError.
 
+* **pandas_config** Dict - only for the **Output.DATAFRAME** type. Dictionary with custom arguments for `pandas.read_csv <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas-read-csv>`_. Allows you to customize the output of **image_to_data**.
 
 INSTALLATION
 ------------
