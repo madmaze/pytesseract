@@ -383,17 +383,27 @@ def image_to_boxes(
     }[output_type]()
 
 
-def get_pandas_output(args):
+def get_pandas_output(args, panda_config=None):
     if not pandas_installed:
         raise PandasNotSupported()
 
-    return pd.read_csv(
-        BytesIO(run_and_get_output(*args)), quoting=QUOTE_NONE, sep='\t',
-    )
+    kwargs = {'quoting': QUOTE_NONE, 'sep': '\t'}
+    try:
+        kwargs.update(panda_config)
+    except (TypeError, ValueError):
+        pass
+
+    return pd.read_csv(BytesIO(run_and_get_output(*args)), **kwargs)
 
 
 def image_to_data(
-    image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
+    image,
+    lang=None,
+    config='',
+    nice=0,
+    output_type=Output.STRING,
+    timeout=0,
+    panda_config=None,
 ):
     """
     Returns string containing box boundaries, confidences,
@@ -408,7 +418,9 @@ def image_to_data(
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
-        Output.DATAFRAME: lambda: get_pandas_output(args + [True]),
+        Output.DATAFRAME: lambda: get_pandas_output(
+            args + [True], panda_config,
+        ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
     }[output_type]()
