@@ -383,13 +383,13 @@ def image_to_boxes(
     }[output_type]()
 
 
-def get_pandas_output(args, panda_config=None):
+def get_pandas_output(args, config=None):
     if not pandas_installed:
         raise PandasNotSupported()
 
     kwargs = {'quoting': QUOTE_NONE, 'sep': '\t'}
     try:
-        kwargs.update(panda_config)
+        kwargs.update(config)
     except (TypeError, ValueError):
         pass
 
@@ -403,7 +403,7 @@ def image_to_data(
     nice=0,
     output_type=Output.STRING,
     timeout=0,
-    panda_config=None,
+    pandas_config=None,
 ):
     """
     Returns string containing box boundaries, confidences,
@@ -419,7 +419,7 @@ def image_to_data(
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
         Output.DATAFRAME: lambda: get_pandas_output(
-            args + [True], panda_config,
+            args + [True], pandas_config,
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
