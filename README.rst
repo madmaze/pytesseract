@@ -97,7 +97,7 @@ Support for OpenCV image/NumPy array objects
     img_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
     print(pytesseract.image_to_string(img_rgb))
     # OR
-    img_rgb = Image.frombytes("RGB", im_cv.shape[:2], im_cv, "raw", "BGR", 0, 0)
+    img_rgb = Image.frombytes('RGB', im_cv.shape[:2], im_cv, 'raw', 'BGR', 0, 0)
     print(pytesseract.image_to_string(img_rgb))
 
 
