@@ -93,11 +93,13 @@ Support for OpenCV image/NumPy array objects
 
     img = cv2.imread(r'/<path_to_image>/digits.png')
     # By default OpenCV stores images in BGR format and since pytesseract assumes RGB format,
-    # we need to convert from BGR to RGB format/mode.
+    # we need to convert from BGR to RGB format/mode:
     img_rgb = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB)
-
-    print(pytesseract.image_to_string(img_rgb))
     print(pytesseract.image_to_string(Image.fromarray(img_rgb))
+    # OR
+    img_rgb = Image.frombytes("RGB", im_cv.shape[:2], im_cv, "raw", "BGR", 0, 0)
+    print(pytesseract.image_to_string(img_rgb))
+
 
 If you need custom configuration like `oem`/`psm`, use the **config** keyword.
 
