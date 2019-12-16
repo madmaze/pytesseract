@@ -81,6 +81,9 @@ USAGE
 
     # Get a searchable PDF
     pdf = pytesseract.image_to_pdf_or_hocr('test.png', extension='pdf')
+    f = open("test.pdf", "w+b")
+    f.write(bytearray(pdf))
+    f.close()
 
     # Get HOCR output
     hocr = pytesseract.image_to_pdf_or_hocr('test.png', extension='hocr')
