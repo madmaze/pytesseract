@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-"""
-Python-tesseract. For more information: https://github.com/madmaze/pytesseract
-"""
-import os
+
 import shlex
 import string
 import subprocess
@@ -15,6 +12,7 @@ from errno import ENOENT
 from functools import wraps
 from glob import iglob
 from io import BytesIO
+from os import environ, extsep, remove
 from os.path import normcase, normpath, realpath
 from pkgutil import find_loader
 from threading import Timer
@@ -24,6 +22,9 @@ try:
 except ImportError:
     import Image
 
+
+tesseract_cmd = 'tesseract'
+
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
     from numpy import ndarray
@@ -32,8 +33,6 @@ pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
 
-# CHANGE THIS IF TESSERACT IS NOT IN YOUR PATH, OR IS NAMED DIFFERENTLY
-tesseract_cmd = 'tesseract'
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {'JPEG', 'PNG', 'PBM', 'PGM', 'PPM', 'TIFF', 'BMP', 'GIF'}
 
@@ -129,7 +128,7 @@ def cleanup(temp_name):
     """ Tries to remove temp files by filename wildcard path. """
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
-            os.remove(filename)
+            remove(filename)
         except OSError as e:
             if e.errno != ENOENT:
                 raise e
@@ -167,7 +166,7 @@ def save(image):
             return
 
         image, extension = prepare(image)
-        input_file_name = f.name + os.extsep + extension
+        input_file_name = f.name + extsep + extension
         image.save(input_file_name, format=extension, **image.info)
 
         try:
@@ -184,7 +183,7 @@ def subprocess_args(include_stdout=True):
         'stdin': subprocess.PIPE,
         'stderr': subprocess.PIPE,
         'startupinfo': None,
-        'env': os.environ,
+        'env': environ,
     }
 
     if hasattr(subprocess, 'STARTUPINFO'):
@@ -257,7 +256,7 @@ def run_and_get_output(
         }
 
         run_tesseract(**kwargs)
-        filename = kwargs['output_filename_base'] + os.extsep + extension
+        filename = kwargs['output_filename_base'] + extsep + extension
         with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
@@ -450,7 +449,7 @@ def main():
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
         filename, lang = sys.argv[3], sys.argv[2]
     else:
-        sys.stderr.write('Usage: python pytesseract.py [-l lang] input_file\n')
+        sys.stderr.write('Usage: pytesseract [-l lang] input_file\n')
         exit(2)
 
     try:
