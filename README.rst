@@ -37,6 +37,8 @@ USAGE
 
 *Note*: Test images are located in the ``tests/data`` folder of the Git repo.
 
+Library usage:
+
 .. code-block:: python
 
     try:
@@ -152,6 +154,12 @@ Add the following config, if you have tessdata error like: "Error opening data f
 * **timeout** Integer or Float - duration in seconds for the OCR processing, after which, pytesseract will terminate and raise RuntimeError.
 
 * **pandas_config** Dict - only for the **Output.DATAFRAME** type. Dictionary with custom arguments for `pandas.read_csv <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas-read-csv>`_. Allows you to customize the output of **image_to_data**.
+
+CLI usage:
+
+.. code-block:: bash
+
+    $ (env)> pytesseract [-l lang] image_file
 
 INSTALLATION
 ------------
