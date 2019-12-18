@@ -25,7 +25,7 @@ setup(
     long_description=LONG_DESC,
     license='GPLv3',
     keywords='python-tesseract OCR Python',
-    url='https://github.com/madmaze/python-tesseract',
+    url='https://github.com/madmaze/pytesseract',
     packages=[PACKAGE_NAME],
     package_dir={PACKAGE_NAME: PACKAGE_DIR},
     include_package_data=True,
