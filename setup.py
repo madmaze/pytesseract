@@ -1,5 +1,4 @@
 import os
-
 from setuptools import setup
 
 README_PATH = 'README.rst'
@@ -14,7 +13,7 @@ PACKAGE_DIR = 'src'
 
 setup(
     name=PACKAGE_NAME,
-    version='0.3.0',
+    version='0.3.1',
     author='Samuel Hoffstaetter',
     author_email='samuel@hoffstaetter.com',
     maintainer='Matthias Lee',
@@ -23,7 +22,7 @@ setup(
         "Python-tesseract is a python wrapper for Google's Tesseract-OCR"
     ),
     long_description=LONG_DESC,
-    license='GPLv3',
+    license='Apache License 2.0',
     keywords='python-tesseract OCR Python',
     url='https://github.com/madmaze/pytesseract',
     packages=[PACKAGE_NAME],
@@ -34,6 +33,7 @@ setup(
         'console_scripts': ['{0} = {0}.{0}:main'.format(PACKAGE_NAME)],
     },
     classifiers=[
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
