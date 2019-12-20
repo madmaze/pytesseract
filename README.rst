@@ -219,7 +219,7 @@ installed and in your PATH.
 
 LICENSE
 -------
-Check the LICENSE file included in the Python-tesseract repository/distribution.
+Python-tesseract is released under the GPL v3.
 
 CONTRIBUTORS
 ------------
