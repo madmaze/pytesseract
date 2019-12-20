@@ -1,4 +1,5 @@
 import os
+
 from setuptools import setup
 
 README_PATH = 'README.rst'
