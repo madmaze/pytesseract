@@ -220,6 +220,7 @@ installed and in your PATH.
 LICENSE
 -------
 Check the LICENSE file included in the Python-tesseract repository/distribution.
+As of Python-tesseract 0.3.1 the license is Apache License Version 2.0
 
 CONTRIBUTORS
 ------------
