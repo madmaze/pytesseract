@@ -4,7 +4,6 @@ import shlex
 import string
 import subprocess
 import sys
-import tempfile
 from contextlib import contextmanager
 from csv import QUOTE_NONE
 from distutils.version import LooseVersion
@@ -15,6 +14,7 @@ from io import BytesIO
 from os import environ, extsep, remove
 from os.path import normcase, normpath, realpath
 from pkgutil import find_loader
+from tempfile import NamedTemporaryFile
 from threading import Timer
 
 try:
@@ -160,19 +160,18 @@ def prepare(image):
 
 @contextmanager
 def save(image):
-    with tempfile.NamedTemporaryFile(prefix='tess_') as f:
-        if isinstance(image, str):
-            yield f.name, realpath(normpath(normcase(image)))
-            return
+    try:
+        with NamedTemporaryFile(prefix='tess_') as f:
+            if isinstance(image, str):
+                yield f.name, realpath(normpath(normcase(image)))
+                return
 
-        image, extension = prepare(image)
-        input_file_name = f.name + extsep + extension
-        image.save(input_file_name, format=extension, **image.info)
-
-        try:
+            image, extension = prepare(image)
+            input_file_name = f.name + extsep + extension
+            image.save(input_file_name, format=extension, **image.info)
             yield f.name, input_file_name
-        finally:
-            cleanup(input_file_name)
+    finally:
+        cleanup(input_file_name)
 
 
 def subprocess_args(include_stdout=True):
