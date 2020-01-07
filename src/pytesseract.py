@@ -171,7 +171,7 @@ def save(image):
             image.save(input_file_name, format=extension, **image.info)
             yield f.name, input_file_name
     finally:
-        cleanup(input_file_name)
+        cleanup(f.name)
 
 
 def subprocess_args(include_stdout=True):
