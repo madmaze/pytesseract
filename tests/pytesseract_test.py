@@ -1,7 +1,9 @@
 # encoding: utf-8
+from glob import iglob
 from multiprocessing import Pool
-from os import getcwd, path
+from os import getcwd, path, sep
 from sys import platform, version_info
+from tempfile import gettempdir
 
 import pytest
 from pytesseract import (
@@ -89,6 +91,10 @@ def test_image_to_string_with_image_type(test_file):
 )
 def test_image_to_string_with_args_type(test_file):
     assert 'The quick brown dog' in image_to_string(test_file, 'eng')
+
+    # Test cleanup of temporary files
+    for _ in iglob(gettempdir() + sep + 'tess_*'):
+        assert False, 'Failed to cleanup temporary files'
 
 
 @pytest.mark.skipif(numpy_installed is False, reason='requires numpy')
