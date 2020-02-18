@@ -155,6 +155,9 @@ def prepare(image):
         image = background
 
     image.format = extension
+    if 'format' not in image.info:
+        image.info['format'] = extension
+
     return image, extension
 
 
