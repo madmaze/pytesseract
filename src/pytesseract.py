@@ -168,7 +168,7 @@ def save(image):
 
             image, extension = prepare(image)
             input_file_name = f.name + extsep + extension
-            image.save(input_file_name, format=extension, **image.info)
+            image.save(input_file_name, **image.info)
             yield f.name, input_file_name
     finally:
         cleanup(f.name)
