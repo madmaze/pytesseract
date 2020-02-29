@@ -97,3 +97,5 @@ ENV/
 # PyCharm project settings
 .idea
 *.iml
+
+src/pytesseract/
