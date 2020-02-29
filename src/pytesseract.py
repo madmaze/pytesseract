@@ -99,28 +99,28 @@ class DataLine:
         The following attributes are expected to be available with tesseract version 5,
         this may change with future or past versions of tesseract.
         Regardless of this the returned object has all attributes found in the header string.
-        This also assists IDE's in autodecting available parameters and types
-        The exception clause is there to allow compatibility with old python versions
+        This also assists IDE's in autodecting available parameters and types 
+        The exception clause is there to allow compatibility with old python versions.
         """
         try:
-            self.level: int
-            self.page_num: int
-            self.block_num: int
-            self.par_num: int
-            self.line_num: int
-            self.word_num: int
-            self.left: int
-            self.top: int
-            self.width: int
-            self.height: int
-            self.conf: int
-            self.text: str
+            self.level: int = -1
+            self.page_num: int = -1
+            self.block_num: int = -1
+            self.par_num: int = -1
+            self.line_num: int = -1
+            self.word_num: int = -1
+            self.left: int = -1
+            self.top: int = -1
+            self.width: int = -1
+            self.height: int = -1
+            self.conf: int = -1
+            self.text: str = ""
         except:
             pass
-        self.fill_from_string(data_string, headers)
+        self.__fill_from_string(data_string, headers)
 
-    def fill_from_string(self, data_string: str, headers):
-        data_list = data_string.split('\t')
+    def __fill_from_string(self, data_string: str, headers):
+        data_list = data_string.split("\t")
         for i in range(len(headers)):
             setattr(self, headers[i], data_list[i])
 
@@ -276,13 +276,13 @@ def subprocess_args(include_stdout=True):
 
 
 def run_tesseract(
-    input_filename,
-    output_filename_base,
-    extension,
-    lang,
-    config='',
-    nice=0,
-    timeout=0,
+        input_filename,
+        output_filename_base,
+        extension,
+        lang,
+        config='',
+        nice=0,
+        timeout=0,
 ):
     cmd_args = []
 
@@ -313,13 +313,13 @@ def run_tesseract(
 
 
 def run_and_get_output(
-    image,
-    extension='',
-    lang=None,
-    config='',
-    nice=0,
-    timeout=0,
-    return_bytes=False,
+        image,
+        extension='',
+        lang=None,
+        config='',
+        nice=0,
+        timeout=0,
+        return_bytes=False,
 ):
     with save(image) as (temp_name, input_filename):
         kwargs = {
@@ -402,16 +402,16 @@ def get_tesseract_version():
             subprocess.check_output(
                 [tesseract_cmd, '--version'], stderr=subprocess.STDOUT,
             )
-            .decode('utf-8')
-            .split()[1]
-            .lstrip(string.printable[10:]),
+                .decode('utf-8')
+                .split()[1]
+                .lstrip(string.printable[10:]),
         )
     except OSError:
         raise TesseractNotFoundError()
 
 
 def image_to_string(
-    image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
+        image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to string
@@ -426,7 +426,7 @@ def image_to_string(
 
 
 def image_to_pdf_or_hocr(
-    image, lang=None, config='', nice=0, extension='pdf', timeout=0,
+        image, lang=None, config='', nice=0, extension='pdf', timeout=0,
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
@@ -440,7 +440,7 @@ def image_to_pdf_or_hocr(
 
 
 def image_to_boxes(
-    image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
+        image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
 ):
     """
     Returns string containing recognized characters and their box boundaries
@@ -473,13 +473,13 @@ def get_pandas_output(args, config=None):
 
 
 def image_to_data(
-    image,
-    lang=None,
-    config='',
-    nice=0,
-    output_type=Output.STRING,
-    timeout=0,
-    pandas_config=None,
+        image,
+        lang=None,
+        config='',
+        nice=0,
+        output_type=Output.STRING,
+        timeout=0,
+        pandas_config=None,
 ):
     """
     Returns string containing box boundaries, confidences,
@@ -504,7 +504,7 @@ def image_to_data(
 
 
 def image_to_osd(
-    image, lang='osd', config='', nice=0, output_type=Output.STRING, timeout=0,
+        image, lang='osd', config='', nice=0, output_type=Output.STRING, timeout=0,
 ):
     """
     Returns string containing the orientation and script detection (OSD)
