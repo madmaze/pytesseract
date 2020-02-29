@@ -124,6 +124,9 @@ class DataLine:
         for i in range(len(headers)):
             setattr(self, headers[i], data_list[i])
 
+    def __iter__(self):
+        return self.lines.__iter__()
+
     def __str__(self):
         slist = []
         for key in self.__dict__.keys():
