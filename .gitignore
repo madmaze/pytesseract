@@ -98,4 +98,3 @@ ENV/
 .idea
 *.iml
 
-src/pytesseract/
