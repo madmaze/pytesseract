@@ -496,6 +496,7 @@ def image_to_data(
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
+        'object': lambda: Data(run_and_get_output(*args))
     }[output_type]()
 
 
