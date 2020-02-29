@@ -89,7 +89,7 @@ class DataLine:
         The following attributes are expected to be available with tesseract version 5,
         this may change with future or past versions of tesseract.
         Regardless of this the returned object has all attributes found in the header string.
-        This also assists IDE's in autodecting available parameters and types 
+        This also assists IDE's in autodecting available parameters and types
         The exception clause is there to allow compatibility with old python versions
         """
         try:
@@ -110,7 +110,7 @@ class DataLine:
         self.fill_from_string(data_string, headers)
 
     def fill_from_string(self, data_string: str, headers):
-        data_list = data_string.split("\t")
+        data_list = data_string.split('\t')
         for i in range(len(headers)):
             setattr(self, headers[i], data_list[i])
 
@@ -118,7 +118,7 @@ class DataLine:
         slist = []
         for key in self.__dict__.keys():
             slist.append(str(self.__dict__[key]))
-        return "\t".join(slist)
+        return '\t'.join(slist)
 
 
 class Data:
@@ -129,17 +129,17 @@ class Data:
         :param data_str: str
         """
         self.lines = []
-        data_list = data_str.split("\n")
+        data_list = data_str.split('\n')
         self.header_str = data_list[0]
-        headers = self.header_str.split("\t")
+        headers = self.header_str.split('\t')
         for line in data_list[1:]:
             self.lines.append(DataLine(line, headers))
 
     def __str__(self):
         slist = [self.header_str]
         for line in self.lines:
-            slist.append(str(l))
-        return "\n".join(slist)
+            slist.append(str(line))
+        return '\n'.join(slist)
 
 
 def kill(process, code):
@@ -486,7 +486,7 @@ def image_to_data(
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
-        'object': lambda: Data(run_and_get_output(*args))
+        'object': lambda: Data(run_and_get_output(*args)),
     }[output_type]()
 
 
