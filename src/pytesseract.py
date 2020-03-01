@@ -83,32 +83,27 @@ class DataLine:
         """
 
         :param data_string: str
-        :param header_str: str
+        :param headers: str
         """
         """
-        The following attributes are expected to be available with tesseract 
+        The following attributes are expected to be available with tesseract
         version 5, this may change with future or past versions of tesseract.
-        Regardless of this the returned object has all attributes found in 
+        Regardless of this the returned object has all attributes found in
         the header string.
         This also assists IDE's in autodecting available parameters and types.
-        The exception clause is there to allow compatibility with old python 
-        versions.
         """
-        try:
-            self.level: int = -1
-            self.page_num: int = -1
-            self.block_num: int = -1
-            self.par_num: int = -1
-            self.line_num: int = -1
-            self.word_num: int = -1
-            self.left: int = -1
-            self.top: int = -1
-            self.width: int = -1
-            self.height: int = -1
-            self.conf: int = -1
-            self.text: str = ''
-        except :
-            pass
+        self.level: int
+        self.page_num: int
+        self.block_num: int
+        self.par_num: int
+        self.line_num: int
+        self.word_num: int
+        self.left: int
+        self.top: int
+        self.width: int
+        self.height: int
+        self.conf: int
+        self.text: str
         self.__fill_from_string(data_string, headers)
 
     def __fill_from_string(self, data_string: str, headers):
@@ -118,9 +113,6 @@ class DataLine:
                 setattr(self, headers[i], int(data_list[i]))
             except ValueError:
                 setattr(self, headers[i], data_list[i])
-
-    def __iter__(self):
-        return self.lines.__iter__()
 
     def __str__(self):
         slist = []
@@ -143,6 +135,9 @@ class Data:
         headers = self.header_str.split('\t')
         for line in data_list[1:]:
             self.lines.append(DataLine(line, headers))
+
+    def __iter__(self):
+        return self.lines.__iter__()
 
     def __str__(self):
         slist = [self.header_str]
