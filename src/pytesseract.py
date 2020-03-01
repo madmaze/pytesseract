@@ -112,7 +112,10 @@ class DataLine:
     def __fill_from_string(self, data_string: str, headers):
         data_list = data_string.split("\t")
         for i in range(len(headers)):
-            setattr(self, headers[i], data_list[i])
+            try:
+                setattr(self, headers[i], int(data_list[i]))
+            except ValueError:
+                setattr(self, headers[i], data_list[i])
 
     def __iter__(self):
         return self.lines.__iter__()
