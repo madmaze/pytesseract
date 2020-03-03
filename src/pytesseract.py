@@ -102,22 +102,22 @@ class DataLine:
         the header string.
         This also assists IDE's in autodecting available parameters and types.
         """
-        try:
-            self.level: int
-            self.page_num: int
-            self.block_num: int
-            self.par_num: int
-            self.line_num: int
-            self.word_num: int
-            self.left: int
-            self.top: int
-            self.width: int
-            self.height: int
-            self.conf: int
-            self.text: str
-        except SyntaxError:
-            """attempt to add support for older python versions"""
-            pass
+        default_int = -2
+        default_str = "\t"
+
+        self.level = default_int
+        self.page_num = default_int
+        self.block_num = default_int
+        self.par_num = default_int
+        self.line_num = default_int
+        self.word_num = default_int
+        self.left = default_int
+        self.top = default_int
+        self.width = default_int
+        self.height = default_int
+        self.conf = default_int
+        self.text = default_str
+
         self.__fill_from_string(data_string, headers)
 
     def __fill_from_string(self, data_string, headers):
