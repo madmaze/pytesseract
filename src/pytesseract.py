@@ -103,7 +103,6 @@ class DataLine:
         This also assists IDE's in autodecting available parameters and types.
         """
         try:
-
             self.level: int
             self.page_num: int
             self.block_num: int
@@ -116,17 +115,17 @@ class DataLine:
             self.height: int
             self.conf: int
             self.text: str
-            self.__fill_from_string(data_string, headers)
         except SyntaxError:
             """attempt to add support for older python versions"""
             pass
+        self.__fill_from_string(data_string, headers)
 
     def __fill_from_string(self, data_string, headers):
         """
 
         :param data_string:str
         :param headers: str
-        :return:
+        :return: None
         """
         data_list = data_string.split('\t')
         for i in range(len(headers)):
