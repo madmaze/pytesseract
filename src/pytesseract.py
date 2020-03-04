@@ -241,7 +241,7 @@ def prepare(image):
 @contextmanager
 def save(image):
     try:
-        with NamedTemporaryFile(prefix='tess_') as f:
+        with NamedTemporaryFile(prefix='tess_', delete=False) as f:
             if isinstance(image, str):
                 yield f.name, realpath(normpath(normcase(image)))
                 return
