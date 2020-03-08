@@ -293,7 +293,6 @@ def test_image_to_data_common_output(test_file, output):
             assert line.text != line.default_str
 
 
-
 @pytest.mark.parametrize('obj', [1, 1.0, None], ids=['int', 'float', 'none'])
 def test_wrong_prepare_type(obj):
     with pytest.raises(TypeError):
