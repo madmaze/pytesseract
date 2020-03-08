@@ -92,7 +92,7 @@ class TSVNotSupported(EnvironmentError):
 class DataLine:
     def __init__(self, data_string, headers):
         """
-
+        Presents data from image as object.
         :param data_string: str
         :param headers: str
         """
