@@ -88,7 +88,7 @@ class DataLine:
         """
         """
         The following attributes are expected to be available with tesseract
-        version 5, 4 and 3.05+, this may change with future versions of 
+        version 5, 4 and 3.05+, this may change with future versions of
         tesseract.
         Regardless of this the returned object has all attributes found in
         the header string.
