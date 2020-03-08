@@ -8,6 +8,8 @@ from tempfile import gettempdir
 import pytest
 from pytesseract import (
     Output,
+    Data,
+    DataLine,
     TesseractNotFoundError,
     TSVNotSupported,
     get_tesseract_version,
@@ -260,11 +262,11 @@ def test_image_to_data_common_output(test_file, output):
             assert key in result
 
     elif output is Output.OBJECT:
-        assert isinstance(result, pytesseract.Data)
+        assert isinstance(result, Data)
         for line in result:
             line.default_int = -2  # verifys that all values got set
             line.default_str = '\t'  # to non default values Thanks python2
-            assert isinstance(line, pytesseract.DataLine)
+            assert isinstance(line, DataLine)
             assert line.level != line.default_int
             assert line.page_num != line.default_int
             assert line.block_num != line.default_int
