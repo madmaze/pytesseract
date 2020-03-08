@@ -60,6 +60,7 @@ class Output:
     DATAFRAME = 'data.frame'
     DICT = 'dict'
     STRING = 'string'
+    OBJECT = 'object'
 
 
 class PandasNotSupported(EnvironmentError):
@@ -101,22 +102,23 @@ class DataLine:
         Regardless of this the returned object has all attributes found in
         the header string.
         This also assists IDE's in autodecting available parameters and types.
+        Default values ensure compatibility with python
         """
-        default_int = -2
-        default_str = '\t'
+        self.default_int = -2
+        self.default_str = '\t'
 
-        self.level = default_int
-        self.page_num = default_int
-        self.block_num = default_int
-        self.par_num = default_int
-        self.line_num = default_int
-        self.word_num = default_int
-        self.left = default_int
-        self.top = default_int
-        self.width = default_int
-        self.height = default_int
-        self.conf = default_int
-        self.text = default_str
+        self.level = self.default_int
+        self.page_num = self.default_int
+        self.block_num = self.default_int
+        self.par_num = self.default_int
+        self.line_num = self.default_int
+        self.word_num = self.default_int
+        self.left = self.default_int
+        self.top = self.default_int
+        self.width = self.default_int
+        self.height = self.default_int
+        self.conf = self.default_int
+        self.text = self.default_str
 
         self.__fill_from_string(data_string, headers)
 
@@ -510,7 +512,7 @@ def image_to_data(
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
-        'object': lambda: Data(run_and_get_output(*args)),
+        Output.OBJECT: lambda: Data(run_and_get_output(*args)),
     }[output_type]()
 
 
