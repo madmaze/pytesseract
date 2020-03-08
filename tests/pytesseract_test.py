@@ -258,6 +258,24 @@ def test_image_to_data_common_output(test_file, output):
         assert isinstance(result, string_type)
         for key in expected_keys:
             assert key in result
+    elif output is Output.OBJECT:
+        assert isinstance(result, pytesseract.Data)
+        for line in result:
+            assert isinstance(line, pytesseract.DataLine)
+            line.default_int = -2    #verifys that all values got set
+            line.default_str = '\t'  # to non default values Thanks python2
+            assert line.level != line.default_int
+            assert line.page_num != line.default_int
+            assert line.block_num != line.default_int
+            assert line.par_num != line.default_int
+            assert line.line_num != line.default_int
+            assert line.word_num != line.default_int
+            assert line.left != line.default_int
+            assert line.top != line.default_int
+            assert line.width != line.default_int
+            assert line.height != line.default_int
+            assert line.conf != line.default_int
+            assert line.text != line.default_str
 
 
 
