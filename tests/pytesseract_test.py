@@ -7,9 +7,9 @@ from tempfile import gettempdir
 
 import pytest
 from pytesseract import (
-    Output,
     Data,
     DataLine,
+    Output,
     TesseractNotFoundError,
     TSVNotSupported,
     get_tesseract_version,
