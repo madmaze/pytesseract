@@ -272,6 +272,7 @@ def test_image_to_data_common_output(test_file, output):
         assert isinstance(result, string_type)
         for key in expected_keys:
             assert key in result
+
     elif output is Output.OBJECT:
         assert isinstance(result, pytesseract.Data)
         for line in result:
