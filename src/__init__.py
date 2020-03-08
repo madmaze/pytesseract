@@ -1,5 +1,7 @@
 from .pytesseract import (  # noqa: F401
     Output,
+    Data,
+    DataLine,
     TesseractError,
     TesseractNotFoundError,
     TSVNotSupported,
