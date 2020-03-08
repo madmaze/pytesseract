@@ -75,8 +75,16 @@ Library usage:
     # Get bounding box estimates
     print(pytesseract.image_to_boxes(Image.open('test.png')))
 
-    # Get verbose data including boxes, confidences, line and page numbers
+    # Get verbose data including boxes, confidences, line and page numbers can be retrieved in different
+    # formats, defaults to string, for more details check OUTPUT class
     print(pytesseract.image_to_data(Image.open('test.png')))
+
+    # with some filtering :
+
+    data = pytesseract.image_to_data(Image.open('test.png'),output_type=Output.OBJECT)
+    for d in data:
+        if d.conf > 80:
+            print(d.line_num,'\t',d.word_num,'\t',d.text)
 
     # Get information about orientation and script detection
     print(pytesseract.image_to_osd(Image.open('test.png')))
