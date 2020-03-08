@@ -9,6 +9,8 @@ import pytest
 from pytesseract import (
     Output,
     TesseractNotFoundError,
+    Data,
+    DataLine,
     TSVNotSupported,
     get_tesseract_version,
     image_to_boxes,
@@ -226,8 +228,8 @@ def test_image_to_data__pandas_output(test_file):
 )
 @pytest.mark.parametrize(
     'output',
-    [Output.BYTES, Output.DICT, Output.STRING],
-    ids=['bytes', 'dict', 'string'],
+    [Output.BYTES, Output.DICT, Output.STRING, Output.OBJECT],
+    ids=['bytes', 'dict', 'string', 'object'],
 )
 def test_image_to_data_common_output(test_file, output):
     """Test and compare the type of the result."""
@@ -258,6 +260,25 @@ def test_image_to_data_common_output(test_file, output):
         assert isinstance(result, string_type)
         for key in expected_keys:
             assert key in result
+    elif output is Output.OBJECT:
+        assert isinstance(result, Data)
+        for line in result:
+            assert isinstance(line, DataLine)
+            line.default_int = -2    #has to be the same Value as in DataLine Class definition
+            line.default_str = '\t'  #Thanks python2
+            assert line.level != line.default_int
+            assert line.page_num != line.default_int
+            assert line.block_num != line.default_int
+            assert line.par_num != line.default_int
+            assert line.line_num != line.default_int
+            assert line.word_num != line.default_int
+            assert line.left != line.default_int
+            assert line.top != line.default_int
+            assert line.width != line.default_int
+            assert line.height != line.default_int
+            assert line.conf != line.default_int
+            assert line.text != line.default_str
+
 
 
 @pytest.mark.parametrize('obj', [1, 1.0, None], ids=['int', 'float', 'none'])
