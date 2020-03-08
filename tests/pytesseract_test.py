@@ -9,8 +9,8 @@ import pytest
 from pytesseract import (
     Output,
     TesseractNotFoundError,
-    Data,
     DataLine,
+    Data,
     TSVNotSupported,
     get_tesseract_version,
     image_to_boxes,
