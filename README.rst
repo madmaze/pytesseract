@@ -81,7 +81,7 @@ Library usage:
 
     # with some filtering :
 
-    data = pytesseract.image_to_data(Image.open('test.png'),output_type=Output.OBJECT)
+    data = pytesseract.image_to_data(Image.open('test.png'),output_type=pytesseract.Output.OBJECT)
     for d in data:
         if d.conf > 80:
             print(d.line_num,'\t',d.word_num,'\t',d.text)
