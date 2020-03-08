@@ -98,11 +98,11 @@ class DataLine:
         """
         """
         The following attributes are expected to be available with tesseract
-        version 5, this may change with future or past versions of tesseract.
+        version 5, 4 and 3.05+, this may change with future versions of tesseract.
         Regardless of this the returned object has all attributes found in
         the header string.
         This also assists IDE's in autodecting available parameters and types.
-        Default values ensure compatibility with python
+        Default values ensure compatibility with python < 3.6.
         """
         self.default_int = -2
         self.default_str = '\t'
