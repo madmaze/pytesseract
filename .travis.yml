@@ -17,7 +17,17 @@ matrix:
       env: TOXENV=py27
       name: "2.7 Xenial"
     - os: linux
+      dist: bionic
+      python: 2.7
+      env: TOXENV=py27
+      name: "2.7 Xenial"
+    - os: linux
       dist: xenial
+      python: 3.5
+      env: TOXENV=py35
+      name: "3.5 Xenial"
+    - os: linux
+      dist: bionic
       python: 3.5
       env: TOXENV=py35
       name: "3.5 Xenial"
