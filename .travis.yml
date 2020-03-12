@@ -22,11 +22,6 @@ matrix:
       env: TOXENV=py27
       name: "2.7 Bionic"
     - os: linux
-      dist: xenial
-      python: 3.5
-      env: TOXENV=py35
-      name: "3.5 Xenial"
-    - os: linux
       dist: bionic
       python: 3.5
       env: TOXENV=py35
@@ -36,11 +31,6 @@ matrix:
       python: 3.6
       env: TOXENV=py36
       name: "3.6 Xenial"
-    - os: linux
-      dist: bionic
-      python: 3.6
-      env: TOXENV=py36
-      name: "3.6 Bionic"
     - os: linux
       dist: xenial
       python: 3.7
