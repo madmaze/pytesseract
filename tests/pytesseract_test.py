@@ -49,6 +49,11 @@ def test_file():
 
 
 @pytest.fixture(scope='session')
+def test_invalid_file():
+    return 'invalid' + TEST_JPEG
+
+
+@pytest.fixture(scope='session')
 def test_file_european():
     return path.join(DATA_DIR, 'test-european.jpg')
 
@@ -275,13 +280,30 @@ def test_wrong_tesseract_cmd(test_file, test_path):
     """Test wrong or missing tesseract command."""
     import pytesseract
 
-    pytesseract.pytesseract.tesseract_cmd = test_path
+    monkeypatch.setattr(
+        'pytesseract.pytesseract.tesseract_cmd',
+        test_path
+    )
     with pytest.raises(TesseractNotFoundError):
         pytesseract.pytesseract.image_to_string(test_file)
-    pytesseract.pytesseract.tesseract_cmd = (
-        'tesseract'  # restore the def value
-    )
 
+
+def test_main_not_found_cases(monkeypatch, test_file, test_invalid_file):
+    """Test wrong or missing tesseract command."""
+    import pytesseract
+
+    monkeypatch.setattr('sys.argv', ['', test_invalid_file])
+    with pytest.raises(IOError):
+        pytesseract.pytesseract.main()
+
+    monkeypatch.setattr(
+        'pytesseract.pytesseract.tesseract_cmd',
+        'wrong_tesseract'
+    )
+    monkeypatch.setattr('sys.argv', ['', test_file])
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.pytesseract.main()
+        
 
 @pytest.mark.parametrize(
     'test_path',
