@@ -305,7 +305,7 @@ def test_main_not_found_cases(
     with pytest.raises(SystemExit):
         pytesseract.pytesseract.main()
     assert capsys.readouterr().err.endswith(
-        "is not installed or it's not in your PATH",
+        "is not installed or it's not in your PATH\n",
     )
 
 
