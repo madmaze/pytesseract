@@ -51,6 +51,11 @@ def test_file():
 
 
 @pytest.fixture(scope='session')
+def test_invalid_file():
+    return TEST_JPEG + 'invalid'
+
+
+@pytest.fixture(scope='session')
 def test_file_european():
     return path.join(DATA_DIR, 'test-european.jpg')
 
@@ -292,15 +297,36 @@ def test_wrong_prepare_type(obj):
     [r'wrong_tesseract', getcwd() + path.sep + r'wrong_tesseract'],
     ids=['executable_name', 'absolute_path'],
 )
-def test_wrong_tesseract_cmd(test_file, test_path):
+def test_wrong_tesseract_cmd(monkeypatch, test_file, test_path):
     """Test wrong or missing tesseract command."""
     import pytesseract
 
-    pytesseract.pytesseract.tesseract_cmd = test_path
+    monkeypatch.setattr(
+        'pytesseract.pytesseract.tesseract_cmd', test_path,
+    )
     with pytest.raises(TesseractNotFoundError):
         pytesseract.pytesseract.image_to_string(test_file)
-    pytesseract.pytesseract.tesseract_cmd = (
-        'tesseract'  # restore the def value
+
+
+def test_main_not_found_cases(
+    capsys, monkeypatch, test_file, test_invalid_file,
+):
+    """Test wrong or missing tesseract command in main."""
+    import pytesseract
+
+    monkeypatch.setattr('sys.argv', ['', test_invalid_file])
+    with pytest.raises(SystemExit):
+        pytesseract.pytesseract.main()
+    assert capsys.readouterr().err.startswith('ERROR: Could not open file')
+
+    monkeypatch.setattr(
+        'pytesseract.pytesseract.tesseract_cmd', 'wrong_tesseract',
+    )
+    monkeypatch.setattr('sys.argv', ['', test_file])
+    with pytest.raises(SystemExit):
+        pytesseract.pytesseract.main()
+    assert capsys.readouterr().err.endswith(
+        "is not installed or it's not in your PATH\n",
     )
 
 
@@ -309,15 +335,14 @@ def test_wrong_tesseract_cmd(test_file, test_path):
     [path.sep + r'wrong_tesseract', r''],
     ids=['permission_error_path', 'invalid_path'],
 )
-def test_proper_oserror_exception_handling(test_file, test_path):
+def test_proper_oserror_exception_handling(monkeypatch, test_file, test_path):
     """"Test for bubbling up OSError exceptions."""
     import pytesseract
 
-    pytesseract.pytesseract.tesseract_cmd = test_path
+    monkeypatch.setattr(
+        'pytesseract.pytesseract.tesseract_cmd', test_path,
+    )
     with pytest.raises(
         TesseractNotFoundError if IS_PYTHON_2 and test_path else OSError,
     ):
         pytesseract.pytesseract.image_to_string(test_file)
-    pytesseract.pytesseract.tesseract_cmd = (
-        'tesseract'  # restore the def value
-    )

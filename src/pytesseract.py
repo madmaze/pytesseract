@@ -68,7 +68,7 @@ class TesseractError(RuntimeError):
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super(TesseractNotFoundError, self).__init__(
-            tesseract_cmd + " is not installed or it's not in your path",
+            tesseract_cmd + " is not installed or it's not in your PATH",
         )
 
 
@@ -537,6 +537,9 @@ def main():
     try:
         with Image.open(filename) as img:
             print(image_to_string(img, lang=lang))
+    except TesseractNotFoundError as e:
+        sys.stderr.write('{}\n'.format(str(e)))
+        exit(1)
     except IOError:
         sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
         exit(1)

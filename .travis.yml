@@ -38,9 +38,9 @@ matrix:
       name: "3.7 Xenial"
     - os: linux
       dist: bionic
-      python: 3.7
-      env: TOXENV=py37-pre-commit
-      name: "3.7 Bionic"
+      python: 3.8
+      env: TOXENV=py38-pre-commit
+      name: "3.8 Bionic"
 
 before_install:
   - sudo apt-get install -y tesseract-ocr
