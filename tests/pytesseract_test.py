@@ -127,7 +127,12 @@ def test_image_to_string_batch():
 def test_image_to_string_multiprocessing():
     """Test parallel system calls."""
     test_files = [
-       'test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff', 'test.webp',
+        'test.jpg',
+        'test.pgm',
+        'test.png',
+        'test.ppm',
+        'test.tiff',
+        'test.webp',
     ]
     test_files = [path.join(DATA_DIR, test_file) for test_file in test_files]
     p = Pool(2)
