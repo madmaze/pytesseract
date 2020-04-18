@@ -35,7 +35,15 @@ if pandas_installed:
 
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
-    'JPEG', 'PNG', 'PBM', 'PGM', 'PPM', 'TIFF', 'BMP', 'GIF', 'WebP',
+    'JPEG',
+    'PNG',
+    'PBM',
+    'PGM',
+    'PPM',
+    'TIFF',
+    'BMP',
+    'GIF',
+    'WEBP',
 }
 
 OSD_KEYS = {
