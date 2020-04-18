@@ -67,6 +67,7 @@ def test_file_european():
         'test.ppm',
         'test.tiff',
         'test.gif',
+        'test.webp',
         # 'test.bmp',  # https://github.com/tesseract-ocr/tesseract/issues/2558
     ],
     ids=[
@@ -76,6 +77,7 @@ def test_file_european():
         'ppm',
         'tiff',
         'gif',
+        'webp',
         # 'bmp',
     ],
 )
@@ -124,7 +126,9 @@ def test_image_to_string_batch():
 
 def test_image_to_string_multiprocessing():
     """Test parallel system calls."""
-    test_files = ['test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff']
+    test_files = [
+       'test.jpg', 'test.pgm', 'test.png', 'test.ppm', 'test.tiff', 'test.webp',
+    ]
     test_files = [path.join(DATA_DIR, test_file) for test_file in test_files]
     p = Pool(2)
     results = p.map(image_to_string, test_files)
