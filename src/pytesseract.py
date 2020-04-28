@@ -272,7 +272,7 @@ def run_and_get_output(
         with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
-            return output_file.read().decode('utf-8').strip()
+            return output_file.read().decode('utf-8')
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
