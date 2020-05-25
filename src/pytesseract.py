@@ -24,7 +24,7 @@ except ImportError:
 
 if sys.platform == 'win32':
     # Assume default location installation of Tesseract
-    tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\Tesseract.exe"
+    tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\Tesseract.exe'
 else:
     tesseract_cmd = 'tesseract'
 
