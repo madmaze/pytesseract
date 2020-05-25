@@ -22,8 +22,11 @@ try:
 except ImportError:
     import Image
 
-
-tesseract_cmd = 'tesseract'
+if sys.platform == 'win32':
+    # Assume default location installation of Tesseract
+    tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\Tesseract.exe"
+else:
+    tesseract_cmd = 'tesseract'
 
 numpy_installed = find_loader('numpy') is not None
 if numpy_installed:
