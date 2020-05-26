@@ -313,8 +313,8 @@ def test_main_not_found_cases(
     monkeypatch.setattr('sys.argv', ['', test_file])
     with pytest.raises(SystemExit):
         pytesseract.pytesseract.main()
-    assert capsys.readouterr().err.endswith(
-        "is not installed or it's not in your PATH\n",
+    assert (
+        "is not installed or it's not in your PATH" in capsys.readouterr().err
     )
 
 
