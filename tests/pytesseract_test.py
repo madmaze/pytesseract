@@ -307,7 +307,7 @@ def test_main_not_found_cases(
         pytesseract.pytesseract.main()
 
     captured_stderr = capsys.readouterr().err
-    assert all(
+    assert (
         '[Errno 2] No such file or directory' in captured_stderr
         and
         captured_stderr.endswith(test_invalid_file)
