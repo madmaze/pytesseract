@@ -305,7 +305,8 @@ def test_main_not_found_cases(
     monkeypatch.setattr('sys.argv', ['', test_invalid_file])
     with pytest.raises(SystemExit):
         pytesseract.pytesseract.main()
-    assert capsys.readouterr().err.startswith('ERROR: Could not open file')
+    assert '[Errno 2] No such file or directory' in capsys.readouterr().err
+    assert capsys.readouterr().err.endswith(test_invalid_file)
 
     monkeypatch.setattr(
         'pytesseract.pytesseract.tesseract_cmd', 'wrong_tesseract',
