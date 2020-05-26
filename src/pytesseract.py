@@ -335,7 +335,7 @@ def get_tesseract_version():
     try:
         return LooseVersion(
             subprocess.check_output(
-                [tesseract_cmd, '--version'], stderr=subprocess.STDOUT,
+                [tesseract_cmd, '--version'], **subprocess_args(),
             )
             .decode('utf-8')
             .split()[1]
