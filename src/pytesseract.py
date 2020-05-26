@@ -78,8 +78,9 @@ class TesseractError(RuntimeError):
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super(TesseractNotFoundError, self).__init__(
-            tesseract_cmd + " is not installed or it's not in your PATH." +
-            " See README for more information.",
+            tesseract_cmd
+            + " is not installed or it's not in your PATH."
+            + " See README file for more information.",
         )
 
 
