@@ -474,8 +474,8 @@ def main():
     except TesseractNotFoundError as e:
         sys.stderr.write('{}\n'.format(str(e)))
         exit(1)
-    except IOError:
-        sys.stderr.write('ERROR: Could not open file "%s"\n' % filename)
+    except IOError as e:
+        sys.stderr.write('{}: {}'.format(type(e).__name__, e))
         exit(1)
 
 
