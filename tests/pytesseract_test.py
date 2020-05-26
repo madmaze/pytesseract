@@ -308,9 +308,9 @@ def test_main_not_found_cases(
 
     captured_stderr = capsys.readouterr().err
     assert (
-        '[Errno 2] No such file or directory' in captured_stderr
+        'No such file or directory' in captured_stderr
         and
-        captured_stderr.endswith(test_invalid_file)
+        test_invalid_file in captured_stderr
     )
 
     monkeypatch.setattr(
