@@ -18,11 +18,6 @@ matrix:
       name: "2.7 Xenial"
     - os: linux
       dist: xenial
-      python: 3.5
-      env: TOXENV=py35
-      name: "3.5 Xenial"
-    - os: linux
-      dist: xenial
       python: 3.6
       env: TOXENV=py36
       name: "3.6 Xenial"
@@ -32,10 +27,15 @@ matrix:
       env: TOXENV=py37
       name: "3.7 Xenial"
     - os: linux
-      dist: bionic
+      dist: xenial
       python: 3.8
-      env: TOXENV=py38-pre-commit
-      name: "3.8 Bionic"
+      env: TOXENV=py38
+      name: "3.8 Xenial"
+    - os: linux
+      dist: bionic
+      python: 3.9
+      env: TOXENV=py39-pre-commit
+      name: "3.9 Bionic"
 
 before_install:
   - sudo apt-get install -y tesseract-ocr
