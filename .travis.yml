@@ -8,6 +8,8 @@ addons:
 cache:
   apt: true
   pip: true
+  directories:
+    - $HOME/.cache/pre-commit
 
 matrix:
   include:
