@@ -157,9 +157,6 @@ def prepare(image):
     if extension not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')
 
-    if not image.mode.startswith(RGB_MODE):
-        image = image.convert(RGB_MODE)
-
     if 'A' in image.getbands():
         # discard and replace the alpha channel with white background
         background = Image.new(RGB_MODE, image.size, (255, 255, 255))
@@ -167,9 +164,6 @@ def prepare(image):
         image = background
 
     image.format = extension
-    if 'format' not in image.info:
-        image.info['format'] = extension
-
     return image, extension
 
 
@@ -183,7 +177,7 @@ def save(image):
 
             image, extension = prepare(image)
             input_file_name = f.name + extsep + extension
-            image.save(input_file_name, **image.info)
+            image.save(input_file_name, format=image.format)
             yield f.name, input_file_name
     finally:
         cleanup(f.name)
