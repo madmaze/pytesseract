@@ -382,6 +382,10 @@ def image_to_pdf_or_hocr(
 def image_to_alto_xml(
     image, lang=None, config='', nice=0, timeout=0,
 ):
+    """
+    Returns the result of a Tesseract OCR run on the provided image to ALTO XML
+    """
+
     if get_tesseract_version() < '4.1.0':
         raise ALTONotSupported()
     config = '{} {}'.format('-c tessedit_create_alto=1', config.strip()).strip()
