@@ -221,7 +221,7 @@ def test_image_to_alto_xml(test_file):
 )
 def test_image_to_alto_xml_support(test_file):
     with pytest.raises(ALTONotSupported):
-        image_to_data(test_file)
+        image_to_alto_xml(test_file)
 
 
 @pytest.mark.skipif(
