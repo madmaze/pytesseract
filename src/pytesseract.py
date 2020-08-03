@@ -389,7 +389,9 @@ def image_to_alto_xml(
     if get_tesseract_version() < '4.1.0':
         raise ALTONotSupported()
 
-    config = '{} {}'.format('-c tessedit_create_alto=1', config.strip()).strip()
+    config = '{} {}'.format(
+        '-c tessedit_create_alto=1', config.strip(),
+    ).strip()
     args = [image, 'xml', lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
