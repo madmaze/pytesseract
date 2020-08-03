@@ -89,6 +89,9 @@ Library usage:
     # Get HOCR output
     hocr = pytesseract.image_to_pdf_or_hocr('test.png', extension='hocr')
 
+    # Get ALTO XML output
+    xml = pytesseract.image_to_alto_xml('test.png')
+
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
@@ -134,6 +137,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
 * **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_
 
 * **image_to_osd** Returns result containing information about orientation and script detection.
+
+* **image_to_alto_xml** Returns result in the form of Tesseract's ALTO XML format.
 
 * **run_and_get_output** Returns the raw output from Tesseract OCR. Gives a bit more control over the parameters that are sent to tesseract.
 
