@@ -9,6 +9,7 @@ import pytest
 from pytesseract import (
     Output,
     TesseractNotFoundError,
+    ALTONotSupported,
     TSVNotSupported,
     get_tesseract_version,
     image_to_alto_xml,
@@ -204,7 +205,7 @@ def test_image_to_pdf_or_hocr(test_file, extension):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] < (4, 1), reason='requires tesseract < 3.05',
+    TESSERACT_VERSION[:2] < (4, 1), reason='requires tesseract >= 4.1',
 )
 def test_image_to_alto_xml(test_file):
     result = image_to_alto_xml(test_file)
@@ -213,6 +214,14 @@ def test_image_to_alto_xml(test_file):
     result = str(result).strip()
     assert result.startswith('<?xml')
     assert result.endswith('</alto>')
+
+
+@pytest.mark.skipif(
+    TESSERACT_VERSION[:2] >= (4, 1), reason='requires tesseract < 4.1',
+)
+def test_image_to_alto_xml_support(test_file):
+    with pytest.raises(ALTONotSupported):
+        image_to_data(test_file)
 
 
 @pytest.mark.skipif(
