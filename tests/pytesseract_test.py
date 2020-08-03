@@ -203,6 +203,9 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         assert result.endswith('</html>')
 
 
+@pytest.mark.skipif(
+    TESSERACT_VERSION[:2] < (4, 1), reason='requires tesseract < 3.05',
+)
 def test_image_to_alto_xml(test_file):
     result = image_to_alto_xml(test_file)
     assert isinstance(result, bytes)
