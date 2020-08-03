@@ -94,7 +94,7 @@ class TSVNotSupported(EnvironmentError):
 class ALTONotSupported(EnvironmentError):
     def __init__(self):
         super(ALTONotSupported, self).__init__(
-            'ALTO output not supported. Tesseract >= 4.10 required',
+            'ALTO output not supported. Tesseract >= 4.1.0 required',
         )
 
 
