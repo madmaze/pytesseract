@@ -7,9 +7,9 @@ from tempfile import gettempdir
 
 import pytest
 from pytesseract import (
+    ALTONotSupported,
     Output,
     TesseractNotFoundError,
-    ALTONotSupported,
     TSVNotSupported,
     get_tesseract_version,
     image_to_alto_xml,
