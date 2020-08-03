@@ -2,6 +2,7 @@ from .pytesseract import (  # noqa: F401
     Output,
     TesseractError,
     TesseractNotFoundError,
+    ALTONotSupported,
     TSVNotSupported,
     get_tesseract_version,
     image_to_alto_xml,
