@@ -382,7 +382,7 @@ def image_to_pdf_or_hocr(
 def image_to_alto_xml(
     image, lang=None, config='', nice=0, timeout=0,
 ):
-    if get_tesseract_version() < '4.10':
+    if get_tesseract_version() < '4.1.0':
         raise ALTONotSupported()
     config = '{} {}'.format('-c tessedit_create_alto=1', config.strip()).strip()
     args = [image, 'xml', lang, config, nice, timeout, True]
