@@ -91,6 +91,13 @@ class TSVNotSupported(EnvironmentError):
         )
 
 
+class ALTONotSupported(EnvironmentError):
+    def __init__(self):
+        super(ALTONotSupported, self).__init__(
+            'ALTO output not supported. Tesseract >= 4.1.0 required',
+        )
+
+
 def kill(process, code):
     process.kill()
     process.returncode = code
@@ -227,7 +234,7 @@ def run_tesseract(
     if config:
         cmd_args += shlex.split(config)
 
-    if extension and extension not in {'box', 'osd', 'tsv'}:
+    if extension and extension not in {'box', 'osd', 'tsv', 'xml'}:
         cmd_args.append(extension)
 
     try:
@@ -368,6 +375,24 @@ def image_to_pdf_or_hocr(
     if extension not in {'pdf', 'hocr'}:
         raise ValueError('Unsupported extension: {}'.format(extension))
     args = [image, extension, lang, config, nice, timeout, True]
+
+    return run_and_get_output(*args)
+
+
+def image_to_alto_xml(
+    image, lang=None, config='', nice=0, timeout=0,
+):
+    """
+    Returns the result of a Tesseract OCR run on the provided image to ALTO XML
+    """
+
+    if get_tesseract_version() < '4.1.0':
+        raise ALTONotSupported()
+
+    config = '{} {}'.format(
+        '-c tessedit_create_alto=1', config.strip(),
+    ).strip()
+    args = [image, 'xml', lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
 

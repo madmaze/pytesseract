@@ -11,6 +11,7 @@ from pytesseract import (
     TesseractNotFoundError,
     TSVNotSupported,
     get_tesseract_version,
+    image_to_alto_xml,
     image_to_boxes,
     image_to_data,
     image_to_osd,
@@ -200,6 +201,18 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         result = str(result).strip()
         assert result.startswith('<?xml')
         assert result.endswith('</html>')
+
+
+@pytest.mark.skipif(
+    TESSERACT_VERSION[:2] < (4, 1), reason='requires tesseract < 3.05',
+)
+def test_image_to_alto_xml(test_file):
+    result = image_to_alto_xml(test_file)
+    assert isinstance(result, bytes)
+    result = result.decode('utf-8') if IS_PYTHON_2 else str(result, 'utf-8')
+    result = str(result).strip()
+    assert result.startswith('<?xml')
+    assert result.endswith('</alto>')
 
 
 @pytest.mark.skipif(
