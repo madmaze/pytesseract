@@ -280,7 +280,7 @@ def run_and_get_output(
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
     result = {}
-    rows = [row.split(cell_delimiter) for row in tsv.split('\n')]
+    rows = [row.split(cell_delimiter) for row in tsv.strip().split('\n')]
     if not rows:
         return result
 
