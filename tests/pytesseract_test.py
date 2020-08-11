@@ -296,7 +296,7 @@ def test_image_to_data_common_output(test_file_small, output):
 
     elif output is Output.STRING:
         assert isinstance(result, string_type)
-        for key in expected_dict_output.keys():
+        for key in expected_dict_result.keys():
             assert key in result
 
 
