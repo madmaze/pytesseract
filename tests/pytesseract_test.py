@@ -285,7 +285,7 @@ def test_image_to_data_common_output(test_file_small, output):
         'width': [79, 60, 60, 60, 60],
         'height': [47, 24, 24, 24, 24],
         'conf': ['-1', '-1', '-1', '-1', 96],
-        'text': ['', '', '', '', 'This']
+        'text': ['', '', '', '', 'This'],
     }
 
     if output is Output.BYTES:
