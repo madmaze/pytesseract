@@ -16,6 +16,7 @@ from os.path import normcase, normpath, realpath
 from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from threading import Timer
+from time import sleep
 
 try:
     from PIL import Image
@@ -99,8 +100,16 @@ class ALTONotSupported(EnvironmentError):
 
 
 def kill(process, code):
-    process.kill()
-    process.returncode = code
+    process.terminate()
+    try:
+        process.wait(1)
+    except TypeError: # python2 Popen.wait(1) fallback
+        sleep(1)
+    except Exception: # python3 subprocess.TimeoutExpired
+        pass
+    finally:
+        process.kill()
+        process.returncode = code
 
 
 @contextmanager
