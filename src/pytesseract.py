@@ -103,9 +103,9 @@ def kill(process, code):
     process.terminate()
     try:
         process.wait(1)
-    except TypeError: # python2 Popen.wait(1) fallback
+    except TypeError:  # python2 Popen.wait(1) fallback
         sleep(1)
-    except Exception: # python3 subprocess.TimeoutExpired
+    except Exception:  # python3 subprocess.TimeoutExpired
         pass
     finally:
         process.kill()
