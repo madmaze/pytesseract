@@ -130,7 +130,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **get_tesseract_version** Returns the Tesseract version installed in the system.
 
-* **image_to_string** Returns the result of a Tesseract OCR run on the image to string
+* **image_to_string** Returns unmodified output as string from Tesseract OCR processing
 
 * **image_to_boxes** Returns result containing recognized characters and their box boundaries
 
