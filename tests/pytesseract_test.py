@@ -284,7 +284,7 @@ def test_image_to_data_common_output(test_file_small, output):
         'top': [0, 11, 11, 11, 11],
         'width': [79, 60, 60, 60, 60],
         'height': [47, 24, 24, 24, 24],
-        'conf': ['-1', '-1', '-1', '-1', 96],
+#       'conf': ['-1', '-1', '-1', '-1', 96],
         'text': ['', '', '', '', 'This'],
     }
 
@@ -292,6 +292,9 @@ def test_image_to_data_common_output(test_file_small, output):
         assert isinstance(result, bytes)
 
     elif output is Output.DICT:
+        confidence_values = expected_dict_result.pop('conf', None)
+        assert confidence_values != None
+        assert 0 <= confidence_values[-1] <= 100
         assert result == expected_dict_result
 
     elif output is Output.STRING:
