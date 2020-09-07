@@ -293,7 +293,7 @@ def test_image_to_data_common_output(test_file_small, output):
 
     elif output is Output.DICT:
         confidence_values = expected_dict_result.pop('conf', None)
-        assert confidence_values != None
+        assert confidence_values is not None
         assert 0 <= confidence_values[-1] <= 100
         assert result == expected_dict_result
 
