@@ -35,7 +35,6 @@ if pandas_installed:
     import pandas as pd
 
 RGB_MODE = 'RGB'
-RGBA_MODE = 'RGBA'
 SUPPORTED_FORMATS = {
     'JPEG',
     'PNG',
@@ -177,7 +176,7 @@ def prepare(image):
     if 'A' in image.getbands():
         # discard and replace the alpha channel with white background
         background = Image.new(RGB_MODE, image.size, (255, 255, 255))
-        background.paste(image, (0, 0), image.convert(RGBA_MODE))
+        background.paste(image, (0, 0), image.getchannel('A'))
         image = background
 
     image.format = extension
