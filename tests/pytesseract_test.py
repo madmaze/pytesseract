@@ -155,6 +155,12 @@ def test_image_to_string_timeout(test_file):
         image_to_string(test_file, timeout=0.000000001)
 
 
+def test_la_image_to_string():
+    filepath = path.join(DATA_DIR, 'test_la.png')
+    img = Image.open(filepath)
+    assert 'This is test message' == image_to_string(img).strip()
+
+
 def test_image_to_boxes(test_file):
     result = image_to_boxes(test_file)
     assert isinstance(result, string_type)
