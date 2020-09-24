@@ -17,6 +17,10 @@ Python Tesseract
    :target: https://anaconda.org/conda-forge/pytesseract
    :alt: Conda release
 
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+   :target: https://github.com/pre-commit/pre-commit
+   :alt: pre-commit
+
 .. image:: https://travis-ci.org/madmaze/pytesseract.svg
     :target: https://travis-ci.org/madmaze/pytesseract
     :alt: Travis build status
