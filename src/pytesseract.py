@@ -363,6 +363,9 @@ def image_to_string(
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to string
+    
+    :param image: A PIL Image.Image file or an ndarray of bytes
+    
     """
     args = [image, 'txt', lang, config, nice, timeout]
 
