@@ -58,6 +58,9 @@ Library usage:
     # Simple image to string
     print(pytesseract.image_to_string(Image.open('test.png')))
 
+    # List of available languages
+    print(pytesseract.get_languages(config=''))
+
     # French text image to string
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
 
@@ -131,6 +134,8 @@ Add the following config, if you have tessdata error like: "Error opening data f
     pytesseract.image_to_string(image, lang='chi_sim', config=tessdata_dir_config)
 
 **Functions**
+
+* **get_languages** Returns all currently supported languages by the Tesseract.
 
 * **get_tesseract_version** Returns the Tesseract version installed in the system.
 

@@ -1,25 +1,29 @@
 # encoding: utf-8
 from glob import iglob
 from multiprocessing import Pool
-from os import getcwd, path, sep
-from sys import platform, version_info
+from os import getcwd
+from os import path
+from os import sep
+from sys import platform
+from sys import version_info
 from tempfile import gettempdir
 
 import pytest
-from pytesseract import (
-    ALTONotSupported,
-    Output,
-    TesseractNotFoundError,
-    TSVNotSupported,
-    get_tesseract_version,
-    image_to_alto_xml,
-    image_to_boxes,
-    image_to_data,
-    image_to_osd,
-    image_to_pdf_or_hocr,
-    image_to_string,
-)
-from pytesseract.pytesseract import numpy_installed, pandas_installed, prepare
+from pytesseract import ALTONotSupported
+from pytesseract import get_languages
+from pytesseract import get_tesseract_version
+from pytesseract import image_to_alto_xml
+from pytesseract import image_to_boxes
+from pytesseract import image_to_data
+from pytesseract import image_to_osd
+from pytesseract import image_to_pdf_or_hocr
+from pytesseract import image_to_string
+from pytesseract import Output
+from pytesseract import TesseractNotFoundError
+from pytesseract import TSVNotSupported
+from pytesseract.pytesseract import numpy_installed
+from pytesseract.pytesseract import pandas_installed
+from pytesseract.pytesseract import prepare
 
 if numpy_installed:
     import numpy as np
@@ -38,7 +42,9 @@ IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
 
-DATA_DIR = path.join(path.dirname(path.abspath(__file__)), 'data')
+TESTS_DIR = path.dirname(path.abspath(__file__))
+DATA_DIR = path.join(TESTS_DIR, 'data')
+TESSDATA_DIR = path.join(TESTS_DIR, 'tessdata')
 TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
@@ -114,7 +120,8 @@ def test_image_to_string_with_args_type(test_file):
 @pytest.mark.skipif(numpy_installed is False, reason='requires numpy')
 def test_image_to_string_with_numpy_array(test_file):
     assert 'The quick brown dog' in image_to_string(
-        np.array(Image.open(test_file)), 'eng',
+        np.array(Image.open(test_file)),
+        'eng',
     )
 
 
@@ -124,7 +131,8 @@ def test_image_to_string_european(test_file_european):
 
 
 @pytest.mark.skipif(
-    platform.startswith('win32'), reason='used paths with `/` as separator',
+    platform.startswith('win32'),
+    reason='used paths with `/` as separator',
 )
 def test_image_to_string_batch():
     batch_file = path.join(DATA_DIR, 'images.txt')
@@ -216,7 +224,8 @@ def test_image_to_pdf_or_hocr(test_file, extension):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] < (4, 1), reason='requires tesseract >= 4.1',
+    TESSERACT_VERSION[:2] < (4, 1),
+    reason='requires tesseract >= 4.1',
 )
 def test_image_to_alto_xml(test_file):
     result = image_to_alto_xml(test_file)
@@ -228,7 +237,8 @@ def test_image_to_alto_xml(test_file):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] >= (4, 1), reason='requires tesseract < 4.1',
+    TESSERACT_VERSION[:2] >= (4, 1),
+    reason='requires tesseract < 4.1',
 )
 def test_image_to_alto_xml_support(test_file):
     with pytest.raises(ALTONotSupported):
@@ -236,7 +246,8 @@ def test_image_to_alto_xml_support(test_file):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] >= (3, 5), reason='requires tesseract < 3.05',
+    TESSERACT_VERSION[:2] >= (3, 5),
+    reason='requires tesseract < 3.05',
 )
 def test_image_to_data__pandas_support(test_file_small):
     with pytest.raises(TSVNotSupported):
@@ -244,7 +255,8 @@ def test_image_to_data__pandas_support(test_file_small):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] < (3, 5), reason='requires tesseract >= 3.05',
+    TESSERACT_VERSION[:2] < (3, 5),
+    reason='requires tesseract >= 3.05',
 )
 @pytest.mark.skipif(pandas_installed is False, reason='requires pandas')
 def test_image_to_data__pandas_output(test_file_small):
@@ -269,7 +281,8 @@ def test_image_to_data__pandas_output(test_file_small):
 
 
 @pytest.mark.skipif(
-    TESSERACT_VERSION[:2] < (3, 5), reason='requires tesseract >= 3.05',
+    TESSERACT_VERSION[:2] < (3, 5),
+    reason='requires tesseract >= 3.05',
 )
 @pytest.mark.parametrize(
     'output',
@@ -324,15 +337,23 @@ def test_wrong_tesseract_cmd(monkeypatch, test_file, test_path):
     """Test wrong or missing tesseract command."""
     import pytesseract
 
-    monkeypatch.setattr(
-        'pytesseract.pytesseract.tesseract_cmd', test_path,
-    )
+    monkeypatch.setattr('pytesseract.pytesseract.tesseract_cmd', test_path)
+
     with pytest.raises(TesseractNotFoundError):
-        pytesseract.pytesseract.image_to_string(test_file)
+        pytesseract.get_languages.__wrapped__()
+
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.get_tesseract_version.__wrapped__()
+
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.image_to_string(test_file)
 
 
 def test_main_not_found_cases(
-    capsys, monkeypatch, test_file, test_invalid_file,
+    capsys,
+    monkeypatch,
+    test_file,
+    test_invalid_file,
 ):
     """Test wrong or missing tesseract command in main."""
     import pytesseract
@@ -348,7 +369,8 @@ def test_main_not_found_cases(
     )
 
     monkeypatch.setattr(
-        'pytesseract.pytesseract.tesseract_cmd', 'wrong_tesseract',
+        'pytesseract.pytesseract.tesseract_cmd',
+        'wrong_tesseract',
     )
     monkeypatch.setattr('sys.argv', ['', test_file])
     with pytest.raises(SystemExit):
@@ -368,9 +390,40 @@ def test_proper_oserror_exception_handling(monkeypatch, test_file, test_path):
     import pytesseract
 
     monkeypatch.setattr(
-        'pytesseract.pytesseract.tesseract_cmd', test_path,
+        'pytesseract.pytesseract.tesseract_cmd',
+        test_path,
     )
+
     with pytest.raises(
         TesseractNotFoundError if IS_PYTHON_2 and test_path else OSError,
     ):
-        pytesseract.pytesseract.image_to_string(test_file)
+        pytesseract.image_to_string(test_file)
+
+
+DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
+
+
+@pytest.mark.parametrize(
+    'test_config,expected',
+    [
+        ('', DEFAULT_LANGUAGES),
+        ('--tessdata-dir {}/'.format(TESSDATA_DIR), ('dzo_test', 'eng')),
+        ('--tessdata-dir /dev/null', ()),
+        ('--tessdata-dir invalid_path/', ()),
+        ('--tessdata-dir=invalid_config/', DEFAULT_LANGUAGES),
+    ],
+    ids=[
+        'default_empty_config',
+        'custom_tessdata_dir',
+        'incorrect_tessdata_dir',
+        'invalid_tessdata_dir',
+        'invalid_config',
+    ],
+)
+def test_get_languages(test_config, expected):
+    result = get_languages.__wrapped__(test_config)
+    if not result:
+        assert result == []
+
+    for lang in expected:
+        assert lang in result
