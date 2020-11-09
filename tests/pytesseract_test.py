@@ -405,7 +405,7 @@ DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
     'test_config,expected',
     [
         ('', DEFAULT_LANGUAGES),
-        ('--tessdata-dir {}/'.format(DATA_DIR), ('dzo_test',)),
+        ('--tessdata-dir {}/'.format(DATA_DIR), ('dzo_test', 'eng')),
         ('--tessdata-dir /dev/null', ()),
         ('--tessdata-dir invalid_path/', ()),
         ('--tessdata-dir=invalid_config/', DEFAULT_LANGUAGES),

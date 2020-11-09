@@ -350,6 +350,8 @@ def get_languages(config=''):
     if config:
         cmd_args += shlex.split(config)
 
+    languages = []
+
     try:
         result = subprocess.check_output(
             cmd_args,
@@ -358,8 +360,9 @@ def get_languages(config=''):
         ).decode('utf-8')
     except OSError:
         raise TesseractNotFoundError()
+    except subprocess.CalledProcessError:
+        return languages
 
-    languages = []
     for line in result.split(linesep):
         lang = line.strip()
         if LANG_PATTERN.match(lang):
