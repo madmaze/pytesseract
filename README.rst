@@ -135,7 +135,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 **Functions**
 
-* **get_languages** Returns all currently supported languages by the Tesseract.
+* **get_languages** Returns all currently supported languages by Tesseract OCR.
 
 * **get_tesseract_version** Returns the Tesseract version installed in the system.
 
