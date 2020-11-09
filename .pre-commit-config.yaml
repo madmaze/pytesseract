@@ -1,12 +1,12 @@
 exclude: ^(tests/data/)
 repos:
 -   repo: https://github.com/psf/black
-    rev: 19.10b0
+    rev: 20.8b1
     hooks:
     -   id: black
         args: [-S, --line-length=79, --safe, --quiet]
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.1.0
+    rev: v3.3.0
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
@@ -17,15 +17,16 @@ repos:
     -   id: requirements-txt-fixer
     -   id: double-quote-string-fixer
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.2
+    rev: 3.8.4
     hooks:
     -   id: flake8
--   repo: https://github.com/timothycrosley/isort
-    rev: 4.3.21
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v2.3.6
     hooks:
-    -   id: isort
+    -   id: reorder-python-imports
+        args: [--py3-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.5.0
+    rev: v2.7.3
     hooks:
     -   id: pyupgrade
 -   repo: https://github.com/asottile/add-trailing-comma
@@ -33,6 +34,6 @@ repos:
     hooks:
     -   id: add-trailing-comma
 -   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.3
+    rev: v1.5.4
     hooks:
     -   id: autopep8

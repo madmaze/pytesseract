@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import shlex
 import string
 import subprocess
@@ -11,8 +10,12 @@ from errno import ENOENT
 from functools import wraps
 from glob import iglob
 from io import BytesIO
-from os import environ, extsep, remove
-from os.path import normcase, normpath, realpath
+from os import environ
+from os import extsep
+from os import remove
+from os.path import normcase
+from os.path import normpath
+from os.path import realpath
 from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from threading import Timer
@@ -359,7 +362,12 @@ def get_tesseract_version():
 
 
 def image_to_string(
-    image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
+    image,
+    lang=None,
+    config='',
+    nice=0,
+    output_type=Output.STRING,
+    timeout=0,
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to string
@@ -374,7 +382,12 @@ def image_to_string(
 
 
 def image_to_pdf_or_hocr(
-    image, lang=None, config='', nice=0, extension='pdf', timeout=0,
+    image,
+    lang=None,
+    config='',
+    nice=0,
+    extension='pdf',
+    timeout=0,
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
@@ -388,7 +401,11 @@ def image_to_pdf_or_hocr(
 
 
 def image_to_alto_xml(
-    image, lang=None, config='', nice=0, timeout=0,
+    image,
+    lang=None,
+    config='',
+    nice=0,
+    timeout=0,
 ):
     """
     Returns the result of a Tesseract OCR run on the provided image to ALTO XML
@@ -398,7 +415,8 @@ def image_to_alto_xml(
         raise ALTONotSupported()
 
     config = '{} {}'.format(
-        '-c tessedit_create_alto=1', config.strip(),
+        '-c tessedit_create_alto=1',
+        config.strip(),
     ).strip()
     args = [image, 'xml', lang, config, nice, timeout, True]
 
@@ -406,7 +424,12 @@ def image_to_alto_xml(
 
 
 def image_to_boxes(
-    image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0,
+    image,
+    lang=None,
+    config='',
+    nice=0,
+    output_type=Output.STRING,
+    timeout=0,
 ):
     """
     Returns string containing recognized characters and their box boundaries
@@ -461,7 +484,8 @@ def image_to_data(
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
         Output.DATAFRAME: lambda: get_pandas_output(
-            args + [True], pandas_config,
+            args + [True],
+            pandas_config,
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
@@ -469,13 +493,19 @@ def image_to_data(
 
 
 def image_to_osd(
-    image, lang='osd', config='', nice=0, output_type=Output.STRING, timeout=0,
+    image,
+    lang='osd',
+    config='',
+    nice=0,
+    output_type=Output.STRING,
+    timeout=0,
 ):
     """
     Returns string containing the orientation and script detection (OSD)
     """
     config = '{}-psm 0 {}'.format(
-        '' if get_tesseract_version() < '3.05' else '-', config.strip(),
+        '' if get_tesseract_version() < '3.05' else '-',
+        config.strip(),
     ).strip()
     args = [image, 'osd', lang, config, nice, timeout]
 
