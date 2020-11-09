@@ -21,7 +21,7 @@ Python Tesseract
    :target: https://github.com/pre-commit/pre-commit
    :alt: pre-commit
 
-.. image:: https://travis-ci.org/madmaze/pytesseract.svg
+.. image:: https://travis-ci.org/madmaze/pytesseract.svg?branch=master
     :target: https://travis-ci.org/madmaze/pytesseract
     :alt: Travis build status
 
