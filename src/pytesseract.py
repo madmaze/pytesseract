@@ -39,6 +39,7 @@ pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
 
+DEFAULT_ENCODING = 'utf-8'
 LANG_PATTERN = re.compile('^[a-z_]+$')
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
@@ -154,7 +155,7 @@ def run_once(func):
 
 def get_errors(error_string):
     return u' '.join(
-        line for line in error_string.decode('utf-8').splitlines()
+        line for line in error_string.decode(DEFAULT_ENCODING).splitlines()
     ).strip()
 
 
@@ -289,7 +290,7 @@ def run_and_get_output(
         with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
-            return output_file.read().decode('utf-8')
+            return output_file.read().decode(DEFAULT_ENCODING)
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
@@ -350,23 +351,25 @@ def get_languages(config=''):
     if config:
         cmd_args += shlex.split(config)
 
-    languages = []
-
     try:
-        result = subprocess.check_output(
+        result = subprocess.run(
             cmd_args,
+            stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            env=environ,
-        ).decode('utf-8')
+        )
     except OSError:
         raise TesseractNotFoundError()
-    except subprocess.CalledProcessError:
-        return languages
 
-    for line in result.split(linesep):
-        lang = line.strip()
-        if LANG_PATTERN.match(lang):
-            languages.append(lang)
+    # tesseract 3.x
+    if result.returncode not in (0, 1):
+        raise TesseractNotFoundError()
+
+    languages = []
+    if result.stdout:
+        for line in result.stdout.decode(DEFAULT_ENCODING).split(linesep):
+            lang = line.strip()
+            if LANG_PATTERN.match(lang):
+                languages.append(lang)
 
     return languages
 
@@ -383,7 +386,7 @@ def get_tesseract_version():
                 stderr=subprocess.STDOUT,
                 env=environ,
             )
-            .decode('utf-8')
+            .decode(DEFAULT_ENCODING)
             .split()[1]
             .lstrip(string.printable[10:]),
         )

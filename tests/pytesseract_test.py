@@ -42,7 +42,9 @@ IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
 
-DATA_DIR = path.join(path.dirname(path.abspath(__file__)), 'data')
+TESTS_DIR = path.dirname(path.abspath(__file__))
+DATA_DIR = path.join(TESTS_DIR, 'data')
+TESSDATA_DIR = path.join(TESTS_DIR, 'tessdata')
 TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
@@ -405,7 +407,7 @@ DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
     'test_config,expected',
     [
         ('', DEFAULT_LANGUAGES),
-        ('--tessdata-dir {}/'.format(DATA_DIR), ('dzo_test', 'eng')),
+        ('--tessdata-dir {}/'.format(TESSDATA_DIR), ('dzo_test', 'eng')),
         ('--tessdata-dir /dev/null', ()),
         ('--tessdata-dir invalid_path/', ()),
         ('--tessdata-dir=invalid_config/', DEFAULT_LANGUAGES),

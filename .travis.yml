@@ -15,11 +15,6 @@ matrix:
   include:
     - os: linux
       dist: xenial
-      python: 2.7
-      env: TOXENV=py27
-      name: "2.7 Xenial"
-    - os: linux
-      dist: xenial
       python: 3.6
       env: TOXENV=py36
       name: "3.6 Xenial"
