@@ -1,5 +1,6 @@
 # flake8: noqa: F401
 from .pytesseract import ALTONotSupported
+from .pytesseract import get_languages
 from .pytesseract import get_tesseract_version
 from .pytesseract import image_to_alto_xml
 from .pytesseract import image_to_boxes

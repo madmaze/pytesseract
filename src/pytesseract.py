@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import re
 import shlex
 import string
 import subprocess
@@ -12,6 +13,7 @@ from glob import iglob
 from io import BytesIO
 from os import environ
 from os import extsep
+from os import linesep
 from os import remove
 from os.path import normcase
 from os.path import normpath
@@ -37,6 +39,7 @@ pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
 
+LANG_PATTERN = re.compile('^[a-z_]+$')
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
     'JPEG',
@@ -339,6 +342,30 @@ def osd_to_dict(osd):
         for kv in (line.split(': ') for line in osd.split('\n'))
         if len(kv) == 2 and is_valid(kv[1], OSD_KEYS[kv[0]][1])
     }
+
+
+@run_once
+def get_languages(config=''):
+    cmd_args = [tesseract_cmd, '--list-langs']
+    if config:
+        cmd_args += shlex.split(config)
+
+    try:
+        result = subprocess.check_output(
+            cmd_args,
+            stderr=subprocess.STDOUT,
+            env=environ,
+        ).decode('utf-8')
+    except OSError:
+        raise TesseractNotFoundError()
+
+    languages = []
+    for line in result.split(linesep):
+        lang = line.strip()
+        if LANG_PATTERN.match(lang):
+            languages.append(lang)
+
+    return languages
 
 
 @run_once

@@ -10,6 +10,7 @@ from tempfile import gettempdir
 
 import pytest
 from pytesseract import ALTONotSupported
+from pytesseract import get_languages
 from pytesseract import get_tesseract_version
 from pytesseract import image_to_alto_xml
 from pytesseract import image_to_boxes
@@ -334,12 +335,16 @@ def test_wrong_tesseract_cmd(monkeypatch, test_file, test_path):
     """Test wrong or missing tesseract command."""
     import pytesseract
 
-    monkeypatch.setattr(
-        'pytesseract.pytesseract.tesseract_cmd',
-        test_path,
-    )
+    monkeypatch.setattr('pytesseract.pytesseract.tesseract_cmd', test_path)
+
     with pytest.raises(TesseractNotFoundError):
-        pytesseract.pytesseract.image_to_string(test_file)
+        pytesseract.get_languages.__wrapped__()
+
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.get_tesseract_version.__wrapped__()
+
+    with pytest.raises(TesseractNotFoundError):
+        pytesseract.image_to_string(test_file)
 
 
 def test_main_not_found_cases(
@@ -386,7 +391,37 @@ def test_proper_oserror_exception_handling(monkeypatch, test_file, test_path):
         'pytesseract.pytesseract.tesseract_cmd',
         test_path,
     )
+
     with pytest.raises(
         TesseractNotFoundError if IS_PYTHON_2 and test_path else OSError,
     ):
-        pytesseract.pytesseract.image_to_string(test_file)
+        pytesseract.image_to_string(test_file)
+
+
+DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
+
+
+@pytest.mark.parametrize(
+    'test_config,expected',
+    [
+        ('', DEFAULT_LANGUAGES),
+        ('--tessdata-dir {}/'.format(DATA_DIR), ('dzo_test',)),
+        ('--tessdata-dir /dev/null', ()),
+        ('--tessdata-dir invalid_path/', ()),
+        ('--tessdata-dir=invalid_config/', DEFAULT_LANGUAGES),
+    ],
+    ids=[
+        'default_empty_config',
+        'custom_tessdata_dir',
+        'incorrect_tessdata_dir',
+        'invalid_tessdata_dir',
+        'invalid_config',
+    ],
+)
+def test_get_languages(test_config, expected):
+    result = get_languages.__wrapped__(test_config)
+    if not result:
+        assert result == []
+
+    for lang in expected:
+        assert lang in result
