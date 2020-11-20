@@ -67,6 +67,9 @@ jobs:
       - name: Print tesseract version
         run: echo $(tesseract --version)
 
+      - name: Test background colors for GitHub Actions output
+        run: echo $'\033[42mPassed\033[m'
+
       - name: Install tox
         run: python -m pip install --upgrade tox
 
