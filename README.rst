@@ -21,9 +21,9 @@ Python Tesseract
    :target: https://github.com/pre-commit/pre-commit
    :alt: pre-commit
 
-.. image:: https://travis-ci.org/madmaze/pytesseract.svg?branch=master
-    :target: https://travis-ci.org/madmaze/pytesseract
-    :alt: Travis build status
+.. image:: https://github.com/madmaze/pytesseract/workflows/CI/badge.svg?branch=master
+    :target: https://github.com/madmaze/pytesseract/actions?query=workflow%3ACI
+    :alt: CI workflow status badge
 
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
