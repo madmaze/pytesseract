@@ -69,3 +69,4 @@ jobs:
         run: tox -e ${{ matrix.tox }}
         env:
           PY_COLORS: 1
+          PRE_COMMIT_COLOR: always
