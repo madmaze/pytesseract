@@ -19,7 +19,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - {name: '3.9', python: '3.9', os: ubuntu-20.04, tox: py39-pre-commit}
+          - {name: '3.9', python: '3.9', os: ubuntu-20.04, tox: py39}
           - {name: '3.8', python: '3.8', os: ubuntu-18.04, tox: py38}
           - {name: '3.7', python: '3.7', os: ubuntu-18.04, tox: py37}
           - {name: '3.6', python: '3.6', os: ubuntu-16.04, tox: py36}
@@ -45,14 +45,6 @@ jobs:
           key: pip-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('setup.py') }}
           restore-keys: pip-${{ runner.os }}-${{ matrix.python }}-
 
-      - name: Cache pre-commit
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pre-commit
-          key: pre-commit-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
-          restore-keys: pre-commit-${{ runner.os }}-
-        if: matrix.tox == 'py39-pre-commit'
-
       - name: Set Python version
         # See https://pre-commit.com/#github-actions-example
         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
@@ -70,4 +62,4 @@ jobs:
         run: tox -e ${{ matrix.tox }}
         env:
           PY_COLORS: 1
-          PRE_COMMIT_COLOR: always
+          TOX_TESTENV_PASSENV: PY_COLORS
