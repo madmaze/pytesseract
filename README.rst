@@ -17,13 +17,13 @@ Python Tesseract
    :target: https://anaconda.org/conda-forge/pytesseract
    :alt: Conda release
 
-.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-   :target: https://github.com/pre-commit/pre-commit
-   :alt: pre-commit
+.. image:: https://results.pre-commit.ci/badge/github/madmaze/pytesseract/master.svg
+   :target: https://results.pre-commit.ci/latest/github/madmaze/pytesseract/master
+   :alt: Pre-commit CI status
 
 .. image:: https://github.com/madmaze/pytesseract/workflows/CI/badge.svg?branch=master
     :target: https://github.com/madmaze/pytesseract/actions?query=workflow%3ACI
-    :alt: CI workflow status badge
+    :alt: CI workflow status
 
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
