@@ -378,9 +378,7 @@ def test_main_not_found_cases(
 
     monkeypatch.setattr('sys.argv', [''])
     assert pytesseract.pytesseract.main() == 2
-    assert (
-        'Usage: pytesseract [-l lang] input_file' in capsys.readouterr().err
-    )
+    assert 'Usage: pytesseract [-l lang] input_file' in capsys.readouterr().err
 
 
 @pytest.mark.parametrize(
