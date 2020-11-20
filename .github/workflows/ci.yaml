@@ -67,3 +67,5 @@ jobs:
 
       - name: Run tox
         run: tox -e ${{ matrix.tox }}
+        env:
+          PY_COLORS: 1
