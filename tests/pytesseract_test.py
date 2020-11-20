@@ -359,9 +359,7 @@ def test_main_not_found_cases(
     import pytesseract
 
     monkeypatch.setattr('sys.argv', ['', test_invalid_file])
-    with pytest.raises(SystemExit):
-        pytesseract.pytesseract.main()
-
+    assert pytesseract.pytesseract.main() == 1
     captured_stderr = capsys.readouterr().err
     assert (
         'No such file or directory' in captured_stderr
@@ -373,10 +371,15 @@ def test_main_not_found_cases(
         'wrong_tesseract',
     )
     monkeypatch.setattr('sys.argv', ['', test_file])
-    with pytest.raises(SystemExit):
-        pytesseract.pytesseract.main()
+    assert pytesseract.pytesseract.main() == 1
     assert (
         "is not installed or it's not in your PATH" in capsys.readouterr().err
+    )
+
+    monkeypatch.setattr('sys.argv', [''])
+    assert pytesseract.pytesseract.main() == 2
+    assert (
+        'Usage: pytesseract [-l lang] input_file' in capsys.readouterr().err
     )
 
 
