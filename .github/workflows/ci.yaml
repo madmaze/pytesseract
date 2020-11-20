@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches:
@@ -8,6 +9,10 @@ on:
     branches:
       - master
       - '*.x'
+
+env:
+  PY_COLORS: 1
+  PRE_COMMIT_COLOR: always
 
 jobs:
   tests:
@@ -67,6 +72,3 @@ jobs:
 
       - name: Run tox
         run: tox -e ${{ matrix.tox }}
-        env:
-          PY_COLORS: 1
-          PRE_COMMIT_COLOR: always
