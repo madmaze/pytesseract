@@ -10,10 +10,6 @@ on:
       - master
       - '*.x'
 
-env:
-  PY_COLORS: 1
-  PRE_COMMIT_COLOR: always
-
 jobs:
   tests:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
@@ -67,11 +63,11 @@ jobs:
       - name: Print tesseract version
         run: echo $(tesseract --version)
 
-      - name: Test background colors for GitHub Actions output
-        run: echo $'\033[42mPassed\033[m'
-
       - name: Install tox
         run: python -m pip install --upgrade tox
 
       - name: Run tox
         run: tox -e ${{ matrix.tox }}
+        env:
+          PY_COLORS: 1
+          PRE_COMMIT_COLOR: always
