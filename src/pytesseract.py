@@ -86,8 +86,7 @@ class TesseractError(RuntimeError):
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super(TesseractNotFoundError, self).__init__(
-            tesseract_cmd
-            + " is not installed or it's not in your PATH."
+            f"{tesseract_cmd} is not installed or it's not in your PATH."
             + ' See README file for more information.',
         )
 
@@ -427,7 +426,7 @@ def image_to_pdf_or_hocr(
     """
 
     if extension not in {'pdf', 'hocr'}:
-        raise ValueError('Unsupported extension: {}'.format(extension))
+        raise ValueError(f'Unsupported extension: {extension}')
     args = [image, extension, lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
@@ -447,10 +446,7 @@ def image_to_alto_xml(
     if get_tesseract_version() < '4.1.0':
         raise ALTONotSupported()
 
-    config = '{} {}'.format(
-        '-c tessedit_create_alto=1',
-        config.strip(),
-    ).strip()
+    config = f'-c tessedit_create_alto=1 {config.strip()}'
     args = [image, 'xml', lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
@@ -467,13 +463,13 @@ def image_to_boxes(
     """
     Returns string containing recognized characters and their box boundaries
     """
-    config += ' batch.nochop makebox'
+    config = f'{config.strip()} batch.nochop makebox'
     args = [image, 'box', lang, config, nice, timeout]
 
     return {
         Output.BYTES: lambda: run_and_get_output(*(args + [True])),
         Output.DICT: lambda: file_to_dict(
-            'char left bottom right top page\n' + run_and_get_output(*args),
+            f'char left bottom right top page\n{run_and_get_output(*args)}',
             ' ',
             0,
         ),
@@ -511,7 +507,7 @@ def image_to_data(
     if get_tesseract_version() < '3.05':
         raise TSVNotSupported()
 
-    config = '{} {}'.format('-c tessedit_create_tsv=1', config.strip()).strip()
+    config = f'-c tessedit_create_tsv=1 {config.strip()}'
     args = [image, 'tsv', lang, config, nice, timeout]
 
     return {
@@ -536,10 +532,8 @@ def image_to_osd(
     """
     Returns string containing the orientation and script detection (OSD)
     """
-    config = '{}-psm 0 {}'.format(
-        '' if get_tesseract_version() < '3.05' else '-',
-        config.strip(),
-    ).strip()
+    psm_dash = '' if get_tesseract_version() < '3.05' else '-'
+    config = f'{psm_dash}-psm 0 {config.strip()}'
     args = [image, 'osd', lang, config, nice, timeout]
 
     return {
@@ -555,19 +549,19 @@ def main():
     elif len(sys.argv) == 4 and sys.argv[1] == '-l':
         filename, lang = sys.argv[3], sys.argv[2]
     else:
-        sys.stderr.write('Usage: pytesseract [-l lang] input_file\n')
-        exit(2)
+        print('Usage: pytesseract [-l lang] input_file\n', file=sys.stderr)
+        return 2
 
     try:
         with Image.open(filename) as img:
             print(image_to_string(img, lang=lang))
     except TesseractNotFoundError as e:
-        sys.stderr.write('{}\n'.format(str(e)))
-        exit(1)
+        print(f'{str(e)}\n', file=sys.stderr)
+        return 1
     except IOError as e:
-        sys.stderr.write('{}: {}'.format(type(e).__name__, e))
-        exit(1)
+        print(f'{type(e).__name__}: {e}', file=sys.stderr)
+        return 1
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())
