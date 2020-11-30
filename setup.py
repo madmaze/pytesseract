@@ -30,16 +30,12 @@ setup(
     package_dir={PACKAGE_NAME: PACKAGE_DIR},
     include_package_data=True,
     install_requires=INSTALL_REQUIRES,
+    python_requires='>=3.6',
     entry_points={
         'console_scripts': ['{0} = {0}.{0}:main'.format(PACKAGE_NAME)],
     },
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
     ],
 )
