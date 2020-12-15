@@ -173,7 +173,7 @@ CLI usage:
 
 .. code-block:: bash
 
-    $ (env)> pytesseract [-l lang] image_file
+    pytesseract [-l lang] image_file
 
 INSTALLATION
 ------------
@@ -199,26 +199,26 @@ Check the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_
 
 .. code-block:: bash
 
-    $ (env)> pip install pytesseract
+    pip install pytesseract
 
 | Or if you have git installed:
 
 .. code-block:: bash
 
-    $ (env)> pip install -U git+https://github.com/madmaze/pytesseract.git
+    pip install -U git+https://github.com/madmaze/pytesseract.git
 
 | Installing from source:
 
 .. code-block:: bash
 
-    $> git clone https://github.com/madmaze/pytesseract.git
-    $ (env)> cd pytesseract && pip install -U .
+    git clone https://github.com/madmaze/pytesseract.git
+    cd pytesseract && pip install -U .
 
 | Install with conda (via `conda-forge <https://anaconda.org/conda-forge/pytesseract>`_):
 
 .. code-block:: bash
 
-    $> conda install -c conda-forge pytesseract
+    conda install -c conda-forge pytesseract
 
 TESTING
 -------
@@ -228,8 +228,8 @@ installed and in your PATH.
 
 .. code-block:: bash
 
-    $ (env)> pip install tox
-    $ (env)> tox
+    pip install tox
+    tox
 
 LICENSE
 -------
