@@ -120,9 +120,13 @@ If you need custom configuration like `oem`/`psm`, use the **config** keyword.
 
 .. code-block:: python
 
-    # Example of adding any additional options.
+    # Example of adding any additional options
     custom_oem_psm_config = r'--oem 3 --psm 6'
     pytesseract.image_to_string(image, config=custom_oem_psm_config)
+
+    # Example of using pre-defined tesseract config file with options
+    cfg_filename = 'words'
+    pytesseract.run_and_get_output(image, extension='txt', config=cfg_filename)
 
 Add the following config, if you have tessdata error like: "Error opening data file..."
 
