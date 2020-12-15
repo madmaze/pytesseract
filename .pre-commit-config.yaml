@@ -20,20 +20,25 @@ repos:
     rev: 3.8.4
     hooks:
     -   id: flake8
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.5.4
+    hooks:
+    -   id: autopep8
 -   repo: https://github.com/asottile/reorder_python_imports
     rev: v2.3.6
     hooks:
     -   id: reorder-python-imports
         args: [--py3-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.7.3
+    rev: v2.7.4
     hooks:
     -   id: pyupgrade
+        args: [--py36-plus]
 -   repo: https://github.com/asottile/add-trailing-comma
     rev: v2.0.1
     hooks:
     -   id: add-trailing-comma
--   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.5.4
+-   repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v1.15.1
     hooks:
-    -   id: autopep8
+    -   id: setup-cfg-fmt
