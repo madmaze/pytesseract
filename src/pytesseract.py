@@ -73,7 +73,7 @@ class Output:
 
 class PandasNotSupported(EnvironmentError):
     def __init__(self):
-        super(PandasNotSupported, self).__init__('Missing pandas package')
+        super().__init__('Missing pandas package')
 
 
 class TesseractError(RuntimeError):
@@ -85,7 +85,7 @@ class TesseractError(RuntimeError):
 
 class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
-        super(TesseractNotFoundError, self).__init__(
+        super().__init__(
             f"{tesseract_cmd} is not installed or it's not in your PATH."
             + ' See README file for more information.',
         )
@@ -93,14 +93,14 @@ class TesseractNotFoundError(EnvironmentError):
 
 class TSVNotSupported(EnvironmentError):
     def __init__(self):
-        super(TSVNotSupported, self).__init__(
+        super().__init__(
             'TSV output not supported. Tesseract >= 3.05 required',
         )
 
 
 class ALTONotSupported(EnvironmentError):
     def __init__(self):
-        super(ALTONotSupported, self).__init__(
+        super().__init__(
             'ALTO output not supported. Tesseract >= 4.1.0 required',
         )
 
@@ -153,7 +153,7 @@ def run_once(func):
 
 
 def get_errors(error_string):
-    return u' '.join(
+    return ' '.join(
         line for line in error_string.decode(DEFAULT_ENCODING).splitlines()
     ).strip()
 
@@ -558,7 +558,7 @@ def main():
     except TesseractNotFoundError as e:
         print(f'{str(e)}\n', file=sys.stderr)
         return 1
-    except IOError as e:
+    except OSError as e:
         print(f'{type(e).__name__}: {e}', file=sys.stderr)
         return 1
 
