@@ -8,6 +8,7 @@ from sys import version_info
 from tempfile import gettempdir
 
 import pytest
+
 from pytesseract import ALTONotSupported
 from pytesseract import get_languages
 from pytesseract import get_tesseract_version
