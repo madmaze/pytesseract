@@ -39,6 +39,14 @@ repos:
     hooks:
     -   id: add-trailing-comma
 # -   repo: https://github.com/asottile/setup-cfg-fmt
-#     rev: v1.15.1
+#     rev: v1.16.0
 #     hooks:
 #     -   id: setup-cfg-fmt
+-   repo: local
+    hooks:
+    -   id: rst
+        name: rst
+        entry: rst-lint --encoding utf-8
+        files: ^(README.rst)$
+        language: python
+        additional_dependencies: [pygments, restructuredtext_lint]
