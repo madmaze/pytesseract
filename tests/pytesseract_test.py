@@ -437,7 +437,7 @@ def test_get_languages(test_config, expected):
         (('', ' ', 0), {}),
         (('\n', '\n', 0), {}),
         (('header1 header2 header3\n', '\t', 0), {}),
-    )
+    ),
 )
 def test_file_to_dict(input_args, expected):
     assert file_to_dict(*input_args) == expected
