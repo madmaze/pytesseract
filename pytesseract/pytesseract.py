@@ -299,6 +299,9 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
         return result
 
     header = rows.pop(0)
+    if not rows:
+        return result
+    
     length = len(header)
     if len(rows[-1]) < length:
         # Fixes bug that occurs when last text string in TSV is null, and
