@@ -21,6 +21,7 @@ from pytesseract import image_to_string
 from pytesseract import Output
 from pytesseract import TesseractNotFoundError
 from pytesseract import TSVNotSupported
+from pytesseract.pytesseract import file_to_dict
 from pytesseract.pytesseract import numpy_installed
 from pytesseract.pytesseract import pandas_installed
 from pytesseract.pytesseract import prepare
@@ -428,3 +429,15 @@ def test_get_languages(test_config, expected):
 
     for lang in expected:
         assert lang in result
+
+
+@pytest.mark.parametrize(
+    ('input_args', 'expected'),
+    (
+        (('', ' ', 0), {}),
+        (('\n', '\n', 0), {}),
+        (('header1 header2 header3\n', '\t', 0), {}),
+    )
+)
+def test_file_to_dict(input_args, expected):
+    assert file_to_dict(*input_args) == expected
