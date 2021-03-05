@@ -222,6 +222,8 @@ def subprocess_args(include_stdout=True):
 
     if include_stdout:
         kwargs['stdout'] = subprocess.PIPE
+    else:
+        kwargs['stdout'] = subprocess.DEVNULL
 
     return kwargs
 
@@ -384,6 +386,7 @@ def get_tesseract_version():
                 [tesseract_cmd, '--version'],
                 stderr=subprocess.STDOUT,
                 env=environ,
+                stdin=subprocess.DEVNULL,
             )
             .decode(DEFAULT_ENCODING)
             .split()[1]
