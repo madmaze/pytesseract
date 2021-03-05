@@ -251,3 +251,4 @@ CONTRIBUTORS
 - `John Hagen <https://github.com/johnthagen>`_
 - `Darius Morawiec <https://github.com/nok>`_
 - `Eddie Bedada <https://github.com/adbeda>`_
+- `Uğurcan Akyüz <https://github.com/ugurcanakyuz>`_
