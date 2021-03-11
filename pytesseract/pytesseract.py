@@ -381,19 +381,25 @@ def get_tesseract_version():
     Returns LooseVersion object of the Tesseract version
     """
     try:
-        return LooseVersion(
-            subprocess.check_output(
-                [tesseract_cmd, '--version'],
-                stderr=subprocess.STDOUT,
-                env=environ,
-                stdin=subprocess.DEVNULL,
-            )
-            .decode(DEFAULT_ENCODING)
-            .split()[1]
-            .lstrip(string.printable[10:]),
+        output = subprocess.check_output(
+            [tesseract_cmd, '--version'],
+            stderr=subprocess.STDOUT,
+            env=environ,
+            stdin=subprocess.DEVNULL,
         )
     except OSError:
         raise TesseractNotFoundError()
+
+    raw_version = output.decode(DEFAULT_ENCODING)
+    version = raw_version.lstrip(string.printable[10:])
+
+    try:
+        loose_version = LooseVersion(version)
+        assert loose_version > '0'
+    except AttributeError:
+        raise SystemExit(f'Invalid tesseract version: "{raw_version}"')
+
+    return loose_version
 
 
 def image_to_string(

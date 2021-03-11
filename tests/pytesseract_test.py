@@ -6,6 +6,7 @@ from os import sep
 from sys import platform
 from sys import version_info
 from tempfile import gettempdir
+from unittest import mock
 
 import pytest
 
@@ -441,3 +442,34 @@ def test_get_languages(test_config, expected):
 )
 def test_file_to_dict(input_args, expected):
     assert file_to_dict(*input_args) == expected
+
+
+@pytest.mark.parametrize(
+    ('tesseract_version', 'expected'),
+    (
+        (b'3.5.0', '3.5.0'),
+        (b'4.1-a8s6f8d3f', '4.1-a8s6f8d3f'),
+        (b'v4.0.0-beta1.9', '4.0.0-beta1.9'),
+    ),
+)
+def test_get_tesseract_version(tesseract_version, expected):
+    with mock.patch('subprocess.check_output', spec=True) as output_mock:
+        output_mock.return_value = tesseract_version
+        assert get_tesseract_version.__wrapped__() == expected
+
+
+@pytest.mark.parametrize(
+    ('tesseract_version', 'expected_msg'),
+    (
+        (b'', 'Invalid tesseract version: ""'),
+        (b'invalid', 'Invalid tesseract version: "invalid"'),
+    ),
+)
+def test_get_tesseract_version_invalid(tesseract_version, expected_msg):
+    with mock.patch('subprocess.check_output', spec=True) as output_mock:
+        output_mock.return_value = tesseract_version
+        with pytest.raises(SystemExit) as e:
+            get_tesseract_version.__wrapped__()
+
+        (msg,) = e.value.args
+        assert msg == expected_msg
