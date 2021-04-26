@@ -389,7 +389,7 @@ def test_main_not_found_cases(
     ids=['permission_error_path', 'invalid_path'],
 )
 def test_proper_oserror_exception_handling(monkeypatch, test_file, test_path):
-    """"Test for bubbling up OSError exceptions."""
+    """ "Test for bubbling up OSError exceptions."""
     import pytesseract
 
     monkeypatch.setattr(
