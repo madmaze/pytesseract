@@ -1,7 +1,7 @@
 exclude: ^(tests/data/)
 repos:
 -   repo: https://github.com/psf/black
-    rev: 21.4b2
+    rev: 21.5b1
     hooks:
     -   id: black
         args: [-S, --line-length=79, --safe, --quiet]
@@ -17,7 +17,7 @@ repos:
     -   id: requirements-txt-fixer
     -   id: double-quote-string-fixer
 -   repo: https://github.com/PyCQA/flake8
-    rev: 3.9.1
+    rev: 3.9.2
     hooks:
     -   id: flake8
 -   repo: https://github.com/pre-commit/mirrors-autopep8
@@ -30,7 +30,7 @@ repos:
     -   id: reorder-python-imports
         args: [--py3-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.14.0
+    rev: v2.15.0
     hooks:
     -   id: pyupgrade
         args: [--py36-plus]
