@@ -20,7 +20,6 @@ from os.path import normpath
 from os.path import realpath
 from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
-from threading import Timer
 from time import sleep
 
 try:
@@ -119,22 +118,18 @@ def kill(process, code):
 
 
 @contextmanager
-def timeout_manager(proc, seconds=0):
+def timeout_manager(proc, seconds=None):
     try:
         if not seconds:
             yield proc.communicate()[1]
             return
 
-        timeout_code = -1
-        timer = Timer(seconds, kill, [proc, timeout_code])
-        timer.start()
         try:
-            _, error_string = proc.communicate()
+            _, error_string = proc.communicate(timeout=seconds)
             yield error_string
-        finally:
-            timer.cancel()
-            if proc.returncode == timeout_code:
-                raise RuntimeError('Tesseract process timeout')
+        except subprocess.TimeoutExpired:
+            kill(proc, -1)
+            raise RuntimeError('Tesseract process timeout')
     finally:
         proc.stdin.close()
         proc.stdout.close()
