@@ -195,7 +195,7 @@ Prerequisites:
   Under Debian/Ubuntu you can use the package **tesseract-ocr**.
   For Mac OS users. please install homebrew package **tesseract**.
 
-  *Note:* Make sure that you also have installed ``tessconfigs`` and ``configs`` from `tesseract-ocr/tessconfigs <https://github.com/tesseract-ocr/tessconfigs>`_ or via the OS package manager.
+  *Note:* In some rare cases, you might need to additionally install ``tessconfigs`` and ``configs`` from `tesseract-ocr/tessconfigs <https://github.com/tesseract-ocr/tessconfigs>`_ if the OS specific package doesn't include them.
 
 | Installing via pip:
 
