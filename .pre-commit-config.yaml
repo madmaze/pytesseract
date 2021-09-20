@@ -1,7 +1,7 @@
 exclude: ^(tests/data/)
 repos:
 -   repo: https://github.com/psf/black
-    rev: 21.8b0
+    rev: 21.9b0
     hooks:
     -   id: black
         args: [-S, --line-length=79, --safe, --quiet]
