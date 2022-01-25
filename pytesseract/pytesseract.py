@@ -22,10 +22,7 @@ from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from time import sleep
 
-try:
-    from PIL import Image
-except ImportError:
-    import Image
+from PIL import Image
 
 
 tesseract_cmd = 'tesseract'
