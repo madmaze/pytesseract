@@ -49,8 +49,8 @@ jobs:
         # See https://pre-commit.com/#github-actions-example
         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
 
-      - name: Install tesseract
-        run: sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
+      - name: Install tesseract and git
+        run: sudo apt-get install -y tesseract-ocr tesseract-ocr-fra git
 
       - name: Print tesseract version
         run: echo $(tesseract --version)
@@ -60,3 +60,6 @@ jobs:
         env:
           PY_COLORS: 1
           TOX_TESTENV_PASSENV: PY_COLORS
+
+      - name: Test pytesseract package installation
+        run: pip install -U git+https://github.com/madmaze/pytesseract.git && pip list pytesseract && python -c 'import pytesseract'
