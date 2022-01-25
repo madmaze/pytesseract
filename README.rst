@@ -45,10 +45,8 @@ Library usage:
 
 .. code-block:: python
 
-    try:
-        from PIL import Image
-    except ImportError:
-        import Image
+    from PIL import Image
+ 
     import pytesseract
 
     # If you don't have tesseract executable in your PATH, include the following:
