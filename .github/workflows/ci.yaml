@@ -32,7 +32,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Upgrade bootstrap packages
-        run: python -m pip install --upgrade wheel setuptools pip tox virtualenv
+        run: python -m pip install --upgrade pip tox
 
       - name: Get pip cache dir
         id: pip-cache
