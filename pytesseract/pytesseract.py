@@ -6,7 +6,6 @@ import subprocess
 import sys
 from contextlib import contextmanager
 from csv import QUOTE_NONE
-from distutils.version import LooseVersion
 from errno import ENOENT
 from functools import wraps
 from glob import iglob
@@ -22,6 +21,8 @@ from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from time import sleep
 
+from packaging.version import parse
+from packaging.version import Version
 from PIL import Image
 
 
@@ -58,6 +59,9 @@ OSD_KEYS = {
     'Script': ('script', str),
     'Script confidence': ('script_conf', float),
 }
+
+TESSERACT_MIN_VERSION = Version('3.05')
+TESSERACT_ALTO_VERSION = Version('4.1.0')
 
 
 class Output:
@@ -370,7 +374,7 @@ def get_languages(config=''):
 @run_once
 def get_tesseract_version():
     """
-    Returns LooseVersion object of the Tesseract version
+    Returns Version object of the Tesseract version
     """
     try:
         output = subprocess.check_output(
@@ -383,15 +387,15 @@ def get_tesseract_version():
         raise TesseractNotFoundError()
 
     raw_version = output.decode(DEFAULT_ENCODING)
-    version = raw_version.lstrip(string.printable[10:])
+    strip_version = raw_version.lstrip(string.printable[10:])
 
     try:
-        loose_version = LooseVersion(version)
-        assert loose_version > '0'
+        version = parse(strip_version)
+        assert version > TESSERACT_MIN_VERSION
     except AttributeError:
-        raise SystemExit(f'Invalid tesseract version: "{raw_version}"')
+        raise SystemExit(f'Invalid tesseract version: "{strip_version}"')
 
-    return loose_version
+    return version
 
 
 def image_to_string(
@@ -444,7 +448,7 @@ def image_to_alto_xml(
     Returns the result of a Tesseract OCR run on the provided image to ALTO XML
     """
 
-    if get_tesseract_version() < '4.1.0':
+    if get_tesseract_version() < TESSERACT_ALTO_VERSION:
         raise ALTONotSupported()
 
     config = f'-c tessedit_create_alto=1 {config.strip()}'
@@ -505,7 +509,7 @@ def image_to_data(
     and other information. Requires Tesseract 3.05+
     """
 
-    if get_tesseract_version() < '3.05':
+    if get_tesseract_version() < TESSERACT_MIN_VERSION:
         raise TSVNotSupported()
 
     config = f'-c tessedit_create_tsv=1 {config.strip()}'
@@ -533,8 +537,7 @@ def image_to_osd(
     """
     Returns string containing the orientation and script detection (OSD)
     """
-    psm_dash = '' if get_tesseract_version() < '3.05' else '-'
-    config = f'{psm_dash}-psm 0 {config.strip()}'
+    config = f'--psm 0 {config.strip()}'
     args = [image, 'osd', lang, config, nice, timeout]
 
     return {
