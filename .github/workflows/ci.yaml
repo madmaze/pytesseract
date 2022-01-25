@@ -49,8 +49,8 @@ jobs:
         # See https://pre-commit.com/#github-actions-example
         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
 
-      - name: Install tesseract and git
-        run: sudo apt-get install -y tesseract-ocr tesseract-ocr-fra git
+      - name: Install tesseract
+        run: sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
 
       - name: Print tesseract version
         run: echo $(tesseract --version)
