@@ -50,7 +50,7 @@ jobs:
         run: echo "PY=$(python -VV | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
 
       - name: Install tesseract
-        run: sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
+        run: sudo apt-get -y update && sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
 
       - name: Print tesseract version
         run: echo $(tesseract --version)
