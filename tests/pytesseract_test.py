@@ -448,14 +448,14 @@ def test_file_to_dict(input_args, expected):
     ('tesseract_version', 'expected'),
     (
         (b'3.5.0', '3.5.0'),
-        (b'4.1-a8s6f8d3f', '4.1-a8s6f8d3f'),
-        (b'v4.0.0-beta1.9', '4.0.0-beta1.9'),
+        (b'4.1-a8s6f8d3f', '4.1'),
+        (b'v4.0.0-beta1.9', '4.0.0'),
     ),
 )
 def test_get_tesseract_version(tesseract_version, expected):
     with mock.patch('subprocess.check_output', spec=True) as output_mock:
         output_mock.return_value = tesseract_version
-        assert get_tesseract_version.__wrapped__() == expected
+        assert get_tesseract_version.__wrapped__().public == expected
 
 
 @pytest.mark.parametrize(

@@ -21,6 +21,7 @@ from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from time import sleep
 
+from packaging.version import InvalidVersion
 from packaging.version import parse
 from packaging.version import Version
 from PIL import Image
@@ -387,13 +388,14 @@ def get_tesseract_version():
         raise TesseractNotFoundError()
 
     raw_version = output.decode(DEFAULT_ENCODING)
-    strip_version = raw_version.lstrip(string.printable[10:])
+    str_version, *_ = raw_version.lstrip(string.printable[10:]).partition(' ')
+    str_version, *_ = str_version.partition('-')
 
     try:
-        version = parse(strip_version)
-        assert version > TESSERACT_MIN_VERSION
-    except AttributeError:
-        raise SystemExit(f'Invalid tesseract version: "{strip_version}"')
+        version = parse(str_version)
+        assert version >= TESSERACT_MIN_VERSION
+    except (AssertionError, InvalidVersion):
+        raise SystemExit(f'Invalid tesseract version: "{raw_version}"')
 
     return version
 
