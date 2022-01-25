@@ -42,7 +42,7 @@ except ImportError:
 IS_PYTHON_2 = version_info[:1] < (3,)
 IS_PYTHON_3 = not IS_PYTHON_2
 
-TESSERACT_VERSION = tuple(get_tesseract_version().version)  # to skip tests
+TESSERACT_VERSION = tuple(get_tesseract_version().release)  # to skip tests
 
 TESTS_DIR = path.dirname(path.abspath(__file__))
 DATA_DIR = path.join(TESTS_DIR, 'data')
