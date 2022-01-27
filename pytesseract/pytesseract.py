@@ -313,9 +313,14 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
             if len(row) <= i:
                 continue
 
-            val = row[i]
-            if row[i].isdigit() and i != str_col_idx:
-                val = int(row[i])
+            if i != str_col_idx:
+                try:
+                    val = int(float(row[i]))
+                except ValueError:
+                    val = row[i]
+            else:
+                val = row[i]
+
             result[head].append(val)
 
     return result
