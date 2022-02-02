@@ -42,6 +42,7 @@ LANG_PATTERN = re.compile('^[a-z_]+$')
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
     'JPEG',
+    'JPEG2000',
     'PNG',
     'PBM',
     'PGM',
