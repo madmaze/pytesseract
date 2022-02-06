@@ -42,6 +42,7 @@ LANG_PATTERN = re.compile('^[a-z_]+$')
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
     'JPEG',
+    'JPEG2000',
     'PNG',
     'PBM',
     'PGM',
@@ -180,7 +181,7 @@ def cleanup(temp_name):
             remove(filename)
         except OSError as e:
             if e.errno != ENOENT:
-                raise e
+                raise
 
 
 def prepare(image):
@@ -272,8 +273,9 @@ def run_tesseract(
         proc = subprocess.Popen(cmd_args, **subprocess_args())
     except OSError as e:
         if e.errno != ENOENT:
-            raise e
-        raise TesseractNotFoundError()
+            raise
+        else:
+            raise TesseractNotFoundError()
 
     with timeout_manager(proc, timeout) as error_string:
         if proc.returncode:

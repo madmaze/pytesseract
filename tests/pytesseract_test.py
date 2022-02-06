@@ -77,6 +77,7 @@ def test_file_small():
     'test_file',
     [
         'test.jpg',
+        'test.jpeg2000',
         'test.pgm',
         'test.png',
         'test.ppm',
@@ -87,6 +88,7 @@ def test_file_small():
     ],
     ids=[
         'jpg',
+        'jpeg2000',
         'pgm',
         'png',
         'ppm',
