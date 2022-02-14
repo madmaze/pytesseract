@@ -92,6 +92,7 @@ class Output_Confidence_Format:
             Returns the recognized text as a block and a confidence score based on the average score of each element.
     """
 
+
 class PandasNotSupported(EnvironmentError):
     def __init__(self):
         super().__init__('Missing pandas package')
