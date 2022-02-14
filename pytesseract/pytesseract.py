@@ -73,6 +73,7 @@ class Output:
     STRING = 'string'
     CONFIDENCE = 'confidence'
 
+
 class Output_Confidence_Format:
     LINE = 'line'
     '''
@@ -86,10 +87,10 @@ class Output_Confidence_Format:
     '''
 
     FLAT = 'flat'
-    ''' 
+    """
         FLAT
             Returns the recognized text as a block and a confidence score based on the average score of each element.
-    '''
+    """
 
 class PandasNotSupported(EnvironmentError):
     def __init__(self):
@@ -530,7 +531,7 @@ def image_to_data(
     output_type=Output.STRING,
     timeout=0,
     pandas_config=None,
-    confidence_config = None,
+    confidence_config=None,
 ):
     '''
     Returns string containing box boundaries, confidences,
@@ -551,7 +552,10 @@ def image_to_data(
         ),
         Output.DICT: lambda: file_to_dict(run_and_get_output(*args), '\t', -1),
         Output.STRING: lambda: run_and_get_output(*args),
-        Output.CONFIDENCE : lambda: group_result(file_to_dict(run_and_get_output(*args), '\t', -1), config = confidence_config)
+        Output.CONFIDENCE: lambda: group_result(
+            file_to_dict(run_and_get_output(*args), '\t', -1),
+            config=confidence_config,
+        ),
     }[output_type]()
 
 
@@ -575,9 +579,10 @@ def image_to_osd(
         Output.STRING: lambda: run_and_get_output(*args),
     }[output_type]()
 
-def group_result(dict, config = None):
+
+def group_result(dict, config=None):
     data = {}
-    grouped = {}
+    groupped = {}
     k = 0
     for i in range(len(dict['line_num'])):
         txt = dict['text'][i]
@@ -586,10 +591,10 @@ def group_result(dict, config = None):
         line_num = dict['line_num'][i]
         par_num = dict['par_num'][i]
 
-        if not (txt == '' or txt.isspace()) : 
-            tup = { 'text': txt, 'conf' : conf }
+        if not (txt == '' or txt.isspace()):
+            tup = {'text': txt, 'conf': conf}
             if block_num in data:
-                if par_num in data[block_num] :
+                if par_num in data[block_num]:
                     if line_num in data[block_num][par_num]:
                         data[block_num][par_num][line_num].append(tup)
                     else:
@@ -602,39 +607,43 @@ def group_result(dict, config = None):
                 data[block_num][par_num] = {}
                 data[block_num][par_num][line_num] = [tup]
 
-    for b in data.values():
-        for l in b.values():
-            grouped[k] = l
+    for _, b in data.items():
+        for _, l in b.items():
+            groupped[k] = l
             k += 1
 
-    if config is None or config == 'word' : return grouped
-    elif config == 'line' : return group_by_line(grouped)
-    elif config == 'flat' : return group_by_block(grouped)
+    if config == None or config == 'word':
+        return groupped
+    elif config == 'line':
+        return group_by_line(groupped)
+    elif config == 'flat':
+        return group_by_block(groupped)
 
-def group_by_line(dict) :
-    parsed_result = { }
+
+def group_by_line(dict):
+    parsed_result = {}
     current_count = 0
     for block in dict:
         for par in dict[block]:
             current_count += 1
-            parsed_result [current_count] = {
-                'text' : ' '.join( map(lambda x:x['text'], dict[block][par])),
-                'conf' : sum(map(lambda x:x['conf'] , dict[block][par] )) / len(dict[block][par]) 
+            parsed_result[current_count] = {
+                'text': ' '.join(map(lambda x: x['text'], dict[block][par])),
+                'conf': sum(map(lambda x: x['conf'], dict[block][par]))
+                / len(dict[block][par]),
             }
     return parsed_result
+
 
 def group_by_block(dict):
     line_groupped = group_by_line(dict)
     conf = 0
     text = ''
-    for line in line_groupped :
+    for line in line_groupped:
         conf += line_groupped[line]['conf']
         text += ' ' + line_groupped[line]['text']
     conf = conf / len(line_groupped)
-    return {
-        'text' : text,
-        'conf' : conf
-    }
+    return {'text': text, 'conf': conf}
+
 
 def main():
     if len(sys.argv) == 2:
@@ -648,7 +657,11 @@ def main():
     try:
         with Image.open(filename) as img:
             # print(image_to_string(img, lang=lang))
-            result = image_to_data(img,output_type=Output.CONFIDENCE, confidence_config = Output_Confidence_Format.WORD)
+            result = image_to_data(
+                img,
+                output_type=Output.CONFIDENCE,
+                confidence_config=Output_Confidence_Format.FLAT,
+            )
             print(result)
     except TesseractNotFoundError as e:
         print(f'{str(e)}\n', file=sys.stderr)
