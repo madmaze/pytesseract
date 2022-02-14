@@ -582,7 +582,7 @@ def image_to_osd(
 
 def group_result(dict, config=None):
     data = {}
-    groupped = {}
+    grouped = {}
     k = 0
     for i in range(len(dict['line_num'])):
         txt = dict['text'][i]
@@ -607,17 +607,17 @@ def group_result(dict, config=None):
                 data[block_num][par_num] = {}
                 data[block_num][par_num][line_num] = [tup]
 
-    for _, b in data.items():
-        for _, l in b.items():
-            groupped[k] = l
+    for b in data.values():
+        for l in b.values():
+            grouped[k] = l
             k += 1
 
     if config == None or config == 'word':
-        return groupped
+        return grouped
     elif config == 'line':
-        return group_by_line(groupped)
+        return group_by_line(grouped)
     elif config == 'flat':
-        return group_by_block(groupped)
+        return group_by_block(grouped)
 
 
 def group_by_line(dict):
