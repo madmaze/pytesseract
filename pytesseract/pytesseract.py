@@ -75,21 +75,21 @@ class Output:
 
 class Output_Confidence_Format:
     LINE = 'line'
-    """
+    '''
         LINE
-            Returns a line-by-line recognized text and a confidence based on the average score of each element.
-    """
+            Returns a line-by-line text and confidence based on the average score of each element.
+    '''
     WORD = 'word'
-    """
+    '''
         WORD
             Returns each recognized word and it's confidence score.
-    """
+    '''
 
     FLAT = 'flat'
-    """ 
+    ''' 
         FLAT
             Returns the recognized text as a block and a confidence score based on the average score of each element.
-    """
+    '''
 
 class PandasNotSupported(EnvironmentError):
     def __init__(self):
@@ -175,7 +175,7 @@ def get_errors(error_string):
 
 
 def cleanup(temp_name):
-    """Tries to remove temp files by filename wildcard path."""
+    '''Tries to remove temp files by filename wildcard path.'''
     for filename in iglob(temp_name + '*' if temp_name else temp_name):
         try:
             remove(filename)
@@ -399,9 +399,9 @@ def get_languages(config=''):
 
 @run_once
 def get_tesseract_version():
-    """
+    '''
     Returns Version object of the Tesseract version
-    """
+    '''
     try:
         output = subprocess.check_output(
             [tesseract_cmd, '--version'],
@@ -433,9 +433,9 @@ def image_to_string(
     output_type=Output.STRING,
     timeout=0,
 ):
-    """
+    '''
     Returns the result of a Tesseract OCR run on the provided image to string
-    """
+    '''
     args = [image, 'txt', lang, config, nice, timeout]
 
     return {
@@ -453,9 +453,9 @@ def image_to_pdf_or_hocr(
     extension='pdf',
     timeout=0,
 ):
-    """
+    '''
     Returns the result of a Tesseract OCR run on the provided image to pdf/hocr
-    """
+    '''
 
     if extension not in {'pdf', 'hocr'}:
         raise ValueError(f'Unsupported extension: {extension}')
@@ -471,9 +471,9 @@ def image_to_alto_xml(
     nice=0,
     timeout=0,
 ):
-    """
+    '''
     Returns the result of a Tesseract OCR run on the provided image to ALTO XML
-    """
+    '''
 
     if get_tesseract_version() < TESSERACT_ALTO_VERSION:
         raise ALTONotSupported()
@@ -492,9 +492,9 @@ def image_to_boxes(
     output_type=Output.STRING,
     timeout=0,
 ):
-    """
+    '''
     Returns string containing recognized characters and their box boundaries
-    """
+    '''
     config = f'{config.strip()} batch.nochop makebox'
     args = [image, 'box', lang, config, nice, timeout]
 
@@ -532,10 +532,10 @@ def image_to_data(
     pandas_config=None,
     confidence_config = None,
 ):
-    """
+    '''
     Returns string containing box boundaries, confidences,
     and other information. Requires Tesseract 3.05+
-    """
+    '''
 
     if get_tesseract_version() < TESSERACT_MIN_VERSION:
         raise TSVNotSupported()
@@ -563,9 +563,9 @@ def image_to_osd(
     output_type=Output.STRING,
     timeout=0,
 ):
-    """
+    '''
     Returns string containing the orientation and script detection (OSD)
-    """
+    '''
     config = f'--psm 0 {config.strip()}'
     args = [image, 'osd', lang, config, nice, timeout]
 
@@ -577,17 +577,17 @@ def image_to_osd(
 
 def group_result(dict, config = None):
     data = {}
-    groupped = {}
+    grouped = {}
     k = 0
     for i in range(len(dict['line_num'])):
         txt = dict['text'][i]
-        conf = int(dict["conf"][i])
+        conf = int(dict['conf'][i])
         block_num = dict['block_num'][i]
         line_num = dict['line_num'][i]
         par_num = dict['par_num'][i]
 
         if not (txt == '' or txt.isspace()) : 
-            tup = { "text": txt, "conf" : conf }
+            tup = { 'text': txt, 'conf' : conf }
             if block_num in data:
                 if par_num in data[block_num] :
                     if line_num in data[block_num][par_num]:
@@ -601,15 +601,15 @@ def group_result(dict, config = None):
                 data[block_num] = {}
                 data[block_num][par_num] = {}
                 data[block_num][par_num][line_num] = [tup]
-    
-    for _, b  in data.items():
-        for _, l in b.items():
-            groupped[k] = l
+
+    for b in data.values():
+        for l in b.values():
+            grouped[k] = l
             k += 1
 
-    if config == None or config == "word" : return groupped
-    elif config == "line" : return group_by_line(groupped)
-    elif config == "flat" : return group_by_block(groupped)
+    if config is None or config == 'word' : return grouped
+    elif config == 'line' : return group_by_line(grouped)
+    elif config == 'flat' : return group_by_block(grouped)
 
 def group_by_line(dict) :
     parsed_result = { }
@@ -618,18 +618,18 @@ def group_by_line(dict) :
         for par in dict[block]:
             current_count += 1
             parsed_result [current_count] = {
-                "text" : ' '.join( map(lambda x:x["text"], dict[block][par])),
-                "conf" : sum(map(lambda x:x["conf"] , dict[block][par] )) / len(dict[block][par]) 
+                'text' : ' '.join( map(lambda x:x['text'], dict[block][par])),
+                'conf' : sum(map(lambda x:x['conf'] , dict[block][par] )) / len(dict[block][par]) 
             }
     return parsed_result
 
 def group_by_block(dict):
     line_groupped = group_by_line(dict)
     conf = 0
-    text = ""
+    text = ''
     for line in line_groupped :
-        conf += line_groupped[line]["conf"]
-        text += ' ' + line_groupped[line]["text"]
+        conf += line_groupped[line]['conf']
+        text += ' ' + line_groupped[line]['text']
     conf = conf / len(line_groupped)
     return {
         'text' : text,
@@ -648,7 +648,7 @@ def main():
     try:
         with Image.open(filename) as img:
             # print(image_to_string(img, lang=lang))
-            result = image_to_data(img,output_type=Output.CONFIDENCE, confidence_config = Output_Confidence_Format.FLAT)
+            result = image_to_data(img,output_type=Output.CONFIDENCE, confidence_config = Output_Confidence_Format.WORD)
             print(result)
     except TesseractNotFoundError as e:
         print(f'{str(e)}\n', file=sys.stderr)
