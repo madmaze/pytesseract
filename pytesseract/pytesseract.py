@@ -89,7 +89,7 @@ class TesseractNotFoundError(EnvironmentError):
     def __init__(self):
         super().__init__(
             f"{tesseract_cmd} is not installed or it's not in your PATH."
-            + ' See README file for more information.',
+            f' See README file for more information.',
         )
 
 
@@ -158,7 +158,7 @@ def get_errors(error_string):
 
 def cleanup(temp_name):
     """Tries to remove temp files by filename wildcard path."""
-    for filename in iglob(temp_name + '*' if temp_name else temp_name):
+    for filename in iglob(f'{temp_name}*' if temp_name else temp_name):
         try:
             remove(filename)
         except OSError as e:
@@ -195,7 +195,7 @@ def save(image):
                 yield f.name, realpath(normpath(normcase(image)))
                 return
             image, extension = prepare(image)
-            input_file_name = f.name + extsep + extension
+            input_file_name = f'{f.name}_input{extsep}{extension}'
             image.save(input_file_name, format=image.format)
             yield f.name, input_file_name
     finally:
@@ -286,7 +286,7 @@ def run_and_get_output(
         }
 
         run_tesseract(**kwargs)
-        filename = kwargs['output_filename_base'] + extsep + extension
+        filename = f"{kwargs['output_filename_base']}{extsep}{extension}"
         with open(filename, 'rb') as output_file:
             if return_bytes:
                 return output_file.read()
