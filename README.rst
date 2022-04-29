@@ -145,7 +145,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 * **image_to_boxes** Returns result containing recognized characters and their box boundaries
 
-* **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_
+* **image_to_data** Returns result containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. For more information, please check the `Tesseract TSV documentation <https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html>`_
 
 * **image_to_osd** Returns result containing information about orientation and script detection.
 
