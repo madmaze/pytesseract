@@ -1,7 +1,7 @@
 exclude: ^(tests/data/)
 repos:
 -   repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
     -   id: black
         args: [-S, --line-length=79, --safe, --quiet]
@@ -25,17 +25,17 @@ repos:
     hooks:
     -   id: autopep8
 -   repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.8.2
+    rev: v3.8.3
     hooks:
     -   id: reorder-python-imports
         args: [--py37-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
+    rev: v2.38.2
     hooks:
     -   id: pyupgrade
         args: [--py37-plus]
 -   repo: https://github.com/asottile/add-trailing-comma
-    rev: v2.2.3
+    rev: v2.3.0
     hooks:
     -   id: add-trailing-comma
 # -   repo: https://github.com/asottile/setup-cfg-fmt
