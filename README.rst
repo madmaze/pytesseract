@@ -157,7 +157,7 @@ Add the following config, if you have tessdata error like: "Error opening data f
 
 ``image_to_data(image, lang=None, config='', nice=0, output_type=Output.STRING, timeout=0, pandas_config=None)``
 
-* **image** Object or String - PIL Image/NumPy array or file path of the image to be processed by Tesseract. If you pass object instead of file path, pytesseract will implicitly convert the image to `RGB mode <https://pillow.readthedocs.io/en/stable/handbook/concepts.html#modes>`_.
+* **image** Object or String - either PIL Image, NumPy array or file path of the image to be processed by Tesseract. If you pass object instead of file path, pytesseract will implicitly convert the image to `RGB mode <https://pillow.readthedocs.io/en/stable/handbook/concepts.html#modes>`_.
 
 * **lang** String - Tesseract language code string. Defaults to ``eng`` if not specified! Example for multiple languages: ``lang='eng+fra'``
 
