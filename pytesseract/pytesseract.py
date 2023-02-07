@@ -273,7 +273,6 @@ def run_and_get_output(
     timeout=0,
     return_bytes=False,
 ):
-
     with save(image) as (temp_name, input_filename):
         kwargs = {
             'input_filename': input_filename,
