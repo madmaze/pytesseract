@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import logging
 import re
 import shlex
 import string
@@ -36,6 +37,8 @@ if numpy_installed:
 pandas_installed = find_loader('pandas') is not None
 if pandas_installed:
     import pandas as pd
+
+LOGGER = logging.getLogger('pytesseract')
 
 DEFAULT_ENCODING = 'utf-8'
 LANG_PATTERN = re.compile('^[a-z_]+$')
@@ -250,6 +253,7 @@ def run_tesseract(
 
     if extension and extension not in {'box', 'osd', 'tsv', 'xml'}:
         cmd_args.append(extension)
+    LOGGER.debug('%r', cmd_args)
 
     try:
         proc = subprocess.Popen(cmd_args, **subprocess_args())
