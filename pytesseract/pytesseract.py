@@ -239,8 +239,9 @@ def run_tesseract(
     timeout=0,
 ):
     cmd_args = []
+    not_windows = not (sys.platform == 'win32')
 
-    if not sys.platform.startswith('win32') and nice != 0:
+    if not_windows and nice != 0:
         cmd_args += ('nice', '-n', str(nice))
 
     cmd_args += (tesseract_cmd, input_filename, output_filename_base)
@@ -249,7 +250,7 @@ def run_tesseract(
         cmd_args += ('-l', lang)
 
     if config:
-        cmd_args += shlex.split(config)
+        cmd_args += shlex.split(config, posix=not_windows)
 
     if extension and extension not in {'box', 'osd', 'tsv', 'xml'}:
         cmd_args.append(extension)
