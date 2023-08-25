@@ -145,7 +145,7 @@ def timeout_manager(proc, seconds=None):
 def run_once(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if wrapper._result is wrapper:
+        if not kwargs.pop('cached', False) or wrapper._result is wrapper:
             wrapper._result = func(*args, **kwargs)
         return wrapper._result
 
@@ -465,7 +465,7 @@ def image_to_alto_xml(
     Returns the result of a Tesseract OCR run on the provided image to ALTO XML
     """
 
-    if get_tesseract_version() < TESSERACT_ALTO_VERSION:
+    if get_tesseract_version(cached=True) < TESSERACT_ALTO_VERSION:
         raise ALTONotSupported()
 
     config = f'-c tessedit_create_alto=1 {config.strip()}'
@@ -528,7 +528,7 @@ def image_to_data(
     and other information. Requires Tesseract 3.05+
     """
 
-    if get_tesseract_version() < TESSERACT_MIN_VERSION:
+    if get_tesseract_version(cached=True) < TESSERACT_MIN_VERSION:
         raise TSVNotSupported()
 
     config = f'-c tessedit_create_tsv=1 {config.strip()}'
@@ -587,4 +587,4 @@ def main():
 
 
 if __name__ == '__main__':
-    exit(main())
+    raise SystemExit(main())
