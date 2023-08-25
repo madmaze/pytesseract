@@ -445,6 +445,10 @@ def image_to_pdf_or_hocr(
 
     if extension not in {'pdf', 'hocr'}:
         raise ValueError(f'Unsupported extension: {extension}')
+
+    if extension == 'hocr':
+        config = f'-c tessedit_create_hocr=1 {config.strip()}'
+
     args = [image, extension, lang, config, nice, timeout, True]
 
     return run_and_get_output(*args)
