@@ -19,15 +19,15 @@ jobs:
       fail-fast: true
       matrix:
         include:
+          - {name: '3.11', python: '3.11', os: ubuntu-20.04, tox: py311}
           - {name: '3.10', python: '3.10', os: ubuntu-20.04, tox: py310}
           - {name: '3.9', python: '3.9', os: ubuntu-20.04, tox: py39}
           - {name: '3.8', python: '3.8', os: ubuntu-20.04, tox: py38}
-          - {name: '3.7', python: '3.7', os: ubuntu-20.04, tox: py37}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
@@ -39,7 +39,7 @@ jobs:
         run: echo "::set-output name=dir::$(pip cache dir)"
 
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: pip-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('setup.py') }}
