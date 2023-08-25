@@ -485,7 +485,9 @@ def image_to_boxes(
     """
     Returns string containing recognized characters and their box boundaries
     """
-    config = f'{config.strip()} batch.nochop makebox'
+    config = (
+        f'{config.strip()} -c tessedit_create_boxfile=1 batch.nochop makebox'
+    )
     args = [image, 'box', lang, config, nice, timeout]
 
     return {
