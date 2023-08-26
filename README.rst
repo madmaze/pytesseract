@@ -248,5 +248,5 @@ CONTRIBUTORS
 - `Emilio Cecchini <https://github.com/ceccoemi>`_
 - `John Hagen <https://github.com/johnthagen>`_
 - `Darius Morawiec <https://github.com/nok>`_
-- `Eddie Bedada <https://github.com/adbeda>`_
+- `Eddie Bedada <https://github.com/adbedada>`_
 - `Uğurcan Akyüz <https://github.com/ugurcanakyuz>`_
