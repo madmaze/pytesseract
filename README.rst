@@ -97,6 +97,10 @@ Library usage:
     # Get ALTO XML output
     xml = pytesseract.image_to_alto_xml('test.png')
 
+    # getting multiple types of output with one call to save compute time
+    # currently supports mix and match of the following: txt, pdf, hocr, box, tsv
+    text, boxes = pytesseract.run_and_get_multiple_output('test.png', extensions=['txt', 'box'])
+
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
