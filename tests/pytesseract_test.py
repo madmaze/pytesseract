@@ -241,7 +241,8 @@ def test_image_to_pdf_or_hocr(test_file, extension):
 )
 def test_run_and_get_multiple_output(test_file, extensions):
     compound_results = run_and_get_multiple_output(
-        test_file, extensions=extensions,
+        test_file,
+        extensions=extensions,
     )
     function_mapping = {
         'pdf': partial(image_to_pdf_or_hocr, extension='pdf'),
