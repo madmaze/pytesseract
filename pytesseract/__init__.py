@@ -9,6 +9,7 @@ from .pytesseract import image_to_osd
 from .pytesseract import image_to_pdf_or_hocr
 from .pytesseract import image_to_string
 from .pytesseract import Output
+from .pytesseract import run_and_get_multiple_output
 from .pytesseract import run_and_get_output
 from .pytesseract import TesseractError
 from .pytesseract import TesseractNotFoundError
