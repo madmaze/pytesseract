@@ -75,6 +75,17 @@ def test_file_small():
     return path.join(DATA_DIR, 'test-small.jpg')
 
 
+@pytest.fixture(scope='session')
+def function_mapping():
+    return {
+        'pdf': partial(image_to_pdf_or_hocr, extension='pdf'),
+        'txt': image_to_string,
+        'box': image_to_boxes,
+        'hocr': partial(image_to_pdf_or_hocr, extension='hocr'),
+        'tsv': image_to_data,
+    }
+
+
 @pytest.mark.parametrize(
     'test_file',
     [
@@ -229,27 +240,26 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         assert result.endswith('</html>')
 
 
-@pytest.mark.parametrize(
-    'extensions',
-    [
-        ['pdf', 'txt'],
-        ['hocr', 'txt'],
-        ['box', 'txt'],
-        ['box', 'txt', 'pdf'],
-        ['tsv', 'box', 'txt'],
-    ],
-)
-def test_run_and_get_multiple_output(test_file, extensions):
+def test_run_and_get_multiple_output(test_file, function_mapping):
+    extensions = ['tsv', 'pdf', 'txt', 'box', 'hocr']
     compound_results = run_and_get_multiple_output(
-        test_file, extensions=extensions,
+        test_file,
+        extensions=extensions,
     )
-    function_mapping = {
-        'pdf': partial(image_to_pdf_or_hocr, extension='pdf'),
-        'txt': image_to_string,
-        'box': image_to_boxes,
-        'hocr': partial(image_to_pdf_or_hocr, extension='hocr'),
-        'tsv': image_to_data,
-    }
+    for result, extension in zip(compound_results, extensions):
+        assert result == function_mapping[extension](test_file)
+
+
+def test_run_and_get_pdf_and_txt(test_file, function_mapping):
+    # This tests a case where the extensions do not add any config params
+    # Here this test is not merged with the test above because we might get
+    # into a racing condition where test results from different parameter
+    # are mixtued in test below
+    extensions = ['pdf', 'txt']
+    compound_results = run_and_get_multiple_output(
+        test_file,
+        extensions=extensions,
+    )
     for result, extension in zip(compound_results, extensions):
         assert result == function_mapping[extension](test_file)
 
