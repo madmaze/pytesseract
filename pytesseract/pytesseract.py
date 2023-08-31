@@ -21,7 +21,8 @@ from os.path import realpath
 from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from time import sleep
-from typing import List, Optional
+from typing import List
+from typing import Optional
 
 from packaging.version import InvalidVersion
 from packaging.version import parse
@@ -278,7 +279,7 @@ def run_tesseract(
             raise TesseractError(proc.returncode, get_errors(error_string))
 
 
-def _read_output(filename: str, return_bytes: bool=False):
+def _read_output(filename: str, return_bytes: bool = False):
     with open(filename, 'rb') as output_file:
         if return_bytes:
             return output_file.read()
@@ -288,22 +289,24 @@ def _read_output(filename: str, return_bytes: bool=False):
 def run_and_get_multiple_output(
     image,
     extensions: List[str],
-    lang: Optional[str]=None,
-    nice: int=0,
-    timeout: int=0,
-    return_bytes: bool=False,
+    lang: Optional[str] = None,
+    nice: int = 0,
+    timeout: int = 0,
+    return_bytes: bool = False,
 ):
-    config = ' '.join(EXTENTION_TO_CONFIG.get(extension, '') for extension in extensions).strip()
+    config = ' '.join(
+        EXTENTION_TO_CONFIG.get(extension, '') for extension in extensions
+    ).strip()
     if config:
-        config = f"-c {config}"
+        config = f'-c {config}'
     else:
         config = ''
-    
+
     with save(image) as (temp_name, input_filename):
         kwargs = {
             'input_filename': input_filename,
             'output_filename_base': temp_name,
-            'extension': " ".join(extensions),
+            'extension': ' '.join(extensions),
             'lang': lang,
             'config': config,
             'nice': nice,
@@ -315,7 +318,7 @@ def run_and_get_multiple_output(
         return [
             _read_output(
                 f"{kwargs['output_filename_base']}{extsep}{extension}",
-                True if extension in {'pdf', 'hocr'} else return_bytes
+                True if extension in {'pdf', 'hocr'} else return_bytes,
             )
             for extension in extensions
         ]
@@ -342,7 +345,10 @@ def run_and_get_output(
         }
 
         run_tesseract(**kwargs)
-        return _read_output(f"{kwargs['output_filename_base']}{extsep}{extension}", return_bytes)
+        return _read_output(
+            f"{kwargs['output_filename_base']}{extsep}{extension}",
+            return_bytes,
+        )
 
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
