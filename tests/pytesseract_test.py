@@ -1,3 +1,4 @@
+from functools import partial
 from glob import iglob
 from multiprocessing import Pool
 from os import getcwd
@@ -7,7 +8,6 @@ from sys import platform
 from sys import version_info
 from tempfile import gettempdir
 from unittest import mock
-from functools import partial
 
 import pytest
 
@@ -20,8 +20,8 @@ from pytesseract import image_to_data
 from pytesseract import image_to_osd
 from pytesseract import image_to_pdf_or_hocr
 from pytesseract import image_to_string
-from pytesseract import run_and_get_multiple_output
 from pytesseract import Output
+from pytesseract import run_and_get_multiple_output
 from pytesseract import TesseractNotFoundError
 from pytesseract import TSVNotSupported
 from pytesseract.pytesseract import file_to_dict
@@ -231,16 +231,24 @@ def test_image_to_pdf_or_hocr(test_file, extension):
 
 @pytest.mark.parametrize(
     'extensions',
-    [['pdf', 'txt'], ['hocr', 'txt'], ['box', 'txt'], ['box', 'txt', 'pdf'], ['tsv', 'box', 'txt']]
+    [
+        ['pdf', 'txt'],
+        ['hocr', 'txt'],
+        ['box', 'txt'],
+        ['box', 'txt', 'pdf'],
+        ['tsv', 'box', 'txt'],
+    ],
 )
 def test_run_and_get_multiple_output(test_file, extensions):
-    compound_results = run_and_get_multiple_output(test_file, extensions=extensions)
+    compound_results = run_and_get_multiple_output(
+        test_file, extensions=extensions,
+    )
     function_mapping = {
-        "pdf": partial(image_to_pdf_or_hocr, extension="pdf"),
-        "txt": image_to_string,
-        "box": image_to_boxes,
-        "hocr": partial(image_to_pdf_or_hocr, extension="hocr"),
-        "tsv": image_to_data,
+        'pdf': partial(image_to_pdf_or_hocr, extension='pdf'),
+        'txt': image_to_string,
+        'box': image_to_boxes,
+        'hocr': partial(image_to_pdf_or_hocr, extension='hocr'),
+        'tsv': image_to_data,
     }
     for result, extension in zip(compound_results, extensions):
         assert result == function_mapping[extension](test_file)
