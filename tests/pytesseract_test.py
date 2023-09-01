@@ -254,7 +254,7 @@ def test_run_and_get_pdf_and_txt(test_file, function_mapping):
     # This tests a case where the extensions do not add any config params
     # Here this test is not merged with the test above because we might get
     # into a racing condition where test results from different parameter
-    # are mixtued in test below
+    # are mixed in the test below
     extensions = ['pdf', 'txt']
     compound_results = run_and_get_multiple_output(
         test_file,
