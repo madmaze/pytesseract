@@ -240,28 +240,31 @@ def test_image_to_pdf_or_hocr(test_file, extension):
         assert result.endswith('</html>')
 
 
-def test_run_and_get_multiple_output(test_file, function_mapping):
-    extensions = ['tsv', 'pdf', 'txt', 'box', 'hocr']
+@pytest.mark.parametrize(
+    'extensions',
+    [
+        ['tsv', 'pdf', 'txt', 'box', 'hocr'],
+        # This tests a case where the extensions do not add any config params
+        # Here this test is not merged with the test above because we might get
+        # into a racing condition where test results from different parameter
+        # are mixed in the test below
+        ['pdf', 'txt'],
+    ],
+)
+def test_run_and_get_multiple_output(test_file, function_mapping, extensions):
     compound_results = run_and_get_multiple_output(
         test_file,
         extensions=extensions,
     )
     for result, extension in zip(compound_results, extensions):
-        assert result == function_mapping[extension](test_file)
-
-
-def test_run_and_get_pdf_and_txt(test_file, function_mapping):
-    # This tests a case where the extensions do not add any config params
-    # Here this test is not merged with the test above because we might get
-    # into a racing condition where test results from different parameter
-    # are mixed in the test below
-    extensions = ['pdf', 'txt']
-    compound_results = run_and_get_multiple_output(
-        test_file,
-        extensions=extensions,
-    )
-    for result, extension in zip(compound_results, extensions):
-        assert result == function_mapping[extension](test_file)
+        if extension == 'pdf':
+            # pdf creation time could be different between the two so do not
+            # check the whole string
+            assert (
+                result[:1000] == function_mapping[extension](test_file)[:1000]
+            )
+        else:
+            assert result == function_mapping[extension](test_file)
 
 
 @pytest.mark.skipif(
