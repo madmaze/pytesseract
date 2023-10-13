@@ -33,12 +33,14 @@ tesseract_cmd = 'tesseract'
 
 try:
     from numpy import ndarray
+
     numpy_installed = True
 except ModuleNotFoundError:
     numpy_installed = False
 
 try:
     import pandas as pd
+
     pandas_installed = True
 except ModuleNotFoundError:
     pandas_installed = False
