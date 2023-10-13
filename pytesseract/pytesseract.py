@@ -18,7 +18,6 @@ from os import remove
 from os.path import normcase
 from os.path import normpath
 from os.path import realpath
-from pkgutil import find_loader
 from tempfile import NamedTemporaryFile
 from time import sleep
 from typing import List
@@ -32,13 +31,17 @@ from PIL import Image
 
 tesseract_cmd = 'tesseract'
 
-numpy_installed = find_loader('numpy') is not None
-if numpy_installed:
+try:
     from numpy import ndarray
+    numpy_installed = True
+except ModuleNotFoundError:
+    numpy_installed = False
 
-pandas_installed = find_loader('pandas') is not None
-if pandas_installed:
+try:
     import pandas as pd
+    pandas_installed = True
+except ModuleNotFoundError:
+    pandas_installed = False
 
 LOGGER = logging.getLogger('pytesseract')
 
