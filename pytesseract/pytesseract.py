@@ -209,7 +209,10 @@ def save(image):
     try:
         with NamedTemporaryFile(prefix='tess_', delete=False) as f:
             if isinstance(image, str):
-                yield f.name, realpath(normpath(normcase(image)))
+                if image.startswith('http:') or image.startswith('https:'):
+                    yield f.name, image
+                else:
+                    yield f.name, realpath(normpath(normcase(image)))
                 return
             image, extension = prepare(image)
             input_file_name = f'{f.name}_input{extsep}{extension}'

@@ -50,6 +50,7 @@ TESTS_DIR = path.dirname(path.abspath(__file__))
 DATA_DIR = path.join(TESTS_DIR, 'data')
 TESSDATA_DIR = path.join(TESTS_DIR, 'tessdata')
 TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
+TEST_JPEG_URL = 'https://i.imgur.com/hWO45US.jpg'
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 string_type = unicode if IS_PYTHON_2 else str  # noqa: 821
@@ -120,6 +121,18 @@ def test_image_to_string_with_image_type(test_file):
     test_file_path = path.join(DATA_DIR, test_file)
     assert 'The quick brown dog' in image_to_string(test_file_path, 'eng')
 
+
+@pytest.mark.parametrize(
+    'test_file',
+    [TEST_JPEG_URL],
+    ids=['jpeg_url'],
+)
+def test_image_to_string_with_url(test_file):
+    # Tesseract-ocr supports image URLs from version 4.1.1
+    if TESSERACT_VERSION[0] < 4:
+        pytest.skip('skip url test')
+    assert 'The quick brown dog' in image_to_string(test_file)
+ 
 
 @pytest.mark.parametrize(
     'test_file',
