@@ -2,6 +2,7 @@
 from .pytesseract import ALTONotSupported
 from .pytesseract import get_languages
 from .pytesseract import get_tesseract_version
+from .pytesseract import has_libcurl
 from .pytesseract import image_to_alto_xml
 from .pytesseract import image_to_boxes
 from .pytesseract import image_to_data
@@ -14,6 +15,7 @@ from .pytesseract import run_and_get_output
 from .pytesseract import TesseractError
 from .pytesseract import TesseractNotFoundError
 from .pytesseract import TSVNotSupported
+from .pytesseract import URLNotSupported
 
 
 __version__ = '0.3.13'

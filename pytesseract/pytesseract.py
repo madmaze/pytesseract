@@ -81,6 +81,7 @@ EXTENTION_TO_CONFIG = {
 
 TESSERACT_MIN_VERSION = Version('3.05')
 TESSERACT_ALTO_VERSION = Version('4.1.0')
+TESSERACT_URL_VERSION = Version('4.1.1')
 
 
 class Output:
@@ -121,6 +122,13 @@ class ALTONotSupported(EnvironmentError):
     def __init__(self):
         super().__init__(
             'ALTO output not supported. Tesseract >= 4.1.0 required',
+        )
+
+class URLNotSupported(EnvironmentError):
+    def __init__(self):
+        super().__init__(
+            'URL input not supported. '
+            'Tesseract >= 4.1.1 built with libcurl required',
         )
 
 
@@ -209,7 +217,10 @@ def save(image):
     try:
         with NamedTemporaryFile(prefix='tess_', delete=False) as f:
             if isinstance(image, str):
-                if image.startswith('http:') or image.startswith('https:'):
+                if image.startswith(('http:', 'https:')):
+                    if get_tesseract_version(cached=True) < TESSERACT_URL_VERSION\
+                        or not has_libcurl(cached=True):
+                        raise URLNotSupported()
                     yield f.name, image
                 else:
                     yield f.name, realpath(normpath(normcase(image)))
@@ -471,6 +482,24 @@ def get_tesseract_version():
         raise SystemExit(f'Invalid tesseract version: "{raw_version}"')
 
     return version
+
+
+@run_once
+def has_libcurl():
+    """
+    Returns True if tesseract-ocr was installed with libcurl or False otherwise
+    """
+    try:
+        output = subprocess.check_output(
+            [tesseract_cmd, '--version'],
+            stderr=subprocess.STDOUT,
+            env=environ,
+            stdin=subprocess.DEVNULL,
+        )
+    except OSError:
+        raise TesseractNotFoundError()
+    
+    return 'libcurl' in output.decode(DEFAULT_ENCODING)
 
 
 def image_to_string(
