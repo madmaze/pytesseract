@@ -132,7 +132,7 @@ def test_image_to_string_with_url(test_file):
     if TESSERACT_VERSION[0] < 4:
         pytest.skip('skip url test')
     assert 'The quick brown dog' in image_to_string(test_file)
- 
+
 
 @pytest.mark.parametrize(
     'test_file',
