@@ -47,14 +47,16 @@ IS_PYTHON_2 = version_info[:1] < (3,)
 IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().release)  # to skip tests
-HAS_LIBCURL = has_libcurl() # to skip tests
+HAS_LIBCURL = has_libcurl()  # to skip tests
 
 TESTS_DIR = path.dirname(path.abspath(__file__))
 DATA_DIR = path.join(TESTS_DIR, 'data')
 TESSDATA_DIR = path.join(TESTS_DIR, 'tessdata')
 TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
-TEST_JPEG_URL = ('https://github.com/madmaze/pytesseract'
-                 '/blob/master/tests/data/test.jpg?raw=true')
+TEST_JPEG_URL = (
+    'https://github.com/madmaze/pytesseract'
+    '/blob/master/tests/data/test.jpg?raw=true'
+)
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 string_type = unicode if IS_PYTHON_2 else str  # noqa: 821
@@ -132,7 +134,7 @@ def test_image_to_string_with_image_type(test_file):
     ids=['jpeg_url'],
 )
 def test_image_to_string_with_url(test_file):
-    # Tesseract-ocr supports image URLs from version 4.1.1 
+    # Tesseract-ocr supports image URLs from version 4.1.1
     # and must be built with libcurl.
     if TESSERACT_VERSION < (4, 1, 1) or not HAS_LIBCURL:
         pytest.skip('skip url test')

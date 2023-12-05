@@ -124,6 +124,7 @@ class ALTONotSupported(EnvironmentError):
             'ALTO output not supported. Tesseract >= 4.1.0 required',
         )
 
+
 class URLNotSupported(EnvironmentError):
     def __init__(self):
         super().__init__(
@@ -218,8 +219,9 @@ def save(image):
         with NamedTemporaryFile(prefix='tess_', delete=False) as f:
             if isinstance(image, str):
                 if image.startswith(('http:', 'https:')):
-                    if get_tesseract_version(cached=True) < TESSERACT_URL_VERSION\
-                        or not has_libcurl(cached=True):
+                    if get_tesseract_version(
+                        cached=True,
+                    ) < TESSERACT_URL_VERSION or not has_libcurl(cached=True):
                         raise URLNotSupported()
                     yield f.name, image
                 else:
@@ -498,7 +500,7 @@ def has_libcurl():
         )
     except OSError:
         raise TesseractNotFoundError()
-    
+
     return 'libcurl' in output.decode(DEFAULT_ENCODING)
 
 
