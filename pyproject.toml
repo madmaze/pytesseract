@@ -1,5 +1,48 @@
 [build-system]
+build-backend = "setuptools.build_meta"
 requires = [
-    "setuptools >= 40.0.4",
-    "wheel >= 0.29.0",
+  "setuptools>=61.2",
 ]
+
+[project]
+name = "pytesseract"
+description = "Python-tesseract is a python wrapper for Google's Tesseract-OCR"
+readme = "README.rst"
+keywords = [
+  "python-tesseract OCR Python",
+]
+license = {text = "Apache License 2.0"}
+maintainers = [{name = "Matthias Lee", email = "pytesseract@madmaze.net"}]
+authors = [{name = "Samuel Hoffstaetter", email = "samuel@hoffstaetter.com"}]
+requires-python = ">=3.8"
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "packaging>=21.3",
+  "Pillow>=8",
+]
+urls = {Homepage = "https://github.com/madmaze/pytesseract"}
+[project.scripts]
+pytesseract = "pytesseract.pytesseract:main"
+
+[tool.setuptools.packages.find]
+exclude = [
+    "tests*",
+    "testing*",
+]
+namespaces = false
+
+[tool.setuptools.dynamic]
+version = {attr = "pytesseract.__version__"}
