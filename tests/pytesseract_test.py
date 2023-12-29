@@ -302,10 +302,19 @@ def test_image_to_data__pandas_support(test_file_small):
     TESSERACT_VERSION[:2] < (3, 5),
     reason='requires tesseract >= 3.05',
 )
+@pytest.mark.parametrize(
+    'test_file',
+    ['test-small.jpg', 'test-numerical.png'],
+)
 @pytest.mark.skipif(pandas_installed is False, reason='requires pandas')
-def test_image_to_data__pandas_output(test_file_small):
+def test_image_to_data__pandas_output(test_file):
     """Test and compare the type and meta information of the result."""
-    result = image_to_data(test_file_small, output_type=Output.DATAFRAME)
+    test_file_path = path.join(DATA_DIR, test_file)
+    result = image_to_data(
+        test_file_path,
+        output_type=Output.DATAFRAME,
+        config='--psm 8',
+    )
     assert isinstance(result, pandas.DataFrame)
     expected_columns = [
         'level',
@@ -322,6 +331,8 @@ def test_image_to_data__pandas_output(test_file_small):
         'text',
     ]
     assert bool(set(result.columns).intersection(expected_columns))
+    assert result['text'].dtype == 'O'  # To maintain the originality of text
+    # incase only numerical values has been identified.
 
 
 @pytest.mark.skipif(
