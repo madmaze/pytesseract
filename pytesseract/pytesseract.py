@@ -564,7 +564,7 @@ def get_pandas_output(args, config=None):
     if not pandas_installed:
         raise PandasNotSupported()
 
-    kwargs = {'quoting': QUOTE_NONE, 'sep': '\t'}
+    kwargs = {'quoting': QUOTE_NONE, 'sep': '\t', 'dtype': {'text': str}}
     try:
         kwargs.update(config)
     except (TypeError, ValueError):
