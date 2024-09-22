@@ -48,7 +48,7 @@ except ModuleNotFoundError:
 LOGGER = logging.getLogger('pytesseract')
 
 DEFAULT_ENCODING = 'utf-8'
-LANG_PATTERN = re.compile('^[a-z_]+$')
+LANG_PATTERN = re.compile('^[a-z0-9_]+$')
 RGB_MODE = 'RGB'
 SUPPORTED_FORMATS = {
     'JPEG',
