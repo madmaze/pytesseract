@@ -468,7 +468,7 @@ DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
     ],
 )
 def test_get_languages(test_config, expected):
-    try :
+    try:
         result = get_languages.__wrapped__(test_config)
         if not result:
             assert result == []
@@ -477,7 +477,6 @@ def test_get_languages(test_config, expected):
             assert lang in result
     except TesseractError:
         assert expected == ()
-
 
 
 @pytest.mark.parametrize(
