@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from functools import partial
 from glob import iglob
 from multiprocessing import Pool
@@ -293,7 +295,7 @@ def test_image_to_alto_xml_support(test_file):
     TESSERACT_VERSION[:2] >= (3, 5),
     reason='requires tesseract < 3.05',
 )
-def test_image_to_data__pandas_support(test_file_small):
+def test_image_to_data_pandas_support(test_file_small):
     with pytest.raises(TSVNotSupported):
         image_to_data(test_file_small, output_type=Output.DATAFRAME)
 
@@ -303,7 +305,7 @@ def test_image_to_data__pandas_support(test_file_small):
     reason='requires tesseract >= 3.05',
 )
 @pytest.mark.skipif(pandas_installed is False, reason='requires pandas')
-def test_image_to_data__pandas_output(test_file_small):
+def test_image_to_data_pandas_output(test_file_small):
     """Test and compare the type and meta information of the result."""
     result = image_to_data(test_file_small, output_type=Output.DATAFRAME)
     assert isinstance(result, pandas.DataFrame)

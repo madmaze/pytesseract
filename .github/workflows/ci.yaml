@@ -6,43 +6,43 @@ on:
     tags: '*'
   pull_request:
 
+env:
+  PYTHON_LATEST_TAG: py313
+  PYTHON_LATEST_VER: 3.13
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
-  tests:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+  tox:
+    name: ${{ matrix.env }}
+    runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
       matrix:
-        include:
-          - {name: '3.12', python: '3.12', os: ubuntu-latest, tox: py312}
-          - {name: '3.11', python: '3.11', os: ubuntu-latest, tox: py311}
-          - {name: '3.10', python: '3.10', os: ubuntu-latest, tox: py310}
-          - {name: '3.9', python: '3.9', os: ubuntu-latest, tox: py39}
-          - {name: '3.8', python: '3.8', os: ubuntu-latest, tox: py38}
+        env: [py39, py310, py311, py312, py313]
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: 'pip'
-
-      - name: Upgrade bootstrap packages
-        run: python -m pip install --upgrade pip tox
-
-      - name: Install tesseract
-        run: sudo apt-get -y update && sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
-
-      - name: Print tesseract version
-        run: echo $(tesseract --version)
-
-      - name: Run tox
-        run: tox -e ${{ matrix.tox }}
-        env:
-          PY_COLORS: 1
-          TOX_TESTENV_PASSENV: PY_COLORS
-
-      - name: Test pytesseract package installation
-        run: pip install -U . && pip show pytesseract && python -c 'import pytesseract'
+    - uses: asottile/workflows/.github/actions/fast-checkout@v1.8.0
+      with:
+        submodules: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: |
+          ${{
+            (matrix.env == 'py39' || startsWith(matrix.env, 'py39-')) && '3.9' ||
+            (matrix.env == 'py310' || startsWith(matrix.env, 'py310-')) && '3.10' ||
+            (matrix.env == 'py311' || startsWith(matrix.env, 'py311-')) && '3.11' ||
+            (matrix.env == 'py312' || startsWith(matrix.env, 'py312-')) && '3.12' ||
+            (matrix.env == env.PYTHON_LATEST_TAG) && env.PYTHON_LATEST_VER
+          }}
+    - name: Install tesseract
+      run: sudo apt-get -y update && sudo apt-get install -y tesseract-ocr tesseract-ocr-fra
+    - name: Print tesseract version
+      run: echo $(tesseract --version)
+    - name: Update tools
+      run: python -mpip install --upgrade setuptools tox virtualenv
+    - name: Run tox
+      run: tox -e ${{ matrix.env != env.PYTHON_LATEST_TAG && matrix.env || 'pandas' }}
+    - name: Test pytesseract package installation
+      if: ${{ matrix.env == env.PYTHON_LATEST_TAG }}
+      run: python -mpip install -U . && python -mpip show pytesseract && python -c 'import pytesseract'

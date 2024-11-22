@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import logging
 import re
 import shlex
@@ -20,8 +22,6 @@ from os.path import normpath
 from os.path import realpath
 from tempfile import NamedTemporaryFile
 from time import sleep
-from typing import List
-from typing import Optional
 
 from packaging.version import InvalidVersion
 from packaging.version import parse
@@ -293,8 +293,8 @@ def _read_output(filename: str, return_bytes: bool = False):
 
 def run_and_get_multiple_output(
     image,
-    extensions: List[str],
-    lang: Optional[str] = None,
+    extensions: list[str],
+    lang: str | None = None,
     nice: int = 0,
     timeout: int = 0,
     return_bytes: bool = False,
