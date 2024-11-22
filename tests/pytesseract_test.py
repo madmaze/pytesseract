@@ -27,6 +27,7 @@ from pytesseract import run_and_get_multiple_output
 from pytesseract import TesseractNotFoundError
 from pytesseract import TSVNotSupported
 from pytesseract.pytesseract import file_to_dict
+from pytesseract.pytesseract import LANG_PATTERN
 from pytesseract.pytesseract import numpy_installed
 from pytesseract.pytesseract import pandas_installed
 from pytesseract.pytesseract import prepare
@@ -518,3 +519,20 @@ def test_get_tesseract_version_invalid(tesseract_version, expected_msg):
 
         (msg,) = e.value.args
         assert msg == expected_msg
+
+
+@pytest.mark.parametrize(
+    'lang',
+    [
+        'bhu',
+        'eng',
+        'bhu_eng',
+        'eng_bhu',
+        '7seg',
+        'bhu32',
+        'bhu32_7seg',
+        '7seg_eng',
+    ],
+)
+def test_allowed_language_formats(lang):
+    assert LANG_PATTERN.match(lang)
