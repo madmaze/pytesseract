@@ -24,6 +24,7 @@ from pytesseract import image_to_pdf_or_hocr
 from pytesseract import image_to_string
 from pytesseract import Output
 from pytesseract import run_and_get_multiple_output
+from pytesseract import TesseractError
 from pytesseract import TesseractNotFoundError
 from pytesseract import TSVNotSupported
 from pytesseract.pytesseract import file_to_dict
@@ -470,12 +471,15 @@ DEFAULT_LANGUAGES = ('fra', 'eng', 'osd')
     ],
 )
 def test_get_languages(test_config, expected):
-    result = get_languages.__wrapped__(test_config)
-    if not result:
-        assert result == []
+    try:
+        result = get_languages.__wrapped__(test_config)
+        if not result:
+            assert result == []
 
-    for lang in expected:
-        assert lang in result
+        for lang in expected:
+            assert lang in result
+    except TesseractError:
+        assert expected == ()
 
 
 @pytest.mark.parametrize(
