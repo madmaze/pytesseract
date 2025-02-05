@@ -428,9 +428,8 @@ def get_languages(config=''):
     except OSError:
         raise TesseractNotFoundError()
 
-    # tesseract 3.x
-    if result.returncode not in (0, 1):
-        raise TesseractNotFoundError()
+    if result.returncode != 0:
+        raise TesseractError(result.returncode, '--list-langs failed')
 
     languages = []
     if result.stdout:
