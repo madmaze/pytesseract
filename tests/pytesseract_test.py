@@ -16,6 +16,7 @@ import pytest
 from pytesseract import ALTONotSupported
 from pytesseract import get_languages
 from pytesseract import get_tesseract_version
+from pytesseract import has_libcurl
 from pytesseract import image_to_alto_xml
 from pytesseract import image_to_boxes
 from pytesseract import image_to_data
@@ -26,6 +27,7 @@ from pytesseract import Output
 from pytesseract import run_and_get_multiple_output
 from pytesseract import TesseractNotFoundError
 from pytesseract import TSVNotSupported
+from pytesseract import URLNotSupported
 from pytesseract.pytesseract import file_to_dict
 from pytesseract.pytesseract import LANG_PATTERN
 from pytesseract.pytesseract import numpy_installed
@@ -48,11 +50,16 @@ IS_PYTHON_2 = version_info[:1] < (3,)
 IS_PYTHON_3 = not IS_PYTHON_2
 
 TESSERACT_VERSION = tuple(get_tesseract_version().release)  # to skip tests
+HAS_LIBCURL = has_libcurl()  # to skip tests
 
 TESTS_DIR = path.dirname(path.abspath(__file__))
 DATA_DIR = path.join(TESTS_DIR, 'data')
 TESSDATA_DIR = path.join(TESTS_DIR, 'tessdata')
 TEST_JPEG = path.join(DATA_DIR, 'test.jpg')
+TEST_JPEG_URL = (
+    'https://github.com/madmaze/pytesseract'
+    '/blob/master/tests/data/test.jpg?raw=true'
+)
 
 pytestmark = pytest.mark.pytesseract  # used marker for the module
 string_type = unicode if IS_PYTHON_2 else str  # noqa: 821
@@ -122,6 +129,19 @@ def test_image_to_string_with_image_type(test_file):
         pytest.skip('skip gif test')
     test_file_path = path.join(DATA_DIR, test_file)
     assert 'The quick brown dog' in image_to_string(test_file_path, 'eng')
+
+
+@pytest.mark.parametrize(
+    'test_file',
+    [TEST_JPEG_URL],
+    ids=['jpeg_url'],
+)
+def test_image_to_string_with_url(test_file):
+    # Tesseract-ocr supports image URLs from version 4.1.1
+    # and must be built with libcurl.
+    if TESSERACT_VERSION < (4, 1, 1) or not HAS_LIBCURL:
+        pytest.skip('skip url test')
+    assert 'The quick brown dog' in image_to_string(test_file)
 
 
 @pytest.mark.parametrize(
@@ -299,6 +319,15 @@ def test_image_to_alto_xml_support(test_file):
 def test_image_to_data_pandas_support(test_file_small):
     with pytest.raises(TSVNotSupported):
         image_to_data(test_file_small, output_type=Output.DATAFRAME)
+
+
+@pytest.mark.skipif(
+    TESSERACT_VERSION >= (4, 1, 1) and HAS_LIBCURL,
+    reason='requires tesseract < 4.1.1 or tesseract built without libcurl',
+)
+def test_image_to_string_url_support():
+    with pytest.raises(URLNotSupported):
+        image_to_string(TEST_JPEG_URL)
 
 
 @pytest.mark.skipif(
