@@ -73,10 +73,10 @@ OSD_KEYS = {
 }
 
 EXTENTION_TO_CONFIG = {
-    'box': 'tessedit_create_boxfile=1 batch.nochop makebox',
-    'xml': 'tessedit_create_alto=1',
-    'hocr': 'tessedit_create_hocr=1',
-    'tsv': 'tessedit_create_tsv=1',
+    'box': '-c tessedit_create_boxfile=1 batch.nochop makebox',
+    'xml': '-c tessedit_create_alto=1',
+    'hocr': '-c tessedit_create_hocr=1',
+    'tsv': '-c tessedit_create_tsv=1',
 }
 
 TESSERACT_MIN_VERSION = Version('3.05')
@@ -295,17 +295,16 @@ def run_and_get_multiple_output(
     image,
     extensions: list[str],
     lang: str | None = None,
+    config: str = '',
     nice: int = 0,
     timeout: int = 0,
     return_bytes: bool = False,
 ):
-    config = ' '.join(
+    ext_config = ' '.join(
         EXTENTION_TO_CONFIG.get(extension, '') for extension in extensions
     ).strip()
-    if config:
-        config = f'-c {config}'
-    else:
-        config = ''
+    if ext_config:
+        config = f'{config.strip()} {ext_config}'
 
     with save(image) as (temp_name, input_filename):
         kwargs = {
@@ -323,7 +322,7 @@ def run_and_get_multiple_output(
         return [
             _read_output(
                 f"{kwargs['output_filename_base']}{extsep}{extension}",
-                True if extension in {'pdf', 'hocr'} else return_bytes,
+                True if extension in {'pdf', 'hocr', 'xml'} else return_bytes,
             )
             for extension in extensions
         ]
