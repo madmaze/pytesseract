@@ -168,14 +168,19 @@ def run_once(func):
 
 
 def get_errors(error_string):
-    return ' '.join(
-        line for line in error_string.decode(DEFAULT_ENCODING).splitlines()
-    ).strip()
+    # Use more efficient string processing
+    decoded = error_string.decode(DEFAULT_ENCODING)
+    return ' '.join(decoded.splitlines()).strip()
 
 
 def cleanup(temp_name):
     """Tries to remove temp files by filename wildcard path."""
-    for filename in iglob(f'{temp_name}*' if temp_name else temp_name):
+    if not temp_name:
+        return
+    
+    # Use list() to evaluate glob immediately for better performance
+    filenames = list(iglob(f'{temp_name}*'))
+    for filename in filenames:
         try:
             remove(filename)
         except OSError as e:
@@ -194,7 +199,9 @@ def prepare(image):
     if extension not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')
 
-    if 'A' in image.getbands():
+    # Cache band check for performance  
+    bands = image.getbands()
+    if 'A' in bands:
         # discard and replace the alpha channel with white background
         background = Image.new(RGB_MODE, image.size, (255, 255, 255))
         background.paste(image, (0, 0), image.getchannel('A'))
@@ -285,7 +292,7 @@ def run_tesseract(
 
 
 def _read_output(filename: str, return_bytes: bool = False):
-    with open(filename, 'rb') as output_file:
+    with open(filename, 'rb', buffering=65536) as output_file:
         if return_bytes:
             return output_file.read()
         return output_file.read().decode(DEFAULT_ENCODING)
@@ -358,13 +365,16 @@ def run_and_get_output(
 
 def file_to_dict(tsv, cell_delimiter, str_col_idx):
     result = {}
-    rows = [row.split(cell_delimiter) for row in tsv.strip().split('\n')]
-    if len(rows) < 2:
+    lines = tsv.strip().split('\n')
+    if len(lines) < 2:
         return result
 
+    # Pre-split all rows for better performance
+    rows = [line.split(cell_delimiter) for line in lines]
     header = rows.pop(0)
     length = len(header)
-    if len(rows[-1]) < length:
+    
+    if rows and len(rows[-1]) < length:
         # Fixes bug that occurs when last text string in TSV is null, and
         # last row is missing a final cell in TSV file
         rows[-1].append('')
@@ -372,8 +382,11 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
     if str_col_idx < 0:
         str_col_idx += length
 
+    # Pre-allocate result dictionary with lists
+    for head in header:
+        result[head] = []
+
     for i, head in enumerate(header):
-        result[head] = list()
         for row in rows:
             if len(row) <= i:
                 continue
@@ -406,11 +419,14 @@ def is_valid(val, _type):
 
 
 def osd_to_dict(osd):
-    return {
-        OSD_KEYS[kv[0]][0]: OSD_KEYS[kv[0]][1](kv[1])
-        for kv in (line.split(': ') for line in osd.split('\n'))
-        if len(kv) == 2 and is_valid(kv[1], OSD_KEYS[kv[0]][1])
-    }
+    result = {}
+    for line in osd.split('\n'):
+        if ': ' not in line:
+            continue
+        kv = line.split(': ', 1)  # Split only on first occurrence
+        if len(kv) == 2 and kv[0] in OSD_KEYS and is_valid(kv[1], OSD_KEYS[kv[0]][1]):
+            result[OSD_KEYS[kv[0]][0]] = OSD_KEYS[kv[0]][1](kv[1])
+    return result
 
 
 @run_once
