@@ -177,7 +177,7 @@ def cleanup(temp_name):
     """Tries to remove temp files by filename wildcard path."""
     if not temp_name:
         return
-    
+
     # Use list() to evaluate glob immediately for better performance
     filenames = list(iglob(f'{temp_name}*'))
     for filename in filenames:
@@ -199,7 +199,7 @@ def prepare(image):
     if extension not in SUPPORTED_FORMATS:
         raise TypeError('Unsupported image format/type')
 
-    # Cache band check for performance  
+    # Cache band check for performance
     bands = image.getbands()
     if 'A' in bands:
         # discard and replace the alpha channel with white background
@@ -373,7 +373,7 @@ def file_to_dict(tsv, cell_delimiter, str_col_idx):
     rows = [line.split(cell_delimiter) for line in lines]
     header = rows.pop(0)
     length = len(header)
-    
+
     if rows and len(rows[-1]) < length:
         # Fixes bug that occurs when last text string in TSV is null, and
         # last row is missing a final cell in TSV file
@@ -424,7 +424,11 @@ def osd_to_dict(osd):
         if ': ' not in line:
             continue
         kv = line.split(': ', 1)  # Split only on first occurrence
-        if len(kv) == 2 and kv[0] in OSD_KEYS and is_valid(kv[1], OSD_KEYS[kv[0]][1]):
+        if (
+            len(kv) == 2
+            and kv[0] in OSD_KEYS
+            and is_valid(kv[1], OSD_KEYS[kv[0]][1])
+        ):
             result[OSD_KEYS[kv[0]][0]] = OSD_KEYS[kv[0]][1](kv[1])
     return result
 
