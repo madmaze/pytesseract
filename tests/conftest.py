@@ -7,7 +7,6 @@ from tempfile import TemporaryDirectory
 from unittest import mock
 
 import pytest
-
 from PIL import Image
 
 
@@ -77,11 +76,12 @@ def large_image():
 def text_image():
     """Create an image with text for testing."""
     from PIL import ImageDraw, ImageFont
+
     img = Image.new('RGB', (200, 50), color='white')
     draw = ImageDraw.Draw(img)
     try:
         # Try to use a default font
-        draw.text((10, 10), "Test Text", fill='black')
+        draw.text((10, 10), 'Test Text', fill='black')
     except Exception:
         # Fallback if font not available
         pass

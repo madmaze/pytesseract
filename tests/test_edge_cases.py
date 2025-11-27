@@ -4,10 +4,10 @@ from __future__ import annotations
 import pytest
 from PIL import Image
 
-from pytesseract import image_to_string, Output, TesseractError
+from pytesseract import image_to_string
+from pytesseract import Output
+from pytesseract import TesseractError
 from pytesseract.pytesseract import prepare
-
-import pytest
 
 
 pytestmark = pytest.mark.pytesseract
@@ -53,7 +53,7 @@ class TestImageEdgeCases:
     def test_cmyk_image(self, cmyk_image):
         """Test CMYK color mode image."""
         # CMYK cannot be saved as PNG, so this should raise OSError
-        with pytest.raises(OSError, match="cannot write mode CMYK"):
+        with pytest.raises(OSError, match='cannot write mode CMYK'):
             image_to_string(cmyk_image)
 
 
@@ -113,7 +113,7 @@ class TestPrepareFunction:
     def test_prepare_invalid_type(self):
         """Test prepare with invalid type."""
         with pytest.raises(TypeError, match='Unsupported image object'):
-            prepare("not an image")
+            prepare('not an image')
 
 
 class TestOutputTypes:

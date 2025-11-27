@@ -6,7 +6,10 @@ import sys
 import pytest
 from PIL import Image
 
-from pytesseract import image_to_string, image_to_data, image_to_osd, Output
+from pytesseract import image_to_data
+from pytesseract import image_to_osd
+from pytesseract import image_to_string
+from pytesseract import Output
 
 
 pytestmark = pytest.mark.pytesseract
@@ -23,7 +26,9 @@ class TestPSMConfigurations:
                 # PSM 0 is for OSD only
                 result = image_to_osd(text_image, config=f'--psm {psm_value}')
             else:
-                result = image_to_string(text_image, config=f'--psm {psm_value}')
+                result = image_to_string(
+                    text_image, config=f'--psm {psm_value}',
+                )
             assert isinstance(result, str)
         except Exception as e:
             # Some PSM modes may not work with all images
@@ -114,8 +119,7 @@ class TestNiceParameter:
     """Test nice parameter (Unix process priority)."""
 
     @pytest.mark.skipif(
-        sys.platform.startswith('win'),
-        reason='nice not supported on Windows'
+        sys.platform.startswith('win'), reason='nice not supported on Windows',
     )
     @pytest.mark.parametrize('nice_value', [-20, -10, 0, 10, 19])
     def test_nice_values(self, text_image, nice_value):
@@ -124,8 +128,7 @@ class TestNiceParameter:
         assert isinstance(result, str)
 
     @pytest.mark.skipif(
-        not sys.platform.startswith('win'),
-        reason='Test Windows behavior'
+        not sys.platform.startswith('win'), reason='Test Windows behavior',
     )
     def test_nice_ignored_on_windows(self, text_image):
         """Test that nice is ignored on Windows."""
@@ -164,27 +167,21 @@ class TestOutputConfiguration:
     def test_string_output_with_config(self, text_image):
         """Test STRING output with config."""
         result = image_to_string(
-            text_image,
-            output_type=Output.STRING,
-            config='--psm 6'
+            text_image, output_type=Output.STRING, config='--psm 6',
         )
         assert isinstance(result, str)
 
     def test_bytes_output_with_config(self, text_image):
         """Test BYTES output with config."""
         result = image_to_string(
-            text_image,
-            output_type=Output.BYTES,
-            config='--psm 6'
+            text_image, output_type=Output.BYTES, config='--psm 6',
         )
         assert isinstance(result, bytes)
 
     def test_dict_output_with_config(self, text_image):
         """Test DICT output with config."""
         result = image_to_string(
-            text_image,
-            output_type=Output.DICT,
-            config='--psm 6'
+            text_image, output_type=Output.DICT, config='--psm 6',
         )
         assert isinstance(result, dict)
         assert 'text' in result

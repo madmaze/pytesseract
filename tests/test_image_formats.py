@@ -4,7 +4,10 @@ from __future__ import annotations
 import pytest
 from PIL import Image
 
-from pytesseract import image_to_string, image_to_boxes, image_to_data, Output
+from pytesseract import image_to_boxes
+from pytesseract import image_to_data
+from pytesseract import image_to_string
+from pytesseract import Output
 
 
 pytestmark = pytest.mark.pytesseract
@@ -81,28 +84,34 @@ class TestImageConversions:
 class TestImageSizes:
     """Test various image sizes."""
 
-    @pytest.mark.parametrize('size', [
-        (1, 1),
-        (10, 10),
-        (50, 50),
-        (100, 100),
-        (500, 500),
-        (1000, 1000),
-    ])
+    @pytest.mark.parametrize(
+        'size',
+        [
+            (1, 1),
+            (10, 10),
+            (50, 50),
+            (100, 100),
+            (500, 500),
+            (1000, 1000),
+        ],
+    )
     def test_square_images(self, size):
         """Test square images of various sizes."""
         img = Image.new('RGB', size, color='white')
         result = image_to_string(img)
         assert isinstance(result, str)
 
-    @pytest.mark.parametrize('size', [
-        (100, 50),
-        (50, 100),
-        (200, 100),
-        (100, 200),
-        (1000, 100),
-        (100, 1000),
-    ])
+    @pytest.mark.parametrize(
+        'size',
+        [
+            (100, 50),
+            (50, 100),
+            (200, 100),
+            (100, 200),
+            (1000, 100),
+            (100, 1000),
+        ],
+    )
     def test_rectangular_images(self, size):
         """Test rectangular images with various aspect ratios."""
         img = Image.new('RGB', size, color='white')
@@ -203,33 +212,36 @@ class TestNumpyArrays:
 
     @pytest.mark.skipif(
         not pytest.importorskip('numpy', reason='numpy not installed'),
-        reason='numpy not available'
+        reason='numpy not available',
     )
     def test_numpy_array_rgb(self):
         """Test RGB NumPy array."""
         import numpy as np
+
         arr = np.ones((100, 100, 3), dtype=np.uint8) * 255
         result = image_to_string(arr)
         assert isinstance(result, str)
 
     @pytest.mark.skipif(
         not pytest.importorskip('numpy', reason='numpy not installed'),
-        reason='numpy not available'
+        reason='numpy not available',
     )
     def test_numpy_array_grayscale(self):
         """Test grayscale NumPy array."""
         import numpy as np
+
         arr = np.ones((100, 100), dtype=np.uint8) * 128
         result = image_to_string(arr)
         assert isinstance(result, str)
 
     @pytest.mark.skipif(
         not pytest.importorskip('numpy', reason='numpy not installed'),
-        reason='numpy not available'
+        reason='numpy not available',
     )
     def test_numpy_array_from_pil(self, text_image):
         """Test NumPy array created from PIL image."""
         import numpy as np
+
         arr = np.array(text_image)
         result = image_to_string(arr)
         assert isinstance(result, str)

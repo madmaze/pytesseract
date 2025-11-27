@@ -1,17 +1,16 @@
 """Test utility functions in pytesseract."""
 from __future__ import annotations
 
-import pytest
 from unittest import mock
 
-from pytesseract.pytesseract import (
-    file_to_dict,
-    osd_to_dict,
-    is_valid,
-    cleanup,
-    get_errors,
-    prepare,
-)
+import pytest
+
+from pytesseract.pytesseract import cleanup
+from pytesseract.pytesseract import file_to_dict
+from pytesseract.pytesseract import get_errors
+from pytesseract.pytesseract import is_valid
+from pytesseract.pytesseract import osd_to_dict
+from pytesseract.pytesseract import prepare
 
 
 pytestmark = pytest.mark.pytesseract
@@ -137,10 +136,10 @@ class TestCleanupFunction:
         test_file2 = temp_dir / 'test_cleanup.dat'
         test_file1.write_text('test')
         test_file2.write_text('test')
-        
+
         # Cleanup with wildcard
         cleanup(str(temp_dir / 'test_cleanup'))
-        
+
         # Files should be removed
         assert not test_file1.exists()
         assert not test_file2.exists()
@@ -190,6 +189,7 @@ class TestPrepareFunction:
     def test_prepare_pil_image(self):
         """Test prepare with PIL Image."""
         from PIL import Image
+
         img = Image.new('RGB', (100, 100), color='white')
         prepared_img, ext = prepare(img)
         assert ext == 'PNG'
@@ -198,6 +198,7 @@ class TestPrepareFunction:
     def test_prepare_with_format(self):
         """Test prepare with image that has format."""
         from PIL import Image
+
         img = Image.new('RGB', (100, 100), color='white')
         img.format = 'JPEG'
         prepared_img, ext = prepare(img)
@@ -206,6 +207,7 @@ class TestPrepareFunction:
     def test_prepare_removes_alpha(self):
         """Test prepare removes alpha channel."""
         from PIL import Image
+
         img = Image.new('RGBA', (100, 100), color=(255, 255, 255, 128))
         prepared_img, ext = prepare(img)
         assert 'A' not in prepared_img.getbands()
@@ -213,6 +215,7 @@ class TestPrepareFunction:
     def test_prepare_unsupported_format(self):
         """Test prepare with unsupported format."""
         from PIL import Image
+
         img = Image.new('RGB', (100, 100), color='white')
         img.format = 'UNSUPPORTED'
         with pytest.raises(TypeError, match='Unsupported image format'):
@@ -220,11 +223,12 @@ class TestPrepareFunction:
 
     @pytest.mark.skipif(
         not pytest.importorskip('numpy', reason='numpy not installed'),
-        reason='numpy not available'
+        reason='numpy not available',
     )
     def test_prepare_numpy_array(self):
         """Test prepare with NumPy array."""
         import numpy as np
+
         arr = np.ones((100, 100, 3), dtype=np.uint8) * 255
         prepared_img, ext = prepare(arr)
         assert ext == 'PNG'

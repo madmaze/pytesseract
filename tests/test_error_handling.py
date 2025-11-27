@@ -7,13 +7,11 @@ from unittest import mock
 
 import pytest
 
-from pytesseract import (
-    get_languages,
-    get_tesseract_version,
-    image_to_string,
-    TesseractNotFoundError,
-    TesseractError,
-)
+from pytesseract import get_languages
+from pytesseract import get_tesseract_version
+from pytesseract import image_to_string
+from pytesseract import TesseractError
+from pytesseract import TesseractNotFoundError
 
 
 pytestmark = pytest.mark.pytesseract
@@ -25,24 +23,33 @@ class TestTesseractNotFound:
     def test_invalid_tesseract_path(self, monkeypatch, text_image):
         """Test with invalid tesseract executable path."""
         import pytesseract
-        monkeypatch.setattr('pytesseract.pytesseract.tesseract_cmd', '/invalid/path/tesseract')
-        
+
+        monkeypatch.setattr(
+            'pytesseract.pytesseract.tesseract_cmd', '/invalid/path/tesseract',
+        )
+
         with pytest.raises(TesseractNotFoundError):
             image_to_string(text_image)
 
     def test_get_languages_tesseract_not_found(self, monkeypatch):
         """Test get_languages when tesseract not found."""
         import pytesseract
-        monkeypatch.setattr('pytesseract.pytesseract.tesseract_cmd', 'nonexistent_tesseract')
-        
+
+        monkeypatch.setattr(
+            'pytesseract.pytesseract.tesseract_cmd', 'nonexistent_tesseract',
+        )
+
         with pytest.raises(TesseractNotFoundError):
             get_languages.__wrapped__()
 
     def test_get_version_tesseract_not_found(self, monkeypatch):
         """Test get_tesseract_version when tesseract not found."""
         import pytesseract
-        monkeypatch.setattr('pytesseract.pytesseract.tesseract_cmd', 'nonexistent_tesseract')
-        
+
+        monkeypatch.setattr(
+            'pytesseract.pytesseract.tesseract_cmd', 'nonexistent_tesseract',
+        )
+
         with pytest.raises(TesseractNotFoundError):
             get_tesseract_version.__wrapped__()
 
@@ -54,7 +61,7 @@ class TestFileErrors:
         """Test with corrupted image file."""
         corrupted_file = temp_dir / 'corrupted.jpg'
         corrupted_file.write_bytes(b'This is not a valid image file')
-        
+
         with pytest.raises(Exception):  # PIL will raise various exceptions
             image_to_string(str(corrupted_file))
 
@@ -69,14 +76,16 @@ class TestFileErrors:
         # Create a file and simulate permission error
         test_file = temp_dir / 'test.txt'
         test_file.write_text('test')
-        
+
         def mock_open_permission_denied(*args, **kwargs):
-            raise PermissionError("Permission denied")
-        
+            raise PermissionError('Permission denied')
+
         # This test is platform-dependent, so we mock it
-        with mock.patch('builtins.open', side_effect=mock_open_permission_denied):
+        with mock.patch(
+            'builtins.open', side_effect=mock_open_permission_denied,
+        ):
             with pytest.raises(PermissionError):
-                with open(str(test_file), 'r') as f:
+                with open(str(test_file)) as f:
                     f.read()
 
 
@@ -86,7 +95,7 @@ class TestSubprocessErrors:
     def test_tesseract_returns_error(self, monkeypatch, text_image):
         """Test when tesseract subprocess returns error code."""
         import subprocess
-        
+
         def mock_popen(*args, **kwargs):
             mock_proc = mock.Mock()
             mock_proc.returncode = 1
@@ -95,7 +104,7 @@ class TestSubprocessErrors:
             mock_proc.stdout = mock.Mock()
             mock_proc.stderr = mock.Mock()
             return mock_proc
-        
+
         with mock.patch('subprocess.Popen', side_effect=mock_popen):
             with pytest.raises(TesseractError):
                 image_to_string(text_image)
@@ -113,7 +122,7 @@ class TestMemoryErrors:
     def test_extremely_large_image(self):
         """Test with extremely large image that might cause memory issues."""
         from PIL import Image
-        
+
         # Create a very large image
         try:
             large_img = Image.new('RGB', (20000, 20000), color='white')
@@ -121,7 +130,7 @@ class TestMemoryErrors:
             assert isinstance(result, str)
         except MemoryError:
             # Expected on systems with limited memory
-            pytest.skip("Not enough memory for this test")
+            pytest.skip('Not enough memory for this test')
 
 
 class TestConcurrencyErrors:
@@ -130,15 +139,15 @@ class TestConcurrencyErrors:
     def test_concurrent_temp_file_access(self, text_image):
         """Test concurrent access to temporary files."""
         from concurrent.futures import ThreadPoolExecutor
-        
+
         def process_image():
             return image_to_string(text_image)
-        
+
         # Run multiple OCR operations concurrently
         with ThreadPoolExecutor(max_workers=3) as executor:
             futures = [executor.submit(process_image) for _ in range(5)]
             results = [f.result() for f in futures]
-        
+
         # All should complete successfully
         assert len(results) == 5
         for result in results:
@@ -152,15 +161,15 @@ class TestCleanupErrors:
         """Test that temporary files are cleaned up properly."""
         import tempfile
         import glob
-        
+
         temp_dir = tempfile.gettempdir()
         before_files = set(glob.glob(os.path.join(temp_dir, 'tess_*')))
-        
+
         # Run OCR
         image_to_string(text_image)
-        
+
         after_files = set(glob.glob(os.path.join(temp_dir, 'tess_*')))
-        
+
         # No new temp files should remain
         new_files = after_files - before_files
         assert len(new_files) == 0, f"Temp files not cleaned up: {new_files}"
@@ -169,14 +178,19 @@ class TestCleanupErrors:
 class TestInvalidVersionHandling:
     """Test handling of invalid tesseract versions."""
 
-    @pytest.mark.parametrize('invalid_version', [
-        b'',
-        b'invalid',
-        b'1.0.0',  # Too old
-        b'abc.def.ghi',
-    ])
+    @pytest.mark.parametrize(
+        'invalid_version',
+        [
+            b'',
+            b'invalid',
+            b'1.0.0',  # Too old
+            b'abc.def.ghi',
+        ],
+    )
     def test_invalid_version_string(self, monkeypatch, invalid_version):
         """Test handling of invalid version strings."""
-        with mock.patch('subprocess.check_output', return_value=invalid_version):
+        with mock.patch(
+            'subprocess.check_output', return_value=invalid_version,
+        ):
             with pytest.raises(SystemExit):
                 get_tesseract_version.__wrapped__()
