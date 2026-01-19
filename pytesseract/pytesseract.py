@@ -264,7 +264,7 @@ def run_tesseract(
         cmd_args += ('-l', lang)
 
     if config:
-        cmd_args += shlex.split(config, posix=not_windows)
+        cmd_args += shlex.split(config, posix=True)
 
     for _extension in extension.split():
         if _extension not in {'box', 'osd', 'tsv', 'xml'}:
