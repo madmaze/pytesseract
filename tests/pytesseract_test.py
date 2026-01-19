@@ -536,3 +536,86 @@ def test_get_tesseract_version_invalid(tesseract_version, expected_msg):
 )
 def test_allowed_language_formats(lang):
     assert LANG_PATTERN.match(lang)
+
+
+@pytest.mark.skipif(
+    platform != 'win32',
+    reason='Issue #575: Testing Windows-specific whitelist with space',
+)
+def test_char_whitelist_with_space_on_windows(test_file):
+    """
+    Test for issue #575: Character whitelist with space on Windows.
+
+    Previously, pytesseract used shlex.split with posix=False on Windows,
+    which treated spaces as delimiters even inside quotes. This broke
+    configurations like: -c tessedit_char_whitelist=' 0123456789'
+
+    This test verifies that pytesseract correctly passes the config to
+    tesseract by using posix=True to properly handle quotes on all
+    platforms.
+    """
+    from unittest.mock import MagicMock
+    from unittest.mock import patch
+
+    from pytesseract.pytesseract import run_tesseract
+
+    # Configuration with a whitelist that includes a space character
+    config = "-c tessedit_char_whitelist=' 0123456789'"
+
+    # Mock subprocess.Popen to capture command arguments
+    with patch('pytesseract.pytesseract.subprocess.Popen') as mock_popen:
+        # Setup mock to simulate successful tesseract execution
+        mock_proc = MagicMock()
+        mock_proc.returncode = 0
+        mock_proc.communicate.return_value = (b'', b'')
+        mock_popen.return_value = mock_proc
+
+        # Call run_tesseract with config containing space in whitelist
+        try:
+            run_tesseract(
+                input_filename=test_file,
+                output_filename_base='test_output',
+                extension='txt',
+                lang='eng',
+                config=config,
+                timeout=0,
+            )
+        except Exception:
+            # We only care about arguments passed, not the result
+            pass
+
+        # Verify Popen was called
+        assert mock_popen.called, 'subprocess.Popen should be called'
+
+        # Get the command arguments that were passed to Popen
+        call_args = mock_popen.call_args[0][0]
+
+        # Find the tessedit_char_whitelist argument
+        # With the bug (posix=False), incorrectly split:
+        #   [..., '-c', "tessedit_char_whitelist='", "0123456789'"]
+        # After fix (posix=True), single argument:
+        #   [..., '-c', 'tessedit_char_whitelist= 0123456789']
+
+        # Check whitelist argument is correctly a single argument
+        whitelist_args = [
+            arg for arg in call_args if 'tessedit_char_whitelist' in arg
+        ]
+
+        # Should be exactly ONE argument with tessedit_char_whitelist
+        assert len(whitelist_args) == 1, (
+            f'Issue #575: Whitelist config should be single argument.\n'
+            f"Expected: 1 arg like 'tessedit_char_whitelist= 0123'\n"
+            f'Got: {len(whitelist_args)} arguments: {whitelist_args}\n'
+            f'Full command: {call_args}\n'
+            f'Fix: In pytesseract.py line 267, change '
+            f"'shlex.split(config, posix=not_windows)' "
+            f"to 'shlex.split(config, posix=True)'"
+        )
+
+        # Verify the space is preserved in the whitelist value
+        whitelist_arg = whitelist_args[0]
+        assert ' 0123456789' in whitelist_arg, (
+            f'Issue #575: Space in whitelist was not preserved.\n'
+            f"Expected arg to contain ' 0123456789' (with space)\n"
+            f'Got: {whitelist_arg!r}'
+        )
