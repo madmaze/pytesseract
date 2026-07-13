@@ -28,7 +28,6 @@ from packaging.version import parse
 from packaging.version import Version
 from PIL import Image
 
-
 tesseract_cmd = 'tesseract'
 
 try:
