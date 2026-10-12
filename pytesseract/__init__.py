@@ -17,5 +17,4 @@ from .pytesseract import TesseractError
 from .pytesseract import TesseractNotFoundError
 from .pytesseract import TSVNotSupported
 
-
 __version__ = '0.3.14'
